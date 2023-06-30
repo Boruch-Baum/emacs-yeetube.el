@@ -24,9 +24,14 @@
 
 ;;; Code:
 
-
+(require 'url)
 (require 'org-element)
 
+
+(defcustom yt-search-query "https://www.youtube.com/results?search_query="
+  "Search URL."
+  :type 'string
+  :group 'youtube)
 
 (defcustom yt-download-audio-format nil
   "Select download video as audio FORMAT.
@@ -49,13 +54,38 @@ Example Usage:
       (message "Opening %s with mpv" url))))
 
 
-;; TODO: play a video link using a video player from an org-mode read only buffer
 
-
-
-
-;; TODO: Search Youtube videos play them using a video player
-
+;; TODO Break this function into smaller ones, repeat search for unique videoIds
+(defun yt-search (arg)
+  "Search for ARG in YouTube."
+  (interactive "sYoutube Search: ")
+  (let ((videoIds '())
+	(videoTitles '()))
+    (with-current-buffer (url-retrieve-synchronously (concat yt-search-query arg))
+      (goto-char (point-min))
+	(search-forward "videoId")
+	(let* ((start (point))
+	       (end (search-forward ","))
+	       (videoid (buffer-substring (+ start 3) (- end 2))))
+	  (if (not (member videoid videoIds))
+	      (push videoid videoIds)))
+	(search-forward "text")
+	(let* ((start (point))
+	       (end (search-forward ","))
+	       (title (buffer-substring (+ start 3) (- end 4))))
+	  (if (not (member title videoTitles))
+	      (push title videoTitles)))
+      (with-current-buffer (switch-to-buffer
+			    (get-buffer-create "*Youtube Search*"))
+	(setq buffer-read-only nil)
+	(erase-buffer)
+	(org-mode)
+	(dolist (videoId videoIds)
+	  (dolist (videoTitle videoTitles)
+	    (insert (format "- [[https://www.youtube.com/watch?v=%s][%s]] \n"
+			    videoId
+			    videoTitle))))
+	(setq buffer-read-only t)))))
 
 
 ;; TODO: let user decide custom name and path
