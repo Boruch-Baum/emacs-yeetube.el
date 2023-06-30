@@ -24,7 +24,17 @@
 
 ;;; Code:
 
-;; TODO: play a video link using a video player from an org-mode read only buffer
+(require 'org-element)
+
+;; TODO: Make a defcustom for video player
+(defun yt-play ()
+  "Open the link at point in an `'org-mode buffer with `'mpv."
+  (interactive)
+  (let ((url (org-element-property
+	      :raw-link (org-element-context))))
+    (when (string-prefix-p "http" url)
+      (async-shell-command (format "mpv %s" url))
+      (message "Opening %s with mpv" url))))
 
 
 
