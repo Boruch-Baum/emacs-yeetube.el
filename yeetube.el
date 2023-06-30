@@ -1,4 +1,4 @@
-;;; org-yt.el --- Watch & Download Videos  -*- lexical-binding: t; -*-
+;;; yeetube.el --- Watch & Download Videos  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023  Thanos Apollo
 
@@ -103,5 +103,5 @@ then run this command interactively."
         (setq buffer-counter (1+ buffer-counter))))))
 
 
-(provide 'org-yt)
-;;; org-yt.el ends here
+(provide 'yeetube)
+;;; yeetube.el ends here
