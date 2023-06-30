@@ -34,6 +34,15 @@
 
 ;; TODO: Download videos using yt-dlp
 
+;; TODO: let user decide custom name and path
+(defun yt-download-video ()
+  "Download using link at point in an `'org-mode buffer with yt-dlp."
+  (interactive)
+  (let ((url (org-element-property
+	      :raw-link (org-element-context))))
+    (when (string-prefix-p "http" url)
+      (async-shell-command (format "yt-dlp %s" url))
+      (message "Downloading %s " url))))
 
 
 (provide 'org-yt)
