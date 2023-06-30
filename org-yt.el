@@ -24,6 +24,16 @@
 
 ;;; Code:
 
+(defcustom yt-download-audio-format nil
+  "Select download video as audio FORMAT.
+If nil yt-download-videos output will be the default format.
+
+Example Usage:
+ (setq yt-download-audio-format \"m4a\")"
+  :type 'string
+  :group 'youtube)
+
+
 ;; TODO: play a video link using a video player from an org-mode read only buffer
 
 
