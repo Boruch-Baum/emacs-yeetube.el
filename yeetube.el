@@ -98,16 +98,16 @@ Example Usage:
                    (end (search-forward ","))
                    (title (buffer-substring (+ start 3) (- end 4))))
               (push title videoTitles))))))
-
     (with-current-buffer (switch-to-buffer
                           (get-buffer-create "*Yeetube Search*"))
       (setq buffer-read-only nil)
       (erase-buffer)
       (org-mode)
       (insert "\n* Search Results: \n \n")
-      (cl-loop for (videoId . videoTitle) in (cl-mapcar #'cons (reverse videoIds) (reverse videoTitles))
-         do (insert (format "+ [[https://www.youtube.com/watch?v=%s][%s]]\n"
-                            videoId videoTitle)))
+      (cl-loop for (videoId . videoTitle) in
+	       (cl-mapcar #'cons (reverse videoIds) (reverse videoTitles))
+               do (insert (format "+ [[https://www.youtube.com/watch?v=%s][%s ]]\n"
+				  videoId videoTitle)))
       (setq buffer-read-only t))))
 
 (defun yt-download-video ()
