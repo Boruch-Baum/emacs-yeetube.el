@@ -27,6 +27,8 @@
 
 (require 'url)
 (require 'org-element)
+(require 'cl-lib)
+
 
 (defgroup yeetube nil
   "Search, Play & Download videos."
