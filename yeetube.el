@@ -27,11 +27,17 @@
 (require 'url)
 (require 'org-element)
 
+(defcustom yt-search-for 10
+  "Define the amount of search results."
+  :type 'number
+  :safe #'numberp
+  :group 'yeetube)
 
 (defcustom yt-search-query "https://www.youtube.com/results?search_query="
   "Search URL."
   :type 'string
-  :group 'youtube)
+  :safe #'stringp
+  :group 'yeetube)
 
 (defcustom yt-download-audio-format nil
   "Select download video as audio FORMAT.
@@ -40,17 +46,32 @@ If nil yt-download-videos output will be the default format.
 Example Usage:
  (setq yt-download-audio-format \"m4a\")"
   :type 'string
-  :group 'youtube)
+  :safe #'stringp
+  :group 'yeetube)
 
+(defcustom yt-player "mpv"
+  "Select default video player as command.
 
-;; TODO: Make a defcustom for video player
+Example Usage:
+ (setq yt-player \"vlc\")
+ (setq yt-player \"mpv --no-audio\")"
+  :type 'string
+  :safe #'stringp
+  :group 'yeetube)
+
+(defcustom yt-download-directory "~/Downloads"
+  "Default directory to downlaod videos."
+  :type 'string
+  :safe #'stringp
+  :group 'yeetube)
+
 (defun yt-play ()
   "Open the link at point in an `'org-mode buffer with `'mpv."
   (interactive)
   (let ((url (org-element-property
 	      :raw-link (org-element-context))))
     (when (string-prefix-p "http" url)
-      (async-shell-command (format "mpv %s" url))
+      (async-shell-command (format "%s %s" yt-player url))
       (message "Opening %s with mpv" url))))
 
 
