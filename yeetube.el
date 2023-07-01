@@ -75,41 +75,41 @@ Example Usage:
       (message "Opening %s with mpv" url))))
 
 
-
-;; TODO Break this function into smaller ones, repeat search for unique videoIds
+;; TODO: Check if video_type of videoid is short or video
 (defun yt-search (arg)
-  "Search for ARG in YouTube."
-  (interactive "sYoutube Search: ")
+  "Search for ARG."
+  (interactive "sYeetube Search: ")
   (let ((videoIds '())
-	(videoTitles '()))
+        (videoTitles '()))
     (with-current-buffer (url-retrieve-synchronously (concat yt-search-query arg))
       (goto-char (point-min))
+      (while (< (length videoIds) yt-search-for)
 	(search-forward "videoId")
-	(let* ((start (point))
-	       (end (search-forward ","))
-	       (videoid (buffer-substring (+ start 3) (- end 2))))
-	  (if (not (member videoid videoIds))
-	      (push videoid videoIds)))
-	(search-forward "text")
-	(let* ((start (point))
-	       (end (search-forward ","))
-	       (title (buffer-substring (+ start 3) (- end 4))))
-	  (if (not (member title videoTitles))
-	      (push title videoTitles)))
-      (with-current-buffer (switch-to-buffer
-			    (get-buffer-create "*Youtube Search*"))
-	(setq buffer-read-only nil)
-	(erase-buffer)
-	(org-mode)
-	(dolist (videoId videoIds)
-	  (dolist (videoTitle videoTitles)
-	    (insert (format "- [[https://www.youtube.com/watch?v=%s][%s]] \n"
-			    videoId
-			    videoTitle))))
-	(setq buffer-read-only t)))))
+        (let* ((start (point))
+               (end (search-forward ","))
+               (videoid (buffer-substring (+ start 3) (- end 2))))
+          (unless (or (member videoid videoIds)
+                      (not (and (>= (length videoid) 9)
+                                (<= (length videoid) 13)
+                                (string-match-p "^[a-zA-Z0-9_-]*$" videoid))))
+            (push videoid videoIds)
+            (search-forward "text")
+            (let* ((start (point))
+                   (end (search-forward ","))
+                   (title (buffer-substring (+ start 3) (- end 4))))
+              (push title videoTitles))))))
 
+    (with-current-buffer (switch-to-buffer
+                          (get-buffer-create "*Yeetube Search*"))
+      (setq buffer-read-only nil)
+      (erase-buffer)
+      (org-mode)
+      (insert "\n* Search Results: \n \n")
+      (cl-loop for (videoId . videoTitle) in (cl-mapcar #'cons (reverse videoIds) (reverse videoTitles))
+         do (insert (format "+ [[https://www.youtube.com/watch?v=%s][%s]]\n"
+                            videoId videoTitle)))
+      (setq buffer-read-only t))))
 
-;; TODO: let user decide custom name and path
 (defun yt-download-video ()
   "Download using link at point in an `'org-mode buffer with yt-dlp."
   (interactive)
