@@ -65,9 +65,19 @@ Example Usage:
   :safe #'stringp
   :group 'yeetube)
 
+(define-minor-mode yt-mode
+  "Yeetube mode."
+  :init-value nil
+  :lighter " yt-moden"
+  :keymap (let ((map (make-sparse-keymap)))
+            (define-key map (kbd "p") 'yt-play)
+	    (define-key map (kbd "RET") 'yt-play)
+	    (define-key map (kbd "d") 'yt-download-video)
+            map))
+
 (defun yt-play ()
-  "Open the link at point in an `'org-mode buffer with `'mpv."
   (interactive)
+  "Open the link at point in an `'org-mode buffer with `'mpv."
   (let ((url (org-element-property
 	      :raw-link (org-element-context))))
     (when (string-prefix-p "http" url)
@@ -103,16 +113,20 @@ Example Usage:
       (setq buffer-read-only nil)
       (erase-buffer)
       (org-mode)
-      (insert "\n* Search Results: \n \n")
+      (insert
+       "~p~ /or/ ~RET~ to play video\n"
+       "\n~d~ to download"
+       "\n* Search Results: \n \n")
       (cl-loop for (videoId . videoTitle) in
 	       (cl-mapcar #'cons (reverse videoIds) (reverse videoTitles))
                do (insert (format "+ [[https://www.youtube.com/watch?v=%s][%s ]]\n"
 				  videoId videoTitle)))
-      (setq buffer-read-only t))))
+      (setq buffer-read-only t)
+      (yt-mode))))
 
 (defun yt-download-video ()
-  "Download using link at point in an `'org-mode buffer with yt-dlp."
   (interactive)
+  "Download using link at point in an `'org-mode buffer with yt-dlp."
   (let ((url (org-element-property
 	      :raw-link (org-element-context))))
     (when (string-prefix-p "http" url)
