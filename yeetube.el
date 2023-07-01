@@ -126,7 +126,9 @@ Example Usage:
 				  videoId videoTitle)))
       (insert
        "\n\n\n~RET~ to play video\n"
-       "\n~d~ to download")
+       "\n~d~ to download\n")
+      (unless (toggle-enable-multibyte-characters)
+	(toggle-enable-multibyte-characters))
       (setq buffer-read-only t)
       (yt-mode))))
 

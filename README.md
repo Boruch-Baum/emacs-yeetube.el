@@ -3,12 +3,6 @@
 ## About 
 - Watch & Download Videos from Emacs.
 
-## Contributing 
-
-- [Mailing list](https://lists.sr.ht/~thanosapollo/yeetube.el)
-- [Issue Tracker](https://todo.sr.ht/~thanosapollo/yeetube.el)
-
-
 ## Installation
 
 - Clone repo 
@@ -21,4 +15,12 @@ git clone https://git.sr.ht/~thanosapollo/yeetube.el
 ``` emacs-lisp
 (load-file "/path/to/yeetube.el"))
 ```
+
+
+## Contributing 
+
+- [Mailing list](https://lists.sr.ht/~thanosapollo/yeetube.el)
+- [Issue Tracker](https://todo.sr.ht/~thanosapollo/yeetube.el)
+
+
 
