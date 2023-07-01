@@ -20,12 +20,18 @@
 
 ;;; Commentary:
 
-;; 
+;; Search, play and downlaod videos from your desired video search
+;; engine from Emacs.
 
 ;;; Code:
 
 (require 'url)
 (require 'org-element)
+
+(defgroup yeetube nil
+  "Search, Play & Download videos."
+  :group 'external
+  :prefix "yt-")
 
 (defcustom yt-search-for 10
   "Define the amount of search results."
@@ -68,16 +74,15 @@ Example Usage:
 (define-minor-mode yt-mode
   "Yeetube mode."
   :init-value nil
-  :lighter " yt-moden"
-  :keymap (let ((map (make-sparse-keymap)))
-            (define-key map (kbd "p") 'yt-play)
-	    (define-key map (kbd "RET") 'yt-play)
-	    (define-key map (kbd "d") 'yt-download-video)
-            map))
+  :lighter " yt-mode"
+  :keymap (let ((yt-mode-map (make-sparse-keymap)))
+	    (define-key yt-mode-map (kbd "RET") 'yt-play)
+	    (define-key yt-mode-map (kbd "d") 'yt-download-video)
+            yt-mode-map))
 
 (defun yt-play ()
-  (interactive)
   "Open the link at point in an `'org-mode buffer with `'mpv."
+  (interactive)
   (let ((url (org-element-property
 	      :raw-link (org-element-context))))
     (when (string-prefix-p "http" url)
@@ -114,19 +119,20 @@ Example Usage:
       (erase-buffer)
       (org-mode)
       (insert
-       "~p~ /or/ ~RET~ to play video\n"
-       "\n~d~ to download"
        "\n* Search Results: \n \n")
       (cl-loop for (videoId . videoTitle) in
 	       (cl-mapcar #'cons (reverse videoIds) (reverse videoTitles))
                do (insert (format "+ [[https://www.youtube.com/watch?v=%s][%s ]]\n"
 				  videoId videoTitle)))
+      (insert
+       "\n\n\n~RET~ to play video\n"
+       "\n~d~ to download")
       (setq buffer-read-only t)
       (yt-mode))))
 
 (defun yt-download-video ()
-  (interactive)
   "Download using link at point in an `'org-mode buffer with yt-dlp."
+  (interactive)
   (let ((url (org-element-property
 	      :raw-link (org-element-context))))
     (when (string-prefix-p "http" url)
