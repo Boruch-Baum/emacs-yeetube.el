@@ -47,7 +47,7 @@
 
 (defcustom yt-download-audio-format nil
   "Select download video as audio FORMAT.
-If nil yt-download-videos output will be the default format.
+If nil download output will be the default format.
 
 Example Usage:
  (setq yt-download-audio-format \"m4a\")"
