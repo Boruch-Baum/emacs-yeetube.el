@@ -116,11 +116,15 @@ Example Usage:
   (let ((url (org-element-property
 	      :raw-link (org-element-context))))
     (when (string-prefix-p "http" url)
+      (let ((default-directory yt-download-directory))
       (async-shell-command (format "yt-dlp %s" url))
-      (message "Downloading %s " url))))
+      (message "Downloading %s " url)))))
 
 (defun yt-download-videos ()
   "Download one or multiple videos using yt-dlp.
+
+This command is not meant to be used through the
+*Yeetube Search* buffer.
 
 Usage Example:
 Open a Dired buffer and navigate where you want to download your videos,
