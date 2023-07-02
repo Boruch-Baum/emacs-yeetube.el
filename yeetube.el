@@ -33,74 +33,74 @@
 (defgroup yeetube nil
   "Search, Play & Download videos."
   :group 'external
-  :prefix "yt-")
+  :prefix "yeetube-")
 
-(defcustom yt-search-for 10
+(defcustom yeetube-search-for 10
   "Define the amount of search results."
   :type 'number
   :safe #'numberp
   :group 'yeetube)
 
-(defcustom yt-search-query "https://www.youtube.com/results?search_query="
+(defcustom yeetube-search-query "https://www.youtube.com/results?search_query="
   "Search URL."
   :type 'string
   :safe #'stringp
   :group 'yeetube)
 
-(defcustom yt-download-audio-format nil
+(defcustom yeetube-download-audio-format nil
   "Select download video as audio FORMAT.
 If nil download output will be the default format.
 
 Example Usage:
- (setq yt-download-audio-format \"m4a\")"
+ (setq yeetube-download-audio-format \"m4a\")"
   :type 'string
   :safe #'stringp
   :group 'yeetube)
 
-(defcustom yt-player "mpv"
+(defcustom yeetube-player "mpv"
   "Select default video player as command.
 
 Example Usage:
- (setq yt-player \"vlc\")
- (setq yt-player \"mpv --no-audio\")"
+ (setq yeetube-player \"vlc\")
+ (setq yeetube-player \"mpv --no-audio\")"
   :type 'string
   :safe #'stringp
   :group 'yeetube)
 
-(defcustom yt-download-directory "~/Downloads"
+(defcustom yeetube-download-directory "~/Downloads"
   "Default directory to downlaod videos."
   :type 'string
   :safe #'stringp
   :group 'yeetube)
 
-(define-minor-mode yt-mode
+(define-minor-mode yeetube-mode
   "Yeetube mode."
   :init-value nil
-  :lighter " yt-mode"
-  :keymap (let ((yt-mode-map (make-sparse-keymap)))
-	    (define-key yt-mode-map (kbd "RET") 'yt-play)
-	    (define-key yt-mode-map (kbd "d") 'yt-download-video)
-            yt-mode-map))
+  :lighter " yeetube-mode"
+  :keymap (let ((yeetube-mode-map (make-sparse-keymap)))
+	    (define-key yeetube-mode-map (kbd "RET") 'yeetube-play)
+	    (define-key yeetube-mode-map (kbd "d") 'yeetube-download-video)
+            yeetube-mode-map))
 
-(defun yt-play ()
+(defun yeetube-play ()
   "Open the link at point in an `'org-mode buffer with `'mpv."
   (interactive)
   (let ((url (org-element-property
 	      :raw-link (org-element-context))))
     (when (string-prefix-p "http" url)
-      (async-shell-command (format "%s %s" yt-player url))
+      (async-shell-command (format "%s %s" yeetube-player url))
       (message "Opening %s with mpv" url))))
 
 
 ;; TODO: Check if video_type of videoid is short or video
-(defun yt-search (arg)
+(defun yeetube-search (arg)
   "Search for ARG."
   (interactive "sYeetube Search: ")
   (let ((videoIds '())
         (videoTitles '()))
-    (with-current-buffer (url-retrieve-synchronously (concat yt-search-query arg))
+    (with-current-buffer (url-retrieve-synchronously (concat yeetube-search-query arg) t t)
       (goto-char (point-min))
-      (while (< (length videoIds) yt-search-for)
+      (while (< (length videoIds) yeetube-search-for)
 	(search-forward "videoId")
         (let* ((start (point))
                (end (search-forward ","))
@@ -133,19 +133,19 @@ Example Usage:
       (unless (toggle-enable-multibyte-characters)
 	(toggle-enable-multibyte-characters))
       (setq buffer-read-only t)
-      (yt-mode))))
+      (yeetube-mode))))
 
-(defun yt-download-video ()
+(defun yeetube-download-video ()
   "Download using link at point in an `'org-mode buffer with yt-dlp."
   (interactive)
   (let ((url (org-element-property
 	      :raw-link (org-element-context))))
     (when (string-prefix-p "http" url)
-      (let ((default-directory yt-download-directory))
+      (let ((default-directory yeetube-download-directory))
       (async-shell-command (format "yt-dlp %s" url))
       (message "Downloading %s " url)))))
 
-(defun yt-download-videos ()
+(defun yeetube-download-videos ()
   "Download one or multiple videos using yt-dlp.
 
 This command is not meant to be used through the
