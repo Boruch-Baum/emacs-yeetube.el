@@ -58,7 +58,7 @@ Example Usage:
   :group 'yeetube)
 
 (defcustom yeetube-player "mpv"
-  "Select default video player as command.
+  "Select default video player.
 
 Example Usage:
  (setq yeetube-player \"vlc\")
@@ -83,7 +83,7 @@ Example Usage:
             yeetube-mode-map))
 
 (defun yeetube-play ()
-  "Open the link at point in an `'org-mode buffer with `'mpv."
+  "Open the url at point in an `'org-mode buffer using 'yeetube-player'."
   (interactive)
   (let ((url (org-element-property
 	      :raw-link (org-element-context))))
