@@ -112,8 +112,8 @@ Example Usage:
             (push videoid videoIds)
             (search-forward "text")
             (let* ((start (point))
-                   (end (search-forward ","))
-                   (title (buffer-substring (+ start 3) (- end 4))))
+                   (end (search-forward ",\""))
+                   (title (buffer-substring (+ start 3) (- end 5))))
               (push title videoTitles))))))
     (with-current-buffer (switch-to-buffer
                           (get-buffer-create "*Yeetube Search*"))
@@ -128,7 +128,8 @@ Example Usage:
 				  videoId videoTitle)))
       (insert
        "\n\n\n~RET~ to play video\n"
-       "\n~d~ to download\n")
+       "\n~d~ to download\n"
+       "\n~C-c C-o~ to open in browser")
       (unless (toggle-enable-multibyte-characters)
 	(toggle-enable-multibyte-characters))
       (setq buffer-read-only t)
