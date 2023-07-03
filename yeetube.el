@@ -159,8 +159,13 @@ Example Usage:
 	      :raw-link (org-element-context))))
     (when (string-prefix-p "http" url)
       (let ((default-directory yeetube-download-directory))
-	(async-shell-command (format "yt-dlp %s" url))
-	(message "Downloading %s " url)))))
+	(async-shell-command
+	 (if yeetube-download-audio-format
+	     (format "yt-dlp %s --extract-audio --audio-format %s"
+		     (shell-quote-argument url)
+		     (shell-quote-argument yeetube-download-audio-format))
+	   (format "yt-dlp %s" (shell-quote-argument url)))
+	 (message "Downloading %s " url))))))
 
 (defun yeetube-download-videos ()
   "Download one or multiple videos using yt-dlp.
@@ -196,7 +201,9 @@ then run this command interactively."
       (let ((url (car pair))
             (name (cdr pair))
             (buffer-name (format "download-video-%d" buffer-counter)))
-        (async-shell-command (format "yt-dlp %s -o %s" url name) buffer-name)
+        (async-shell-command (format "yt-dlp %s -o %s" (shell-quote-argument url)
+				     (shell-quote-argument name))
+			     buffer-name)
         (setq buffer-counter (1+ buffer-counter))))))
 
 
