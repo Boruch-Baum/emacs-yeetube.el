@@ -38,7 +38,7 @@
   :group 'external
   :prefix "yeetube-")
 
-(defcustom yeetube-results-limit 10
+(defcustom yeetube-results-limit 15
   "Define the amount of search results."
   :type 'number
   :safe #'numberp
