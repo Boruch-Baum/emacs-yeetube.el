@@ -251,8 +251,12 @@ OPERATION & WHERE are required to work with 'add-variable-watcher."
       (kill-visual-line)
       (insert
        (format "%s %s" to-change new-value))
+      (goto-char (point-min))
+      (search-forward yeetube-results-prefix)
       (setq-local buffer-read-only t)
-      (switch-to-buffer (other-buffer)))))
+      (unless (string-equal (buffer-name) "*Yeetube Search*")
+	(switch-to-buffer (other-buffer))))))
+
 
 ;; Variable to watch
 (add-variable-watcher 'yeetube-download-directory #'yeetube-update-info)
