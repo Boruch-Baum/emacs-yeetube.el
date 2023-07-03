@@ -96,10 +96,14 @@ Example Usage:
   "Open the url at point in an `'org-mode buffer using 'yeetube-player'."
   (interactive)
   (let ((url (org-element-property
-	      :raw-link (org-element-context))))
+	      :raw-link (org-element-context)))
+	(buffer (get-buffer "*Yeetube Player*")))
+    (shell-command (format "pkill -9 -f %s" (shell-quote-argument yeetube-player)))
     (when (string-prefix-p "http" url)
-      (async-shell-command (format "%s %s" yeetube-player url))
-      (message "Opening %s with mpv" url))))
+      (call-process-shell-command
+       (format "%s %s" yeetube-player url) nil 0)
+      (message "Opening %s" url)
+      (switch-to-buffer buffer))))
 
 
 ;; TODO: Check if video_type of videoid is short or video
