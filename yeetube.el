@@ -4,6 +4,9 @@
 
 ;; Author: Thanos Apollo <public@thanosapollo.com>
 ;; Keywords: extensions
+;; URL: https://git.sr.ht/~thanosapollo/yeetube.el
+;; Version: 0.0.1
+;; Package-Requires: ((emacs "27.1"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -35,13 +38,19 @@
   :group 'external
   :prefix "yeetube-")
 
-(defcustom yeetube-search-for 10
+(defcustom yeetube-results-limit 10
   "Define the amount of search results."
   :type 'number
   :safe #'numberp
   :group 'yeetube)
 
-(defcustom yeetube-search-query "https://www.youtube.com/results?search_query="
+(defcustom yeetube-results-prefix "+"
+  "Define prefix to display results with."
+  :type 'string
+  :safe #'stringp
+  :group 'yeetube)
+
+(defcustom yeetube-query-url "https://www.youtube.com/results?search_query="
   "Search URL."
   :type 'string
   :safe #'stringp
@@ -57,12 +66,12 @@ Example Usage:
   :safe #'stringp
   :group 'yeetube)
 
-(defcustom yeetube-player "mpv"
+
+(defcustom yeetube-player (executable-find "mpv")
   "Select default video player.
 
 Example Usage:
- (setq yeetube-player \"vlc\")
- (setq yeetube-player \"mpv --no-audio\")"
+ (setq yeetube-player \"mpv --no-video\")"
   :type 'string
   :safe #'stringp
   :group 'yeetube)
@@ -80,6 +89,7 @@ Example Usage:
   :keymap (let ((yeetube-mode-map (make-sparse-keymap)))
 	    (define-key yeetube-mode-map (kbd "RET") 'yeetube-play)
 	    (define-key yeetube-mode-map (kbd "d") 'yeetube-download-video)
+	    (define-key yeetube-mode-map (kbd "q") 'kill-current-buffer)
             yeetube-mode-map))
 
 (defun yeetube-play ()
@@ -93,14 +103,15 @@ Example Usage:
 
 
 ;; TODO: Check if video_type of videoid is short or video
-(defun yeetube-search (arg)
-  "Search for ARG."
+(defun yeetube-search (query)
+  "Search for QUERY."
   (interactive "sYeetube Search: ")
   (let ((videoIds '())
         (videoTitles '()))
-    (with-current-buffer (url-retrieve-synchronously (concat yeetube-search-query arg) t t)
+    (with-current-buffer (url-retrieve-synchronously (concat yeetube-query-url query) t t)
       (goto-char (point-min))
-      (while (< (length videoIds) yeetube-search-for)
+      (toggle-enable-multibyte-characters)
+      (while (< (length videoIds) yeetube-results-limit)
 	(search-forward "videoId")
         (let* ((start (point))
                (end (search-forward ","))
@@ -124,15 +135,17 @@ Example Usage:
        "\n* Search Results: \n \n")
       (cl-loop for (videoId . videoTitle) in
 	       (cl-mapcar #'cons (reverse videoIds) (reverse videoTitles))
-               do (insert (format "+ [[https://www.youtube.com/watch?v=%s][%s ]]\n"
-				  videoId videoTitle)))
+               do (insert (format "%s [[https://www.youtube.com/watch?v=%s][%s ]]\n"
+				  yeetube-results-prefix videoId videoTitle)))
       (insert
-       "\n\n\n~RET~ to play video\n"
-       "\n~d~ to download\n"
-       "\n~C-c C-o~ to open in browser")
-      (unless (toggle-enable-multibyte-characters)
-	(toggle-enable-multibyte-characters))
+       "\n\n"
+       "\n~RET~     -> Play Video\n"
+       "\n~d~       -> Download\n"
+       "\n~C-c C-o~ -> Open In Browser\n"
+       "\n~q~       -> Quit\n")
       (setq buffer-read-only t)
+      (goto-char (point-min))
+      (search-forward yeetube-results-prefix)
       (yeetube-mode))))
 
 (defun yeetube-download-video ()
@@ -142,8 +155,8 @@ Example Usage:
 	      :raw-link (org-element-context))))
     (when (string-prefix-p "http" url)
       (let ((default-directory yeetube-download-directory))
-      (async-shell-command (format "yt-dlp %s" url))
-      (message "Downloading %s " url)))))
+	(async-shell-command (format "yt-dlp %s" url))
+	(message "Downloading %s " url)))))
 
 (defun yeetube-download-videos ()
   "Download one or multiple videos using yt-dlp.
