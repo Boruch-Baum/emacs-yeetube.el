@@ -102,7 +102,7 @@ Example Usage:
     (when (string-prefix-p "http" url)
       (call-process-shell-command
        (format "%s %s" yeetube-player url) nil 0)
-      (message "Opening %s" url)
+      (message "Opening with %s" yeetube-player)
       (switch-to-buffer buffer))))
 
 
@@ -142,6 +142,9 @@ Example Usage:
                do (insert (format "%s [[https://www.youtube.com/watch?v=%s][%s ]]\n"
 				  yeetube-results-prefix videoId videoTitle)))
       (insert
+       "** Info"
+       (format "\nDownload Directory: %s" yeetube-download-directory)
+       (format "\nYeetube Player: %s" yeetube-player)
        "\n\n"
        "\n~RET~     -> Play Video\n"
        "\n~d~       -> Download\n"
