@@ -66,6 +66,12 @@ Example Usage:
   :safe #'stringp
   :group 'yeetube)
 
+(defcustom yeetube-display-info-keys t
+  "Display default keybindings."
+  :type 'boolean
+  :safe #'booleanp
+  :group 'yeetube)
+
 
 (defcustom yeetube-player (executable-find "mpv")
   "Select default video player.
@@ -107,6 +113,7 @@ Example Usage:
 
 
 ;; TODO: Check if video_type of videoid is short or video
+;; TODO: Titles are getting messed up for livestreams
 (defun yeetube-search (query)
   "Search for QUERY."
   (interactive "sYeetube Search: ")
@@ -141,15 +148,7 @@ Example Usage:
 	       (cl-mapcar #'cons (reverse videoIds) (reverse videoTitles))
                do (insert (format "%s [[https://www.youtube.com/watch?v=%s][%s ]]\n"
 				  yeetube-results-prefix videoId videoTitle)))
-      (insert
-       "** Info"
-       (format "\nDownload Directory: %s" yeetube-download-directory)
-       (format "\nYeetube Player: %s" yeetube-player)
-       "\n\n"
-       "\n~RET~     -> Play Video\n"
-       "\n~d~       -> Download\n"
-       "\n~C-c C-o~ -> Open In Browser\n"
-       "\n~q~       -> Quit\n")
+      (yeetube-info)
       (setq buffer-read-only t)
       (goto-char (point-min))
       (search-forward yeetube-results-prefix)
@@ -215,6 +214,20 @@ then run this command interactively."
 	 buffer-name)
         (setq buffer-counter (1+ buffer-counter))))))
 
+(defun yeetube-info ()
+  "Insert default keybindings at *Yeetube Search* buffer."
+    (insert
+     "\n\n** Info"
+     (format "\nDownload Directory: %s" yeetube-download-directory)
+     (format "\nYeetube Player: %s" yeetube-player))
+    (when yeetube-display-info-keys
+      (insert
+       "\n\n*** Keybindings"
+       "\n"
+       "\n~RET~     -> Play Video\n"
+       "\n~d~       -> Download\n"
+       "\n~C-c C-o~ -> Open In Browser\n"
+       "\n~q~       -> Quit\n")))
 
 (provide 'yeetube)
 ;;; yeetube.el ends here
