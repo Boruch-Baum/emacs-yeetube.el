@@ -229,5 +229,34 @@ then run this command interactively."
        "\n~C-c C-o~ -> Open In Browser\n"
        "\n~q~       -> Quit\n")))
 
+(defun yeetube-update-info (symbol-name new-value operation where)
+  "Update information for SYMBOL-NAME with NEW-VALUE.
+
+SYMBOL-NAME is the name of the symbol to update.
+NEW-VALUE is the new value for the symbol.
+OPERATION is the operation to perform (e.g., insert or replace).
+WHERE indicates where in the buffer the update should happen.
+
+OPERATION & WHERE are required to work with 'add-variable-watcher."
+  (when (get-buffer "*Yeetube Search*")
+    (let ((to-change
+	   (pcase symbol-name
+	     ('yeetube-player "Yeetube Player:")
+	     ('yeetube-download-directory "Download Directory:"))))
+      (switch-to-buffer (get-buffer "*Yeetube Search*"))
+      (setq-local buffer-read-only nil)
+      (goto-char (point-min))
+      (search-forward to-change)
+      (beginning-of-visual-line)
+      (kill-visual-line)
+      (insert
+       (format "%s %s" to-change new-value))
+      (setq-local buffer-read-only t)
+      (switch-to-buffer (other-buffer)))))
+
+;; Variable to watch
+(add-variable-watcher 'yeetube-download-directory #'yeetube-update-info)
+(add-variable-watcher 'yeetube-player #'yeetube-update-info)
+
 (provide 'yeetube)
 ;;; yeetube.el ends here
