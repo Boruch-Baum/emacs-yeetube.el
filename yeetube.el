@@ -170,8 +170,7 @@ Example Usage:
 (defun yeetube-download-videos ()
   "Download one or multiple videos using yt-dlp.
 
-This command is not meant to be used through the
-*Yeetube Search* buffer.
+This command is not meant to be used in the *Yeetube Search* buffer.
 
 Usage Example:
 Open a Dired buffer and navigate where you want to download your videos,
@@ -201,9 +200,16 @@ then run this command interactively."
       (let ((url (car pair))
             (name (cdr pair))
             (buffer-name (format "download-video-%d" buffer-counter)))
-        (async-shell-command (format "yt-dlp %s -o %s" (shell-quote-argument url)
-				     (shell-quote-argument name))
-			     buffer-name)
+        (async-shell-command
+	 (if yeetube-download-audio-format
+	     (format "yt-dlp %s --extract-audio --audio-format %s -o %s"
+		     (shell-quote-argument url)
+		     (shell-quote-argument yeetube-download-audio-format)
+		     (shell-quote-argument name))
+	   (format "yt-dlp %s -o %s"
+		   (shell-quote-argument url)
+		   (shell-quote-argument name)))
+	 buffer-name)
         (setq buffer-counter (1+ buffer-counter))))))
 
 
