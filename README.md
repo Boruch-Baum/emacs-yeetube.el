@@ -48,7 +48,7 @@ that allows for audio-only playback when desired.
 Add it as a keybinding to `yeetube-mode-map`
 
 ``` emacs-lisp
-(define-key yeetube-mode-map (kbd "c") 'yeetube-switch-player)
+(define-key yeetube-mode-map (kbd "c") 'yeetube-switch-mpv)
 ```
 
 `yeetube-download-videos` is not specific to YouTube, it's just a
