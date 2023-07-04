@@ -256,24 +256,24 @@ WHERE indicates where in the buffer the update should happen.
 
 OPERATION & WHERE are required to work with 'add-variable-watcher."
   (when (get-buffer "*Yeetube Search*")
+    (push-mark)
     (let ((to-change
 	   (pcase symbol-name
 	     ('yeetube-player "Yeetube Player:")
 	     ('yeetube-download-directory "Download Directory:")
-	     ('yeetube-download-audio-format "Download as audio format:"))))
+	     ('yeetube-download-audio-format "Download as audio format:")))
+	  (buffer-cur (buffer-name)))
       (switch-to-buffer (get-buffer "*Yeetube Search*"))
       (setq-local buffer-read-only nil)
       (goto-char (point-min))
       (search-forward to-change)
       (beginning-of-visual-line)
-      (kill-visual-line)
+      (kill-region (point) (line-end-position))
       (insert
        (format "%s *%s*" to-change new-value))
-      (goto-char (point-min))
-      (search-forward yeetube-results-prefix)
       (setq-local buffer-read-only t)
-      (unless (equal (buffer-name) "*Yeetube Search*")
-	(switch-to-buffer (other-buffer))))))
+      (switch-to-buffer buffer-cur))
+    (goto-char (mark))))
 
 
 ;; Variable to watch
