@@ -97,6 +97,7 @@ Example Usage:
 	    (define-key yeetube-mode-map (kbd "d") 'yeetube-download-video)
 	    (define-key yeetube-mode-map (kbd "q") 'kill-current-buffer)
 	    (define-key yeetube-mode-map (kbd "C") 'yeetube-change-download-directory)
+	    (define-key yeetube-mode-map (kbd "a") 'yeetube-change-download-audio-format)
             yeetube-mode-map))
 
 (defun yeetube-play ()
@@ -217,20 +218,21 @@ then run this command interactively."
 
 (defun yeetube-info ()
   "Insert default keybindings at *Yeetube Search* buffer."
+  (insert
+   "\n\n** Info"
+   (format "\nDownload Directory: *%s*" yeetube-download-directory)
+   (format "\nDownload as audio format: *%s*" yeetube-download-audio-format)
+   (format "\nYeetube Player: *%s*" yeetube-player))
+  (when yeetube-display-info-keys
     (insert
-     "\n\n** Info"
-     (format "\nDownload Directory: *%s*" yeetube-download-directory)
-     (format "\nDownload as audio format: *%s*" yeetube-download-audio-format)
-     (format "\nYeetube Player: *%s*" yeetube-player))
-    (when yeetube-display-info-keys
-      (insert
-       "\n\n*** Keybindings"
-       "\n"
-       "\n~RET~     -> Play Video\n"
-       "\n~d~       -> Download\n"
-       "\n~C-c C-o~ -> Open In Browser\n"
-       "\n~C~       -> Change Download Directory"
-       "\n~q~       -> Quit\n")))
+     "\n\n*** Keybindings"
+     "\n"
+     "\n~RET~     -> Play Video\n"
+     "\n~d~       -> Download\n"
+     "\n~C-c C-o~ -> Open In Browser\n"
+     "\n~C~       -> Change Download Directory\n"
+     "\n~a~       -> Change Download (Audio) Format\n"
+     "\n~q~       -> Quit\n")))
 
 (defun yeetube-change-download-directory ()
   "Change download directory."
