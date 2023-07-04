@@ -219,8 +219,9 @@ then run this command interactively."
   "Insert default keybindings at *Yeetube Search* buffer."
     (insert
      "\n\n** Info"
-     (format "\nDownload Directory: %s" yeetube-download-directory)
-     (format "\nYeetube Player: %s" yeetube-player))
+     (format "\nDownload Directory: *%s*" yeetube-download-directory)
+     (format "\nDownload as audio format: *%s*" yeetube-download-audio-format)
+     (format "\nYeetube Player: *%s*" yeetube-player))
     (when yeetube-display-info-keys
       (insert
        "\n\n*** Keybindings"
@@ -234,7 +235,16 @@ then run this command interactively."
 (defun yeetube-change-download-directory ()
   "Change download directory."
   (interactive)
-  (setq yeetube-download-directory (read-directory-name "Select a directory: ")))
+  (setq yeetube-download-directory
+	(read-directory-name "Select a directory: ")))
+
+(defun yeetube-change-download-audio-format ()
+  "Change download audio format."
+  (interactive)
+  (setq yeetube-download-audio-format
+	(read-string "Specify audio format(no for nil): "))
+  (when (equal yeetube-download-audio-format "no")
+    (setq yeetube-download-audio-format nil)))
 
 (defun yeetube-update-info (symbol-name new-value _operation _where)
   "Update information for SYMBOL-NAME with NEW-VALUE.
@@ -249,7 +259,8 @@ OPERATION & WHERE are required to work with 'add-variable-watcher."
     (let ((to-change
 	   (pcase symbol-name
 	     ('yeetube-player "Yeetube Player:")
-	     ('yeetube-download-directory "Download Directory:"))))
+	     ('yeetube-download-directory "Download Directory:")
+	     ('yeetube-download-audio-format "Download as audio format:"))))
       (switch-to-buffer (get-buffer "*Yeetube Search*"))
       (setq-local buffer-read-only nil)
       (goto-char (point-min))
@@ -257,7 +268,7 @@ OPERATION & WHERE are required to work with 'add-variable-watcher."
       (beginning-of-visual-line)
       (kill-visual-line)
       (insert
-       (format "%s %s" to-change new-value))
+       (format "%s *%s*" to-change new-value))
       (goto-char (point-min))
       (search-forward yeetube-results-prefix)
       (setq-local buffer-read-only t)
@@ -268,6 +279,7 @@ OPERATION & WHERE are required to work with 'add-variable-watcher."
 ;; Variable to watch
 (add-variable-watcher 'yeetube-download-directory #'yeetube-update-info)
 (add-variable-watcher 'yeetube-player #'yeetube-update-info)
+(add-variable-watcher 'yeetube-download-audio-format #'yeetube-update-info)
 
 (provide 'yeetube)
 ;;; yeetube.el ends here
