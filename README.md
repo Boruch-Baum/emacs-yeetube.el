@@ -3,17 +3,29 @@
 ## About 
 - Watch & Download Videos from Emacs.
 
+*For now the search feature is designed to work with YouTube*
+
 ### But why?
 
-This was initially intended to simplify the expansion of my
-`~/Music`. However, as I delved into its development, the
-idea emerged to incorporate a different approach: 
+Because Emacs.
 
-**Enabling direct Search & Play of videos and audio within Emacs.**
 
-This circumvents the interruption of my "work-flow"" caused by
-diverting attention to external browsers and platforms like YouTube,
-which are attention black holes.
+Differences with other front-ends:
+- No YouTube/Invidious API
+- Includes simple front-end for `yt-dlp` *not forcing you to use youtube urls* :)
+
+## Installation
+
+- Clone repo 
+``` bash
+git clone https://git.sr.ht/~thanosapollo/yeetube.el 
+```
+
+- Add the following to your `init.el`
+
+``` emacs-lisp
+(load-file "/path/to/yeetube.el"))
+```
 
 
 ### Customization 
@@ -55,20 +67,6 @@ Add it as a keybinding to `yeetube-mode-map`
 `yeetube-download-videos` is not specific to YouTube, it's just a
 front end for `yt-dlp`. Open a Dired buffer and navigate to your
 desired *PATH* and run `yeetube-download-videos` interactively.
-
-
-## Installation
-
-- Clone repo 
-``` bash
-git clone https://git.sr.ht/~thanosapollo/yeetube.el 
-```
-
-- Add the following to your `init.el`
-
-``` emacs-lisp
-(load-file "/path/to/yeetube.el"))
-```
 
 
 ## Contributing 
