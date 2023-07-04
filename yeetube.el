@@ -96,6 +96,7 @@ Example Usage:
 	    (define-key yeetube-mode-map (kbd "RET") 'yeetube-play)
 	    (define-key yeetube-mode-map (kbd "d") 'yeetube-download-video)
 	    (define-key yeetube-mode-map (kbd "q") 'kill-current-buffer)
+	    (define-key yeetube-mode-map (kbd "C") 'yeetube-change-download-directory)
             yeetube-mode-map))
 
 (defun yeetube-play ()
@@ -227,7 +228,13 @@ then run this command interactively."
        "\n~RET~     -> Play Video\n"
        "\n~d~       -> Download\n"
        "\n~C-c C-o~ -> Open In Browser\n"
+       "\n~C~       -> Change Download Directory"
        "\n~q~       -> Quit\n")))
+
+(defun yeetube-change-download-directory ()
+  "Change download directory."
+  (interactive)
+  (setq yeetube-download-directory (read-directory-name "Select a directory: ")))
 
 (defun yeetube-update-info (symbol-name new-value _operation _where)
   "Update information for SYMBOL-NAME with NEW-VALUE.
