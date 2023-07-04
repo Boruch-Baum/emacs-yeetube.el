@@ -50,10 +50,11 @@ Add it as a keybinding to `yeetube-mode-map`
 ``` emacs-lisp
 (define-key yeetube-mode-map (kbd "c") 'yeetube-switch-mpv)
 ```
+#### Downloading non-Youtube links 
 
 `yeetube-download-videos` is not specific to YouTube, it's just a
 front end for `yt-dlp`. Open a Dired buffer and navigate to your
-desired *PATH* and run it interactively.
+desired *PATH* and run `yeetube-download-videos` interactively.
 
 
 ## Installation
