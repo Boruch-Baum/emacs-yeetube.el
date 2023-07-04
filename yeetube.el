@@ -136,7 +136,9 @@ Example Usage:
             (let* ((start (point))
                    (end (search-forward ",\""))
                    (title (buffer-substring (+ start 3) (- end 5))))
-              (push title videoTitles))))))
+	      (if (string-match-p "vssLoggingContext" title)
+		  (pop videoIds)
+		(push title videoTitles)))))))
     (with-current-buffer (switch-to-buffer
                           (get-buffer-create "*Yeetube Search*"))
       (setq buffer-read-only nil)
