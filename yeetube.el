@@ -229,7 +229,7 @@ then run this command interactively."
        "\n~C-c C-o~ -> Open In Browser\n"
        "\n~q~       -> Quit\n")))
 
-(defun yeetube-update-info (symbol-name new-value operation where)
+(defun yeetube-update-info (symbol-name new-value _operation _where)
   "Update information for SYMBOL-NAME with NEW-VALUE.
 
 SYMBOL-NAME is the name of the symbol to update.
@@ -254,7 +254,7 @@ OPERATION & WHERE are required to work with 'add-variable-watcher."
       (goto-char (point-min))
       (search-forward yeetube-results-prefix)
       (setq-local buffer-read-only t)
-      (unless (string-equal (buffer-name) "*Yeetube Search*")
+      (unless (equal (buffer-name) "*Yeetube Search*")
 	(switch-to-buffer (other-buffer))))))
 
 
