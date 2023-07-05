@@ -188,7 +188,7 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
       (erase-buffer)
       (org-mode)
       (insert
-       (format "\n/searching:/ %s\n* Search Results: \n \n" yeetube-query-url))
+       (format "searching: %s\nfor: %s \n* Search Results: \n \n" yeetube-query-url query))
       (yeetube-insert-content
        yeetube-results-prefix yeetube-query-url
        videoTitles videoIds)
@@ -272,7 +272,7 @@ then run this command interactively."
      "\n~RET~     -> Play Video\n"
      "\n~d~       -> Download\n"
      "\n~C-c C-o~ -> Open In Browser\n"
-     "\n~u~       -> Change search URL (youtube.com or any invidious instance)"
+     "\n~u~       -> Change search URL (youtube.com or any invidious instance)\n"
      "\n~C~       -> Change Download Directory\n"
      "\n~a~       -> Change Download (Audio) Format\n"
      "\n~q~       -> Quit\n")))
@@ -316,7 +316,7 @@ OPERATION & WHERE are required to work with 'add-variable-watcher."
 	     ('yeetube-player "Yeetube Player:")
 	     ('yeetube-download-directory "Download Directory:")
 	     ('yeetube-download-audio-format "Download as audio format:")
-	     ('yeetube-query-url "/searching:/")))
+	     ('yeetube-query-url "searching:")))
 	  (buffer-cur (buffer-name)))
       (switch-to-buffer (get-buffer "*Yeetube Search*"))
       (setq-local buffer-read-only nil)
