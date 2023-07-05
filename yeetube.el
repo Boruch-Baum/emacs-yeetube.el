@@ -1,4 +1,4 @@
-;;; yeetube.el --- Watch & Download Videos  -*- lexical-binding: t; -*-
+;;; yeetube.el --- YouTube/Invidious Front End  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023  Thanos Apollo
 
@@ -23,8 +23,10 @@
 
 ;;; Commentary:
 
-;; Search, play and downlaod videos from your desired video search
-;; engine from Emacs.
+;; Search, play and downlaod videos from YouTube or any Invidious instance,
+;; including localhost.
+
+;; This package does not use YouTube/Invidious API.
 
 ;;; Code:
 
@@ -50,7 +52,7 @@
   :safe #'stringp
   :group 'yeetube)
 
-(defcustom yeetube-query-url "https://www.youtube.com/results?search_query="
+(defcustom yeetube-query-url "https://www.youtube.com"
   "Search URL."
   :type 'string
   :safe #'stringp
