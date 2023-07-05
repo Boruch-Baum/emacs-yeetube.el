@@ -1,18 +1,21 @@
 # Yeetube.el
 
 ## About 
-- Watch & Download Videos from Emacs.
+- YouTube & Invidious Front-End.
 
-*For now the search feature is designed to work with YouTube*
+Search for videos,
+Download them,
+Or just play them using your favorite media player (by default mpv).
+
+*All without leaving Emacs*
 
 ### But why?
 
 Because Emacs.
 
-
 Differences with other front-ends:
-- No YouTube/Invidious API
-- Includes simple front-end for `yt-dlp` *not forcing you to use youtube urls* :)
+- No YouTube/Invidious API 
+- Includes a simple front-end for `yt-dlp` *not forcing you to use youtube/invidious urls* :)
 
 ## Installation
 
@@ -31,8 +34,7 @@ git clone https://git.sr.ht/~thanosapollo/yeetube.el
 ### Customization 
 - `yeetube-results-prefix` Default is "+"
 
-- `yeetube-query-url` Default is YouTube URL, soon there will be more sites
-supported
+- `yeetube-query-url` Default is YouTube URL, *you can also use any invidious instance or localhost.*
 
 - `yeetube-download-audio-format` Default is `nil`, you can use it to
 specify your downloads to be only (audio) FORMAT, e.g "m4a"
