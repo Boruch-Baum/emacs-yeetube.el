@@ -1,4 +1,5 @@
 # Yeetube.el
+[![Sourcehut](https://img.shields.io/badge/master-sourcehut-black?logo=sourcehut)](https://git.sr.ht/~thanosapollo/yeetube.el) 
 
 ## About 
 - YouTube & Invidious Front-End.
