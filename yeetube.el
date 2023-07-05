@@ -261,9 +261,9 @@ then run this command interactively."
   "Insert default keybindings at *Yeetube Search* buffer."
   (insert
    "\n\n** Info"
-   (format "\nDownload Directory: *%s*" yeetube-download-directory)
-   (format "\nDownload as audio format: *%s*" yeetube-download-audio-format)
-   (format "\nYeetube Player: *%s*" yeetube-player))
+   (format "\nDownload Directory: %s" yeetube-download-directory)
+   (format "\nDownload as audio format: %s" yeetube-download-audio-format)
+   (format "\nYeetube Player: %s" yeetube-player))
   (when yeetube-display-info-keys
     (insert
      "\n\n*** Keybindings"
@@ -313,7 +313,7 @@ OPERATION & WHERE are required to work with 'add-variable-watcher."
       (beginning-of-visual-line)
       (kill-region (point) (line-end-position))
       (insert
-       (format "%s *%s*" to-change new-value))
+       (format "%s %s" to-change new-value))
       (setq-local buffer-read-only t)
       (switch-to-buffer buffer-cur))
     (goto-char (mark))))
