@@ -143,7 +143,10 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
   (let ((videoIds '())
         (videoTitles '()))
     (with-current-buffer
-	(url-retrieve-synchronously (concat yeetube-query-url "/search?q=" query) t t)
+	(url-retrieve-synchronously (concat yeetube-query-url
+					    "/search?q="
+					    (replace-regexp-in-string " " "+" query))
+				    t t)
       (goto-char (point-min))
       (toggle-enable-multibyte-characters)
       (while (< (length videoIds) yeetube-results-limit)
