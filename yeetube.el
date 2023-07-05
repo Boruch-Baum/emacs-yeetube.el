@@ -272,7 +272,7 @@ then run this command interactively."
      "\n~RET~     -> Play Video\n"
      "\n~d~       -> Download\n"
      "\n~C-c C-o~ -> Open In Browser\n"
-     "\n~u~       -> Change search URL (youtube.com or any invidious instance)\n"
+     "\n~u~       -> Change search URL (youtube.com, any invidious instance or localhost)\n"
      "\n~C~       -> Change Download Directory\n"
      "\n~a~       -> Change Download (Audio) Format\n"
      "\n~q~       -> Quit\n")))
@@ -296,9 +296,9 @@ then run this command interactively."
   (interactive)
   (setq yeetube-query-url (read-string "URL: "))
   (when (string-prefix-p "localhost" yeetube-query-url)
-    (setq port (read-string "Port: "))
-    (setq yeetube-query-url (concat "http://localhost:" port)))
-  (unless (string-prefix-p "http://" yeetube-query-url)
+    (setq yeetube-query-url (concat "http://localhost:" (read-string "Port: "))))
+  (unless (or (string-prefix-p "http://" yeetube-query-url)
+	      (string-prefix-p "https://" yeetube-query-url))
     (setq yeetube-query-url (concat "https://" yeetube-query-url)))
   (when (string-suffix-p "/" yeetube-query-url)
     (setq yeetube-query-url (substring yeetube-query-url 0 -1))))
