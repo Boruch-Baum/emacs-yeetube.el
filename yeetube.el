@@ -100,6 +100,12 @@ Example Usage:
 	    (define-key yeetube-mode-map (kbd "a") 'yeetube-change-download-audio-format)
             yeetube-mode-map))
 
+(defun yeetube-check-if-youtube (url)
+  "Check if URL contain youtube."
+  (if (string-match-p "youtube" url)
+      t
+    nil))
+
 (defun yeetube-play ()
   "Open the url at point in an `'org-mode buffer using 'yeetube-player'."
   (interactive)
