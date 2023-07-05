@@ -3,9 +3,7 @@
 ## About 
 - YouTube & Invidious Front-End.
 
-Search for videos,
-Download them,
-Or just play them using your favorite multimedia player *by default mpv*
+Search for videos, download them, or just play them using your favorite multimedia player *by default mpv*
 
 *All without leaving Emacs*
 
