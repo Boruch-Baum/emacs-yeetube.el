@@ -118,8 +118,22 @@ Example Usage:
       (message "Opening with %s" yeetube-player))))
 
 
-;; TODO: Check if video_type of videoid is short or video
-;; TODO: Titles are getting messed up for livestreams
+(defun yeetube-insert-content (prefix url videoTitles videoIds)
+  "Insert video links with titles into the buffer.
+
+Arguments:
+- PREFIX: The prefix string for each link.
+- URL: The base URL for the YouTube links.
+- VIDEOTITLES: A list of video titles.
+- VIDEOIDS: A list of video IDs.
+
+For each video ID and video title, inserts a link into the buffer in the format:
+PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
+  (cl-loop for (videoId . videoTitle) in
+	   (cl-mapcar #'cons (reverse videoIds) (reverse videoTitles))
+           do (insert (format "%s [[%s/watch?v=%s][%s ]]\n"
+			      prefix url videoId videoTitle))))
+
 (defun yeetube-search (query)
   "Search for QUERY."
   (interactive "sYeetube Search: ")
@@ -156,6 +170,9 @@ Example Usage:
 	       (cl-mapcar #'cons (reverse videoIds) (reverse videoTitles))
                do (insert (format "%s [[https://www.youtube.com/watch?v=%s][%s ]]\n"
 				  yeetube-results-prefix videoId videoTitle)))
+      (yeetube-insert-content
+       yeetube-results-prefix yeetube-query-url
+       videoTitles videoIds)
       (yeetube-info)
       (setq buffer-read-only t)
       (goto-char (point-min))
