@@ -5,15 +5,17 @@
 
 Search for videos,
 Download them,
-Or just play them using your favorite media player (by default mpv).
+Or just play them using your favorite multimedia player *by default mpv*
 
 *All without leaving Emacs*
+
+It's time to *yeet* your browser. 
 
 ### But why?
 
 Because Emacs.
 
-Differences with other front-ends:
+#### Differences with other front-ends:
 - No YouTube/Invidious API 
 - Includes a simple front-end for `yt-dlp` *not forcing you to use youtube/invidious urls* :)
 
@@ -34,7 +36,7 @@ git clone https://git.sr.ht/~thanosapollo/yeetube.el
 ### Customization 
 - `yeetube-results-prefix` Default is "+"
 
-- `yeetube-query-url` Default is YouTube URL, *you can also use any invidious instance or localhost.*
+- `yeetube-query-url` Default is youtube.com, *you can also use any invidious instance or localhost.*
   - [Invidious instances](https://docs.invidious.io/instances/)
 
 - `yeetube-download-audio-format` Default is `nil`, you can use it to
