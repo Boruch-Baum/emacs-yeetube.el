@@ -35,6 +35,7 @@ git clone https://git.sr.ht/~thanosapollo/yeetube.el
 - `yeetube-results-prefix` Default is "+"
 
 - `yeetube-query-url` Default is YouTube URL, *you can also use any invidious instance or localhost.*
+  - [Invidious instances](https://docs.invidious.io/instances/)
 
 - `yeetube-download-audio-format` Default is `nil`, you can use it to
 specify your downloads to be only (audio) FORMAT, e.g "m4a"
