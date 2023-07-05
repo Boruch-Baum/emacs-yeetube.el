@@ -294,7 +294,7 @@ then run this command interactively."
     (setq yeetube-download-audio-format nil)))
 
 (defun yeetube-change-query-url ()
-  "Change yeetube-query-url."
+  "Change `yeetube-query-url'."
   (interactive)
   (setq yeetube-query-url (read-string "URL: "))
   (when (string-prefix-p "localhost" yeetube-query-url)
