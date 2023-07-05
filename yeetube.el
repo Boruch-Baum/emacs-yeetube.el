@@ -295,7 +295,10 @@ then run this command interactively."
   "Change yeetube-query-url."
   (interactive)
   (setq yeetube-query-url (read-string "URL: "))
-  (unless (string-prefix-p "https://" yeetube-query-url)
+  (when (string-prefix-p "localhost" yeetube-query-url)
+    (setq port (read-string "Port: "))
+    (setq yeetube-query-url (concat "http://localhost:" port)))
+  (unless (string-prefix-p "http://" yeetube-query-url)
     (setq yeetube-query-url (concat "https://" yeetube-query-url)))
   (when (string-suffix-p "/" yeetube-query-url)
     (setq yeetube-query-url (substring yeetube-query-url 0 -1))))
