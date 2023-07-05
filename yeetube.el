@@ -187,11 +187,7 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
       (erase-buffer)
       (org-mode)
       (insert
-       "\n* Search Results: \n \n")
-      (cl-loop for (videoId . videoTitle) in
-	       (cl-mapcar #'cons (reverse videoIds) (reverse videoTitles))
-               do (insert (format "%s [[https://www.youtube.com/watch?v=%s][%s ]]\n"
-				  yeetube-results-prefix videoId videoTitle)))
+       (format "\n/searching:/ %s\n* Search Results: \n \n" yeetube-query-url))
       (yeetube-insert-content
        yeetube-results-prefix yeetube-query-url
        videoTitles videoIds)
