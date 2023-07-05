@@ -95,6 +95,7 @@ Example Usage:
   :keymap (let ((yeetube-mode-map (make-sparse-keymap)))
 	    (define-key yeetube-mode-map (kbd "RET") 'yeetube-play)
 	    (define-key yeetube-mode-map (kbd "d") 'yeetube-download-video)
+	    (define-key yeetube-mode-map (kbd "u") 'yeetube-change-query-url)
 	    (define-key yeetube-mode-map (kbd "q") 'kill-current-buffer)
 	    (define-key yeetube-mode-map (kbd "C") 'yeetube-change-download-directory)
 	    (define-key yeetube-mode-map (kbd "a") 'yeetube-change-download-audio-format)
@@ -271,6 +272,7 @@ then run this command interactively."
      "\n~RET~     -> Play Video\n"
      "\n~d~       -> Download\n"
      "\n~C-c C-o~ -> Open In Browser\n"
+     "\n~u~       -> Change search URL (youtube.com or any invidious instance)"
      "\n~C~       -> Change Download Directory\n"
      "\n~a~       -> Change Download (Audio) Format\n"
      "\n~q~       -> Quit\n")))
@@ -289,6 +291,15 @@ then run this command interactively."
   (when (equal yeetube-download-audio-format "no")
     (setq yeetube-download-audio-format nil)))
 
+(defun yeetube-change-query-url ()
+  "Change yeetube-query-url."
+  (interactive)
+  (setq yeetube-query-url (read-string "URL: "))
+  (unless (string-prefix-p "https://" yeetube-query-url)
+    (setq yeetube-query-url (concat "https://" yeetube-query-url)))
+  (when (string-suffix-p "/" yeetube-query-url)
+    (setq yeetube-query-url (substring yeetube-query-url 0 -1))))
+
 (defun yeetube-update-info (symbol-name new-value _operation _where)
   "Update information for SYMBOL-NAME with NEW-VALUE.
 
@@ -304,7 +315,8 @@ OPERATION & WHERE are required to work with 'add-variable-watcher."
 	   (pcase symbol-name
 	     ('yeetube-player "Yeetube Player:")
 	     ('yeetube-download-directory "Download Directory:")
-	     ('yeetube-download-audio-format "Download as audio format:")))
+	     ('yeetube-download-audio-format "Download as audio format:")
+	     ('yeetube-query-url "/searching:/")))
 	  (buffer-cur (buffer-name)))
       (switch-to-buffer (get-buffer "*Yeetube Search*"))
       (setq-local buffer-read-only nil)
@@ -323,6 +335,7 @@ OPERATION & WHERE are required to work with 'add-variable-watcher."
 (add-variable-watcher 'yeetube-download-directory #'yeetube-update-info)
 (add-variable-watcher 'yeetube-player #'yeetube-update-info)
 (add-variable-watcher 'yeetube-download-audio-format #'yeetube-update-info)
+(add-variable-watcher 'yeetube-query-url #'yeetube-update-info)
 
 (provide 'yeetube)
 ;;; yeetube.el ends here
