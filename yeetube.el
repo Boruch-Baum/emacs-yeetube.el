@@ -303,17 +303,21 @@ then run this command interactively."
    "\n\n** Info"
    (format "\nDownload Directory: %s" yeetube-download-directory)
    (format "\nDownload as audio format: %s" yeetube-download-audio-format)
-   (format "\nYeetube Player: %s" yeetube-player))
+   (if yeetube-player
+       (format "\nYeetube Player: %s" yeetube-player)
+     (format "\nYeetube Player: mpv not found. /Set this value manually or install mpv/")))
   (when yeetube-display-info-keys
     (insert
      "\n\n*** Keybindings"
      "\n"
      "\n~RET~     -> Play Video\n"
-     "\n~d~       -> Download\n"
+     "\n~v~       -> Toggle Video on/off\n"
+     "\n~p~       -> Toggle Pause/Play\n"
      "\n~C-c C-o~ -> Open In Browser\n"
-     "\n~u~       -> Change search URL (youtube.com, any invidious instance or localhost)\n"
-     "\n~C~       -> Change Download Directory\n"
+     "\n~d~       -> Download\n"
+     "\n~D~       -> Change Download Directory\n"
      "\n~a~       -> Change Download (Audio) Format\n"
+     "\n~u~       -> Change search URL (youtube.com, any invidious instance or localhost)\n"
      "\n~q~       -> Quit\n")))
 
 (defun yeetube-change-download-directory ()
