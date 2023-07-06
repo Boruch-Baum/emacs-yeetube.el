@@ -120,6 +120,15 @@ Example Usage:
        (format "%s %s" yeetube-player url) nil 0)
       (message "Opening with %s" yeetube-player))))
 
+;; we should use something like
+;; (decode-coding-region (point-min) (point-max) 'utf-8
+;;                        (get-buffer-create "decoded"))
+;; in yeetube-search to make sure titles are always correct
+;; this is a quick "duck-tape" fix.
+(defun yeetube-fix-title (title)
+  "Adjust TITLE."
+  (replace-regexp-in-string "&#39;" "'"
+			    (replace-regexp-in-string "&quot;" "\"" title)))
 
 (defun yeetube-insert-content (prefix url videoTitles videoIds)
   "Insert video links with titles into the buffer.
@@ -135,7 +144,8 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
   (cl-loop for (videoId . videoTitle) in
 	   (cl-mapcar #'cons (reverse videoIds) (reverse videoTitles))
            do (insert (format "%s [[%s/watch?v=%s][%s ]]\n"
-			      prefix url videoId videoTitle))))
+			      prefix url videoId
+			      (yeetube-fix-title videoTitle)))))
 
 (defun yeetube-search (query)
   "Search for QUERY."
