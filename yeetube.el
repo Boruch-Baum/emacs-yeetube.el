@@ -115,6 +115,9 @@ It's recommended you keep it as the default value."
       t
     nil))
 
+;; ISSUE?: if user plays with --no-video flag
+;; openning a new url without --no-video flag
+;; will not kill previous session.
 (defun yeetube-play ()
   "Open the url at point in an `'org-mode buffer using 'yeetube-player'."
   (interactive)
