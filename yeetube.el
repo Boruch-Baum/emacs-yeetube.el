@@ -43,9 +43,8 @@
 (defcustom yeetube-results-limit 10
   "Define the amount of search results.
 
-Note:
-If you are using an invidious instance, it's recommended to keep it
-below 15."
+Note: If you are using an invidious instance, it's recommended to keep
+this < 13."
   :type 'number
   :safe #'numberp
   :group 'yeetube)
