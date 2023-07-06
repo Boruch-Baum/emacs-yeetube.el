@@ -352,6 +352,10 @@ OPERATION & WHERE are required to work with 'add-variable-watcher."
       (switch-to-buffer buffer-cur))
     (goto-char (mark))))
 
+(defun yeetube-read-documentation ()
+  "Read yeetube.el Documentation."
+  (interactive)
+  (find-file (expand-file-name "documentation.org")))
 
 ;; Variable to watch
 (add-variable-watcher 'yeetube-download-directory #'yeetube-update-info)
