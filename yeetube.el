@@ -103,8 +103,10 @@ It's recommended you keep it as the default value."
 	    (define-key yeetube-mode-map (kbd "d") 'yeetube-download-video)
 	    (define-key yeetube-mode-map (kbd "u") 'yeetube-change-query-url)
 	    (define-key yeetube-mode-map (kbd "q") 'kill-current-buffer)
-	    (define-key yeetube-mode-map (kbd "C") 'yeetube-change-download-directory)
+	    (define-key yeetube-mode-map (kbd "D") 'yeetube-change-download-directory)
 	    (define-key yeetube-mode-map (kbd "a") 'yeetube-change-download-audio-format)
+	    (define-key yeetube-mode-map (kbd "p") 'yeetube-toggle-pause-mpv)
+	    (define-key yeetube-mode-map (kbd "v") 'yeetube-toggle-video-mpv)
             yeetube-mode-map))
 
 (defun yeetube-check-if-youtube (url)
