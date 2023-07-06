@@ -277,7 +277,7 @@ then run this command interactively."
 	 buffer-name)
         (setq buffer-counter (1+ buffer-counter))))))
 
-(defun yeetube-info ()
+(defun yeetube-insert-info ()
   "Insert default keybindings at *Yeetube Search* buffer."
   (insert
    "\n\n** Info"
