@@ -79,11 +79,11 @@ Example Usage:
   :group 'yeetube)
 
 
-(defcustom yeetube-player (executable-find "mpv")
+(defcustom yeetube-player (unless (eq (executable-find "mpv") nil)
+			    "mpv --input-ipc-server=/tmp/mpvsocket")
   "Select default video player.
 
-Example Usage:
- (setq yeetube-player \"mpv --no-video\")"
+It's recommended you keep it as the default value."
   :type 'string
   :safe #'stringp
   :group 'yeetube)
