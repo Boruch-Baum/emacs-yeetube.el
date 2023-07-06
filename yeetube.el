@@ -124,6 +124,14 @@ It's recommended you keep it as the default value."
        (format "%s %s" yeetube-player url) nil 0)
       (message "Opening with %s" yeetube-player))))
 
+(defun yeetube-toggle-video-mpv ()
+  "Toggle video on/off for mpv player."
+  (interactive)
+  (when yeetube-player
+    (setq yeetube-player
+	  (if (equal yeetube-player "mpv --input-ipc-server=/tmp/mpvsocket")
+	      "mpv --no-video --input-ipc-server=/tmp/mpvsocket"
+	    "mpv --input-ipc-server=/tmp/mpvsocket"))))
 ;; we should use something like
 ;; (decode-coding-region (point-min) (point-max) 'utf-8
 ;;                        (get-buffer-create "decoded"))
