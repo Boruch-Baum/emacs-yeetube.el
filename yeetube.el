@@ -131,17 +131,23 @@ It's recommended you keep it as the default value."
 (defun yeetube-toggle-video-mpv ()
   "Toggle video on/off for mpv player."
   (interactive)
-  (when yeetube-player
-    (setq yeetube-player
-	  (if (equal yeetube-player "mpv --input-ipc-server=/tmp/mpvsocket")
-	      "mpv --no-video --input-ipc-server=/tmp/mpvsocket"
-	    "mpv --input-ipc-server=/tmp/mpvsocket"))))
+  (if yeetube-player
+      (setq yeetube-player
+	    (if (equal yeetube-player "mpv --input-ipc-server=/tmp/mpvsocket")
+		"mpv --no-video --input-ipc-server=/tmp/mpvsocket"
+	      "mpv --input-ipc-server=/tmp/mpvsocket"))
+    (error "To use this function you need to have mpv installed and & set yeetube-player to the default value")))
 
 (defun yeetube-toggle-pause-mpv ()
   "Play/Pause mpv."
   (interactive)
-  (when yeetube-player
-    (shell-command "echo '{ \"command\": [\"cycle\", \"pause\"] }' | socat - /tmp/mpvsocket")))
+  (if
+      (or (equal yeetube-player "mpv --input-ipc-server=/tmp/mpvsocket")
+	  (equal yeetube-player "mpv --no-video --input-ipc-server=/tmp/mpvsocket"))
+      (progn
+	(shell-command "echo '{ \"command\": [\"cycle\", \"pause\"] }' | socat - /tmp/mpvsocket")
+	(message "mpv play/pause"))
+    (error "To use this function you need to have mpv installed & set yeetube-player to the default value")))
 
 ;; we should use something like
 ;; (decode-coding-region (point-min) (point-max) 'utf-8
@@ -186,9 +192,15 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
       (goto-char (point-min))
       (toggle-enable-multibyte-characters)
       (while (< (length video-ids) yeetube-results-limit)
-	(if is-youtube?
+	(condition-case err
+	    (if is-youtube?
 	    (search-forward "videoId")
-	  (search-forward "watch?v"))
+	    (search-forward "watch?v"))
+	  (error
+	   (display-warning 'yeetube
+			    (format
+			     "Unable to find enough results, reduce yeetube-results-limit (%s)"
+			     (error-message-string err)))))
         (let* ((start (point))
                (end (if is-youtube?
 			(search-forward ",")
