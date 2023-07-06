@@ -132,6 +132,13 @@ It's recommended you keep it as the default value."
 	  (if (equal yeetube-player "mpv --input-ipc-server=/tmp/mpvsocket")
 	      "mpv --no-video --input-ipc-server=/tmp/mpvsocket"
 	    "mpv --input-ipc-server=/tmp/mpvsocket"))))
+
+(defun yeetube-toggle-pause-mpv ()
+  "Play/Pause mpv."
+  (interactive)
+  (when yeetube-player
+    (shell-command "echo '{ \"command\": [\"cycle\", \"pause\"] }' | socat - /tmp/mpvsocket")))
+
 ;; we should use something like
 ;; (decode-coding-region (point-min) (point-max) 'utf-8
 ;;                        (get-buffer-create "decoded"))
