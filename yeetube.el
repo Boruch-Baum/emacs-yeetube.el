@@ -150,8 +150,9 @@ It's recommended you keep it as the default value."
 ;; this is a quick "duck-tape" fix.
 (defun yeetube-fix-title (title)
   "Adjust TITLE."
-  (replace-regexp-in-string "&#39;" "'"
-			    (replace-regexp-in-string "&quot;" "\"" title)))
+  (replace-regexp-in-string "&amp;" "&"
+			    (replace-regexp-in-string "&quot;" "\""
+						      (replace-regexp-in-string "&#39;" "'" title))))
 
 (defun yeetube-insert-content (prefix url video-titles video-ids)
   "Insert video links with titles into the buffer.
