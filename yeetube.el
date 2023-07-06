@@ -154,55 +154,60 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
 (defun yeetube-search (query)
   "Search for QUERY."
   (interactive "sYeetube Search: ")
-  (let ((videoIds '())
-        (videoTitles '()))
+  (let ((video-ids '())
+        (video-titles '())
+	(is-youtube? (yeetube-check-if-youtube query)))
     (with-current-buffer
-	(url-retrieve-synchronously (concat yeetube-query-url
-					    "/search?q="
-					    (replace-regexp-in-string " " "+" query))
-				    t t)
+	(url-retrieve-synchronously
+	 (concat yeetube-query-url
+		 "/search?q="
+		 (replace-regexp-in-string " " "+" query))
+	 t t)
       (goto-char (point-min))
       (toggle-enable-multibyte-characters)
-      (while (< (length videoIds) yeetube-results-limit)
-	(if (yeetube-check-if-youtube yeetube-query-url)
+      (while (< (length video-ids) yeetube-results-limit)
+	(if is-youtube?
 	    (search-forward "videoId")
 	  (search-forward "watch?v"))
         (let* ((start (point))
-               (end (if (yeetube-check-if-youtube yeetube-query-url)
+               (end (if is-youtube?
 			(search-forward ",")
 		      (search-forward ">")))
-               (videoid (buffer-substring (if (yeetube-check-if-youtube yeetube-query-url)
-					      (+ start 3)
-					    (+ start 1))
-					  ;; Yeah they are the same in both cases,
-					  ;; /but/ if we start adding more sites
-					  ;; it will be easier to use something like pcase afterwards
-					  (if (yeetube-check-if-youtube yeetube-query-url)
-					      (- end 2)
-					    (- end 2)))))
-          (unless (or (member videoid videoIds)
+               (videoid (buffer-substring
+			 (if is-youtube?
+			     (+ start 3)
+			   (+ start 1))
+			 ;; They are the same in both cases,
+			 ;; /but/ for debugging/adding more sites
+			 ;; it's easier this way.
+			 (if is-youtube?
+			     (- end 2)
+			   (- end 2)))))
+          (unless (or (member videoid video-ids)
                       (not (and (>= (length videoid) 9)
                                 (<= (length videoid) 13)
                                 (string-match-p "^[a-zA-Z0-9_-]*$" videoid))))
-            (push videoid videoIds)
-            (if (yeetube-check-if-youtube yeetube-query-url)
+            (push videoid video-ids)
+            (if is-youtube?
 		(search-forward "text")
 	      (search-forward "\"auto\">"))
             (let* ((start (point))
-                   (end (if (yeetube-check-if-youtube yeetube-query-url)
+                   (end (if is-youtube?
 			    (search-forward ",\"")
 			  (search-forward ">")))
-                   (title (buffer-substring (if (yeetube-check-if-youtube yeetube-query-url)
-						(+ start 3)
-					      (+ start 0))
-					    (if (yeetube-check-if-youtube yeetube-query-url)
-						(- end 5)
-					      (- end 4)))))
+                   (title (buffer-substring
+			   (if is-youtube?
+			       (+ start 3)
+			     (+ start 0))
+			   (if is-youtube?
+			       (- end 5)
+			     (- end 4)))))
 	      (if (string-match-p "vssLoggingContext" title)
-		  (pop videoIds)
-		(push title videoTitles)))))))
-    (with-current-buffer (switch-to-buffer
-                          (get-buffer-create "*Yeetube Search*"))
+		  (pop video-ids)
+		(push title video-titles)))))))
+    (with-current-buffer
+	(switch-to-buffer
+         (get-buffer-create "*Yeetube Search*"))
       (setq buffer-read-only nil)
       (erase-buffer)
       (org-mode)
@@ -210,8 +215,8 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
        (format "searching: %s\nfor: %s \n* Search Results: \n \n" yeetube-query-url query))
       (yeetube-insert-content
        yeetube-results-prefix yeetube-query-url
-       videoTitles videoIds)
-      (yeetube-info)
+       video-titles video-ids)
+      (yeetube-insert-info)
       (setq buffer-read-only t)
       (goto-char (point-min))
       (search-forward yeetube-results-prefix)
