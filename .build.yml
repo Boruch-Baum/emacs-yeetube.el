@@ -1,0 +1,13 @@
+image: debian/testing
+packages:
+  - emacs
+sources:
+  - https://git.sr.ht/~thanosapollo/yeetube.el
+tasks:
+  - run-tests: |
+      cd yeetube.el/test
+      emacs -q -batch -l yeetube-tests.el
+triggers:
+  - action: email
+    condition: success
+    to: ~thanosapollo/yeetube-tests@lists.sr.ht
