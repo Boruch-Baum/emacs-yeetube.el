@@ -177,12 +177,13 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
 			      prefix url video-id
 			      (yeetube-fix-title video-title)))))
 
+
 (defun yeetube-search (query)
   "Search for QUERY."
   (interactive "sYeetube Search: ")
   (let ((video-ids '())
         (video-titles '())
-	(is-youtube? (yeetube-check-if-youtube query)))
+	(is-youtube? (yeetube-check-if-youtube yeetube-query-url)))
     (with-current-buffer
 	(url-retrieve-synchronously
 	 (concat yeetube-query-url
