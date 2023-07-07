@@ -11,7 +11,7 @@ Search for videos, download them, or just play them using your favorite multimed
 
 ## Installation 
 
-- Download the latest tar-archive or cloe the repo 
+- Download the latest tar-archive or clone the repo 
 
 ``` shell
 git clone https://git.sr.ht/~thanosapollo/yeetube.el
