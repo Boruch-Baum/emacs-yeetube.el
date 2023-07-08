@@ -192,16 +192,10 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
 	 t t)
       (goto-char (point-min))
       (toggle-enable-multibyte-characters)
-      (while (< (length video-ids) yeetube-results-limit)
-	(condition-case err
-	    (if is-youtube?
-		(search-forward "videoId")
-	      (search-forward "watch?v"))
-	  (error
-	   (display-warning 'yeetube
-			    (format
-			     "Unable to find enough results, reduce yeetube-results-limit (%s)"
-			     (error-message-string err)))))
+      (while (and (< (length video-ids) yeetube-results-limit)
+		  (if is-youtube?
+		      (search-forward "videoId" nil t)
+		    (search-forward "watch?v" nil t)))
         (let* ((start (point))
                (end (if is-youtube?
 			(search-forward ",")
