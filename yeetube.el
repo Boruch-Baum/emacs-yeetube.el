@@ -40,11 +40,8 @@
   :group 'external
   :prefix "yeetube-")
 
-(defcustom yeetube-results-limit 10
-  "Define the amount of search results.
-
-Note: If you are using an invidious instance, it's recommended to keep
-this < 13."
+(defcustom yeetube-results-limit 15
+  "Define a limit for search results."
   :type 'number
   :safe #'numberp
   :group 'yeetube)
