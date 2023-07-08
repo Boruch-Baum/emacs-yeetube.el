@@ -9,5 +9,5 @@ tasks:
       emacs -q -batch -l yeetube-tests.el
 triggers:
   - action: email
-    condition: success
+    condition: failure
     to: ~thanosapollo/yeetube-tests@lists.sr.ht
