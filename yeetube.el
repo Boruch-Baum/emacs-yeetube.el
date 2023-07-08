@@ -195,8 +195,8 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
       (while (< (length video-ids) yeetube-results-limit)
 	(condition-case err
 	    (if is-youtube?
-	    (search-forward "videoId")
-	    (search-forward "watch?v"))
+		(search-forward "videoId")
+	      (search-forward "watch?v"))
 	  (error
 	   (display-warning 'yeetube
 			    (format
