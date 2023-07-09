@@ -20,7 +20,7 @@ git clone https://git.sr.ht/~thanosapollo/yeetube.el
 - Load `yeetube.el`
 
 ``` emacs-lisp
-(load file "~/path/to/yeetube.el")
+(load-file "~/path/to/yeetube.el")
 ```
 
 
