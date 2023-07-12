@@ -27,5 +27,4 @@ git clone https://git.sr.ht/~thanosapollo/yeetube.el
 ## Contributing 
 
 - [Mailing list](https://lists.sr.ht/~thanosapollo/yeetube.el)
-  - Development takes places on `dev` branch
 - [Issue Tracker](https://todo.sr.ht/~thanosapollo/yeetube.el)
