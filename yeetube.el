@@ -105,6 +105,8 @@ It's recommended you keep it as the default value."
 	    (define-key yeetube-mode-map (kbd "v") 'yeetube-toggle-video-mpv)
             yeetube-mode-map))
 
+(defvar yeetube--currently-playing nil)
+
 (defun yeetube-check-if-youtube (url)
   "Check if URL contain youtube."
   (if (string-match-p "youtube" url)
@@ -123,7 +125,8 @@ It's recommended you keep it as the default value."
     (when (string-prefix-p "http" url)
       (call-process-shell-command
        (format "%s %s" yeetube-player url) nil 0)
-      (message "Opening with %s" yeetube-player))))
+      (message "Opening with %s" yeetube-player)))
+  (yeetube--get-title))
 
 (defun yeetube-toggle-video-mpv ()
   "Toggle video on/off for mpv player."
@@ -314,7 +317,8 @@ then run this command interactively."
    (format "\nDownload as audio format: %s" yeetube-download-audio-format)
    (if yeetube-player
        (format "\nYeetube Player: %s" yeetube-player)
-     (format "\nYeetube Player: mpv not found. /Set this value manually or install mpv/")))
+     (format "\nYeetube Player: mpv not found. /Set this value manually or install mpv/"))
+   (format "\nCurrently Playing: %s" yeetube--currently-playing))
   (when yeetube-display-info-keys
     (insert
      "\n\n*** Keybindings"
@@ -354,6 +358,21 @@ then run this command interactively."
   (when (string-suffix-p "/" yeetube-query-url)
     (setq yeetube-query-url (substring yeetube-query-url 0 -1))))
 
+(defun yeetube--get-title ()
+  "Get the title of the latest video/song played."
+  (interactive)
+  (push-mark)
+  (search-backward yeetube-results-prefix)
+  (set-mark-command nil)
+  (end-of-visual-line)
+  (let ((title-context (org-link--context-from-region)))
+    (setq yeetube--currently-playing
+	  (format " %s"
+		  (replace-regexp-in-string yeetube-results-prefix "" title-context))))
+  (pop-mark)
+  (goto-char (mark)))
+
+
 (defun yeetube-update-info (symbol-name new-value _operation _where)
   "Update information for SYMBOL-NAME with NEW-VALUE.
 
@@ -370,7 +389,8 @@ OPERATION & WHERE are required to work with 'add-variable-watcher."
 	     ('yeetube-player "Yeetube Player:")
 	     ('yeetube-download-directory "Download Directory:")
 	     ('yeetube-download-audio-format "Download as audio format:")
-	     ('yeetube-query-url "searching:")))
+	     ('yeetube-query-url "searching:")
+	     ('yeetube--currently-playing "Currently Playing:")))
 	  (buffer-cur (buffer-name)))
       (switch-to-buffer (get-buffer "*Yeetube Search*"))
       (setq-local buffer-read-only nil)
@@ -390,6 +410,7 @@ OPERATION & WHERE are required to work with 'add-variable-watcher."
 (add-variable-watcher 'yeetube-player #'yeetube-update-info)
 (add-variable-watcher 'yeetube-download-audio-format #'yeetube-update-info)
 (add-variable-watcher 'yeetube-query-url #'yeetube-update-info)
+(add-variable-watcher 'yeetube--currently-playing #'yeetube-update-info)
 
 (provide 'yeetube)
 ;;; yeetube.el ends here
