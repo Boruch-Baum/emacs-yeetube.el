@@ -177,6 +177,24 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
 			      prefix url video-id
 			      (yeetube-fix-title video-title)))))
 
+(defun yeetube--draw-buffer (query video-titles video-ids)
+  "Create *Yeetube-Search* buffer for QUERY, using VIDEO-TITLES with VIDEO-IDS."
+  (with-current-buffer
+      (switch-to-buffer
+       (get-buffer-create "*Yeetube Search*"))
+    (setq buffer-read-only nil)
+    (erase-buffer)
+    (org-mode)
+    (insert
+     (format "searching: %s\nfor: %s \n* Search Results: \n \n" yeetube-query-url query))
+    (yeetube-insert-content
+     yeetube-results-prefix yeetube-query-url
+     video-titles video-ids)
+    (yeetube-insert-info)
+    (setq buffer-read-only t)
+    (goto-char (point-min))
+    (search-forward yeetube-results-prefix)
+    (yeetube-mode)))
 
 (defun yeetube-search (query)
   "Search for QUERY."
@@ -232,22 +250,7 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
 	      (if (string-match-p "vssLoggingContext" title)
 		  (pop video-ids)
 		(push title video-titles)))))))
-    (with-current-buffer
-	(switch-to-buffer
-         (get-buffer-create "*Yeetube Search*"))
-      (setq buffer-read-only nil)
-      (erase-buffer)
-      (org-mode)
-      (insert
-       (format "searching: %s\nfor: %s \n* Search Results: \n \n" yeetube-query-url query))
-      (yeetube-insert-content
-       yeetube-results-prefix yeetube-query-url
-       video-titles video-ids)
-      (yeetube-insert-info)
-      (setq buffer-read-only t)
-      (goto-char (point-min))
-      (search-forward yeetube-results-prefix)
-      (yeetube-mode))))
+    (yeetube--draw-buffer query video-titles video-ids)))
 
 (defun yeetube-download-video ()
   "Download using link at point in an `'org-mode buffer with yt-dlp."
