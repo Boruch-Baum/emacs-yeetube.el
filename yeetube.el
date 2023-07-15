@@ -74,8 +74,14 @@ Example Usage:
   :safe #'booleanp
   :group 'yeetube)
 
+(defcustom yeetube--mpv-socket "/tmp/mpvsocket"
+  "MPV Input Socket."
+  :type 'string
+  :safe #'stringp
+  :group 'yeetube)
 
-(defcustom yeetube-player (executable-find "mpv")
+(defcustom yeetube-player (concat
+			   (executable-find "mpv") " --input-ipc-server=" yeetube--mpv-socket)
   "Select default video player.
 
 It's recommended you keep it as the default value."
@@ -130,7 +136,7 @@ It's recommended you keep it as the default value."
 (defun yeetube-toggle-video-mpv ()
   "Toggle video on/off for mpv player."
   (interactive)
-  (let ((socket " --input-ipc-server=/tmp/mpvsocket")
+  (let ((socket (concat " --input-ipc-server=" yeetube--mpv-socket))
 	(no-video " --no-video")
 	(mpv (executable-find "mpv")))
     (setq yeetube-player
@@ -143,7 +149,7 @@ It's recommended you keep it as the default value."
   (interactive)
   (if (string-match "mpv" yeetube-player)
       (progn
-	(shell-command "echo '{ \"command\": [\"cycle\", \"pause\"] }' | socat - /tmp/mpvsocket")
+	(shell-command (concat "echo '{ \"command\": [\"cycle\", \"pause\"] }' | socat - " yeetube--mpv-socket))
 	(message "mpv play/pause"))
     (error "To use this function you need to have mpv installed & set yeetube-player to the default value")))
 
