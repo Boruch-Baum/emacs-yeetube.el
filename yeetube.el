@@ -110,23 +110,23 @@ It's recommended you keep it as the default value."
 	    (define-key yeetube-mode-map (kbd "v") 'yeetube-toggle-video-mpv)
             yeetube-mode-map))
 
+
 (defvar yeetube--currently-playing nil)
 
 (defun yeetube-check-if-youtube (url)
-  "Check if URL contain youtube."
+  "Check if it's a youtube URL."
   (if (string-match-p "youtube" url)
       t
     nil))
 
-;; ISSUE?: if user plays with --no-video flag
-;; openning a new url without --no-video flag
-;; will not kill previous session.
 (defun yeetube-play ()
   "Open the url at point in an `'org-mode buffer using 'yeetube-player'."
   (interactive)
   (let ((url (org-element-property
 	      :raw-link (org-element-context))))
-    (shell-command (format "pkill -9 -f %s" (shell-quote-argument yeetube-player)))
+    (if (string-match "mpv" yeetube-player)
+	(shell-command (format "pkill -9 -f mpv"))
+      (shell-command (format "pkill -9 -f %s" (shell-quote-argument yeetube-player))))
     (when (string-prefix-p "http" url)
       (call-process-shell-command
        (format "%s %s" yeetube-player url) nil 0)
