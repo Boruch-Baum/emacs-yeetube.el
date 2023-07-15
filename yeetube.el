@@ -75,8 +75,7 @@ Example Usage:
   :group 'yeetube)
 
 
-(defcustom yeetube-player (unless (eq (executable-find "mpv") nil)
-			    "mpv --input-ipc-server=/tmp/mpvsocket")
+(defcustom yeetube-player (executable-find "mpv")
   "Select default video player.
 
 It's recommended you keep it as the default value."
@@ -131,19 +130,18 @@ It's recommended you keep it as the default value."
 (defun yeetube-toggle-video-mpv ()
   "Toggle video on/off for mpv player."
   (interactive)
-  (if yeetube-player
-      (setq yeetube-player
-	    (if (equal yeetube-player "mpv --input-ipc-server=/tmp/mpvsocket")
-		"mpv --no-video --input-ipc-server=/tmp/mpvsocket"
-	      "mpv --input-ipc-server=/tmp/mpvsocket"))
-    (error "To use this function you need to have mpv installed and & set yeetube-player to the default value")))
+  (let ((socket " --input-ipc-server=/tmp/mpvsocket")
+	(no-video " --no-video")
+	(mpv (executable-find "mpv")))
+    (setq yeetube-player
+	  (if (string-match no-video yeetube-player)
+	      (concat mpv socket)
+	    (concat mpv no-video socket)))))
 
 (defun yeetube-toggle-pause-mpv ()
   "Play/Pause mpv."
   (interactive)
-  (if
-      (or (equal yeetube-player "mpv --input-ipc-server=/tmp/mpvsocket")
-	  (equal yeetube-player "mpv --no-video --input-ipc-server=/tmp/mpvsocket"))
+  (if (string-match "mpv" yeetube-player)
       (progn
 	(shell-command "echo '{ \"command\": [\"cycle\", \"pause\"] }' | socat - /tmp/mpvsocket")
 	(message "mpv play/pause"))
@@ -321,7 +319,7 @@ then run this command interactively."
    (if yeetube-player
        (format "\nYeetube Player: %s" yeetube-player)
      (format "\nYeetube Player: mpv not found. /Set this value manually or install mpv/"))
-   (format "\nCurrently Playing: %s" yeetube--currently-playing))
+   (format "\nLast Played: %s" yeetube--currently-playing))
   (when yeetube-display-info-keys
     (insert
      "\n\n*** Keybindings"
@@ -370,8 +368,9 @@ then run this command interactively."
   (end-of-visual-line)
   (let ((title-context (org-link--context-from-region)))
     (setq yeetube--currently-playing
-	  (format " %s"
+	  (format "%s"
 		  (replace-regexp-in-string yeetube-results-prefix "" title-context))))
+  (pop-mark)
   (pop-mark)
   (goto-char (mark)))
 
@@ -393,7 +392,7 @@ OPERATION & WHERE are required to work with 'add-variable-watcher."
 	     ('yeetube-download-directory "Download Directory:")
 	     ('yeetube-download-audio-format "Download as audio format:")
 	     ('yeetube-query-url "searching:")
-	     ('yeetube--currently-playing "Currently Playing:")))
+	     ('yeetube--currently-playing "Last Played:")))
 	  (buffer-cur (buffer-name)))
       (switch-to-buffer (get-buffer "*Yeetube Search*"))
       (setq-local buffer-read-only nil)
