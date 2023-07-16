@@ -265,12 +265,12 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
         (async-shell-command
          (if yeetube-download-audio-format
              (format "%s %s --extract-audio --audio-format %s"
-		     (shell-quote-argument yeetube--yt-dlp)
+                     (shell-quote-argument yeetube--yt-dlp)
                      (shell-quote-argument url)
                      (shell-quote-argument yeetube-download-audio-format))
            (format "%s %s"
-		   (shell-quote-argument yeetube--yt-dlp)
-		   (shell-quote-argument url)))
+                   (shell-quote-argument yeetube--yt-dlp)
+                   (shell-quote-argument url)))
          (message "Downloading %s " url))))))
 
 (defun yeetube-download-videos ()
@@ -309,12 +309,12 @@ then run this command interactively."
         (async-shell-command
          (if yeetube-download-audio-format
              (format "%s %s --extract-audio --audio-format %s -o %s"
-		     (shell-quote-argument yeetube--yt-dlp)
+                     (shell-quote-argument yeetube--yt-dlp)
                      (shell-quote-argument url)
                      (shell-quote-argument yeetube-download-audio-format)
                      (shell-quote-argument name))
            (format "%s %s -o %s"
-		   (shell-quote-argument yeetube--yt-dlp)
+                   (shell-quote-argument yeetube--yt-dlp)
                    (shell-quote-argument url)
                    (shell-quote-argument name)))
          buffer-name)
