@@ -78,7 +78,7 @@ Example Usage:
   "MPV Input Socket.")
 
 (defcustom yeetube-player (concat
-			   (executable-find "mpv") " --input-ipc-server=" yeetube-mpv-socket)
+                           (executable-find "mpv") " --input-ipc-server=" yeetube-mpv-socket)
   "Select default video player.
 
 It's recommended you keep it as the default value."
@@ -97,14 +97,14 @@ It's recommended you keep it as the default value."
   :init-value nil
   :lighter " yeetube-mode"
   :keymap (let ((yeetube-mode-map (make-sparse-keymap)))
-	    (define-key yeetube-mode-map (kbd "RET") 'yeetube-play)
-	    (define-key yeetube-mode-map (kbd "d") 'yeetube-download-video)
-	    (define-key yeetube-mode-map (kbd "u") 'yeetube-change-query-url)
-	    (define-key yeetube-mode-map (kbd "q") 'kill-current-buffer)
-	    (define-key yeetube-mode-map (kbd "D") 'yeetube-change-download-directory)
-	    (define-key yeetube-mode-map (kbd "a") 'yeetube-change-download-audio-format)
-	    (define-key yeetube-mode-map (kbd "p") 'yeetube-toggle-pause-mpv)
-	    (define-key yeetube-mode-map (kbd "v") 'yeetube-toggle-video-mpv)
+            (define-key yeetube-mode-map (kbd "RET") 'yeetube-play)
+            (define-key yeetube-mode-map (kbd "d") 'yeetube-download-video)
+            (define-key yeetube-mode-map (kbd "u") 'yeetube-change-query-url)
+            (define-key yeetube-mode-map (kbd "q") 'kill-current-buffer)
+            (define-key yeetube-mode-map (kbd "D") 'yeetube-change-download-directory)
+            (define-key yeetube-mode-map (kbd "a") 'yeetube-change-download-audio-format)
+            (define-key yeetube-mode-map (kbd "p") 'yeetube-toggle-pause-mpv)
+            (define-key yeetube-mode-map (kbd "v") 'yeetube-toggle-video-mpv)
             yeetube-mode-map))
 
 
@@ -120,9 +120,9 @@ It's recommended you keep it as the default value."
   "Open the url at point in an `'org-mode buffer using 'yeetube-player'."
   (interactive)
   (let ((url (org-element-property
-	      :raw-link (org-element-context))))
+              :raw-link (org-element-context))))
     (if (string-match "mpv" yeetube-player)
-	(shell-command (format "pkill -9 -f mpv"))
+        (shell-command (format "pkill -9 -f mpv"))
       (shell-command (format "pkill -9 -f %s" (shell-quote-argument yeetube-player))))
     (when (string-prefix-p "http" url)
       (call-process-shell-command
@@ -134,20 +134,20 @@ It's recommended you keep it as the default value."
   "Toggle video on/off for mpv player."
   (interactive)
   (let ((socket (concat " --input-ipc-server=" yeetube-mpv-socket))
-	(no-video " --no-video")
-	(mpv (executable-find "mpv")))
+        (no-video " --no-video")
+        (mpv (executable-find "mpv")))
     (setq yeetube-player
-	  (if (string-match no-video yeetube-player)
-	      (concat mpv socket)
-	    (concat mpv no-video socket)))))
+          (if (string-match no-video yeetube-player)
+              (concat mpv socket)
+            (concat mpv no-video socket)))))
 
 (defun yeetube-toggle-pause-mpv ()
   "Play/Pause mpv."
   (interactive)
   (if (string-match "mpv" yeetube-player)
       (progn
-	(shell-command (concat "echo '{ \"command\": [\"cycle\", \"pause\"] }' | socat - " yeetube-mpv-socket))
-	(message "mpv play/pause"))
+        (shell-command (concat "echo '{ \"command\": [\"cycle\", \"pause\"] }' | socat - " yeetube-mpv-socket))
+        (message "mpv play/pause"))
     (error "To use this function you need to have mpv installed & set yeetube-player to the default value")))
 
 ;; we should use something like
@@ -158,8 +158,8 @@ It's recommended you keep it as the default value."
 (defun yeetube-fix-title (title)
   "Adjust TITLE."
   (replace-regexp-in-string "&amp;" "&"
-			    (replace-regexp-in-string "&quot;" "\""
-						      (replace-regexp-in-string "&#39;" "'" title))))
+                            (replace-regexp-in-string "&quot;" "\""
+                                                      (replace-regexp-in-string "&#39;" "'" title))))
 
 (defun yeetube-insert-content (prefix url video-titles video-ids)
   "Insert video links with titles into the buffer.
@@ -173,10 +173,10 @@ Arguments:
 For each video ID and video title, inserts a link into the buffer in the format:
 PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
   (cl-loop for (video-id . video-title) in
-	   (cl-mapcar #'cons (reverse video-ids) (reverse video-titles))
+           (cl-mapcar #'cons (reverse video-ids) (reverse video-titles))
            do (insert (format "%s [[%s/watch?v=%s][%s ]]\n"
-			      prefix url video-id
-			      (yeetube-fix-title video-title)))))
+                              prefix url video-id
+                              (yeetube-fix-title video-title)))))
 
 (defun yeetube--draw-buffer (query video-titles video-ids)
   "Create *Yeetube-Search* buffer for QUERY, using VIDEO-TITLES with VIDEO-IDS."
@@ -202,71 +202,71 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
   (interactive "sYeetube Search: ")
   (let ((video-ids '())
         (video-titles '())
-	(is-youtube? (yeetube-check-if-youtube yeetube-query-url)))
+        (is-youtube? (yeetube-check-if-youtube yeetube-query-url)))
     (with-current-buffer
-	(url-retrieve-synchronously
-	 (concat yeetube-query-url
-		 "/search?q="
-		 (replace-regexp-in-string " " "+" query))
-	 t t)
+        (url-retrieve-synchronously
+         (concat yeetube-query-url
+                 "/search?q="
+                 (replace-regexp-in-string " " "+" query))
+         t t)
       (goto-char (point-min))
       (toggle-enable-multibyte-characters)
       (while (and (< (length video-ids) yeetube-results-limit)
-		  (if is-youtube?
-		      (search-forward "videoId" nil t)
-		    (search-forward "watch?v" nil t)))
+                  (if is-youtube?
+                      (search-forward "videoId" nil t)
+                    (search-forward "watch?v" nil t)))
         (let* ((start (point))
                (end (if is-youtube?
-			(search-forward ",")
-		      (search-forward ">")))
+                        (search-forward ",")
+                      (search-forward ">")))
                (videoid (buffer-substring
-			 (if is-youtube?
-			     (+ start 3)
-			   (+ start 1))
-			 ;; They are the same in both cases,
-			 ;; /but/ for debugging/adding more sites
-			 ;; it's easier this way.
-			 (if is-youtube?
-			     (- end 2)
-			   (- end 2)))))
+                         (if is-youtube?
+                             (+ start 3)
+                           (+ start 1))
+                         ;; They are the same in both cases,
+                         ;; /but/ for debugging/adding more sites
+                         ;; it's easier this way.
+                         (if is-youtube?
+                             (- end 2)
+                           (- end 2)))))
           (unless (or (member videoid video-ids)
                       (not (and (>= (length videoid) 9)
                                 (<= (length videoid) 13)
                                 (string-match-p "^[a-zA-Z0-9_-]*$" videoid))))
             (push videoid video-ids)
             (if is-youtube?
-		(search-forward "text")
-	      (search-forward "\"auto\">"))
+                (search-forward "text")
+              (search-forward "\"auto\">"))
             (let* ((start (point))
                    (end (if is-youtube?
-			    (search-forward ",\"")
-			  (search-forward ">")))
+                            (search-forward ",\"")
+                          (search-forward ">")))
                    (title (buffer-substring
-			   (if is-youtube?
-			       (+ start 3)
-			     (+ start 0))
-			   (if is-youtube?
-			       (- end 5)
-			     (- end 4)))))
-	      (if (string-match-p "vssLoggingContext" title)
-		  (pop video-ids)
-		(push title video-titles)))))))
+                           (if is-youtube?
+                               (+ start 3)
+                             (+ start 0))
+                           (if is-youtube?
+                               (- end 5)
+                             (- end 4)))))
+              (if (string-match-p "vssLoggingContext" title)
+                  (pop video-ids)
+                (push title video-titles)))))))
     (yeetube--draw-buffer query video-titles video-ids)))
 
 (defun yeetube-download-video ()
   "Download using link at point in an `'org-mode buffer with yt-dlp."
   (interactive)
   (let ((url (org-element-property
-	      :raw-link (org-element-context))))
+              :raw-link (org-element-context))))
     (when (string-prefix-p "http" url)
       (let ((default-directory yeetube-download-directory))
-	(async-shell-command
-	 (if yeetube-download-audio-format
-	     (format "yt-dlp %s --extract-audio --audio-format %s"
-		     (shell-quote-argument url)
-		     (shell-quote-argument yeetube-download-audio-format))
-	   (format "yt-dlp %s" (shell-quote-argument url)))
-	 (message "Downloading %s " url))))))
+        (async-shell-command
+         (if yeetube-download-audio-format
+             (format "yt-dlp %s --extract-audio --audio-format %s"
+                     (shell-quote-argument url)
+                     (shell-quote-argument yeetube-download-audio-format))
+           (format "yt-dlp %s" (shell-quote-argument url)))
+         (message "Downloading %s " url))))))
 
 (defun yeetube-download-videos ()
   "Download one or multiple videos using yt-dlp.
@@ -302,15 +302,15 @@ then run this command interactively."
             (name (cdr pair))
             (buffer-name (format "download-video-%d" buffer-counter)))
         (async-shell-command
-	 (if yeetube-download-audio-format
-	     (format "yt-dlp %s --extract-audio --audio-format %s -o %s"
-		     (shell-quote-argument url)
-		     (shell-quote-argument yeetube-download-audio-format)
-		     (shell-quote-argument name))
-	   (format "yt-dlp %s -o %s"
-		   (shell-quote-argument url)
-		   (shell-quote-argument name)))
-	 buffer-name)
+         (if yeetube-download-audio-format
+             (format "yt-dlp %s --extract-audio --audio-format %s -o %s"
+                     (shell-quote-argument url)
+                     (shell-quote-argument yeetube-download-audio-format)
+                     (shell-quote-argument name))
+           (format "yt-dlp %s -o %s"
+                   (shell-quote-argument url)
+                   (shell-quote-argument name)))
+         buffer-name)
         (setq buffer-counter (1+ buffer-counter))))))
 
 (defun yeetube-insert-info ()
@@ -341,7 +341,7 @@ then run this command interactively."
   "Change download directory."
   (interactive)
   (setq yeetube-download-directory
-	(read-directory-name "Select a directory: ")))
+        (read-directory-name "Select a directory: ")))
 
 (defun yeetube-change-download-audio-format (format)
   "Change download format to audio FORMAT."
@@ -357,7 +357,7 @@ then run this command interactively."
   (when (string-prefix-p "localhost" yeetube-query-url)
     (setq yeetube-query-url (concat "http://localhost:" (read-string "Port: "))))
   (unless (or (string-prefix-p "http://" yeetube-query-url)
-	      (string-prefix-p "https://" yeetube-query-url))
+              (string-prefix-p "https://" yeetube-query-url))
     (setq yeetube-query-url (concat "https://" yeetube-query-url)))
   (when (string-suffix-p "/" yeetube-query-url)
     (setq yeetube-query-url (substring yeetube-query-url 0 -1))))
@@ -371,8 +371,8 @@ then run this command interactively."
   (end-of-visual-line)
   (let ((title-context (org-link--context-from-region)))
     (setq yeetube--currently-playing
-	  (format "%s"
-		  (replace-regexp-in-string yeetube-results-prefix "" title-context))))
+          (format "%s"
+                  (replace-regexp-in-string yeetube-results-prefix "" title-context))))
   (pop-mark)
   (pop-mark)
   (goto-char (mark)))
@@ -390,13 +390,13 @@ OPERATION & WHERE are required to work with 'add-variable-watcher."
   (when (get-buffer "*Yeetube Search*")
     (push-mark)
     (let ((to-change
-	   (pcase symbol-name
-	     ('yeetube-player "Yeetube Player:")
-	     ('yeetube-download-directory "Download Directory:")
-	     ('yeetube-download-audio-format "Download as audio format:")
-	     ('yeetube-query-url "searching:")
-	     ('yeetube--currently-playing "Last Played:")))
-	  (buffer-cur (buffer-name)))
+           (pcase symbol-name
+             ('yeetube-player "Yeetube Player:")
+             ('yeetube-download-directory "Download Directory:")
+             ('yeetube-download-audio-format "Download as audio format:")
+             ('yeetube-query-url "searching:")
+             ('yeetube--currently-playing "Last Played:")))
+          (buffer-cur (buffer-name)))
       (switch-to-buffer (get-buffer "*Yeetube Search*"))
       (setq-local buffer-read-only nil)
       (goto-char (point-min))
