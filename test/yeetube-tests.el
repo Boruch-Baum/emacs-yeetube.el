@@ -1,31 +1,21 @@
-;;; yeetube-tests.el --- tests for yeetube.el        -*- lexical-binding: t; -*-
-
-;; Copyright (C) 2023  Thanos Apollo
-
-;; Author: Thanos Apollo <thanosapollo@proton.me>
-;; Keywords: 
-
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-;;; Commentary:
-
-;; 
-
 ;;; Code:
-(require 'ert)
 (load-file "../yeetube.el")
+
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+			 ("elpa" . "https://elpa.gnu.org/packages/")
+			 ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+(package-initialize)
+
+(unless package-archive-contents
+  (package-refresh-contents))
+
+(require 'ert)
 (require 'yeetube)
+
+
+(package-install 'package-lint)
+(require 'package-lint)
+
 
 (ert-deftest test-is-youtube? ()
   (should (equal (yeetube-check-if-youtube "youtube.com") t))
@@ -37,6 +27,9 @@
   (yeetube-change-download-audio-format "m4a")
   (should (equal yeetube-download-audio-format "m4a")))
 
+(ert-deftest test-package-lint ()
+  (let ((package-lint-errors (package-lint-buffer (find-file-noselect "../yeetube.el"))))
+    (should (equal package-lint-errors nil))))
 
 (ert-run-tests-batch-and-exit)
 
