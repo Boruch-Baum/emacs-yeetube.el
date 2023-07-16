@@ -74,14 +74,11 @@ Example Usage:
   :safe #'booleanp
   :group 'yeetube)
 
-(defcustom yeetube--mpv-socket "/tmp/mpvsocket"
-  "MPV Input Socket."
-  :type 'string
-  :safe #'stringp
-  :group 'yeetube)
+(defvar yeetube-mpv-socket (concat temporary-file-directory "yeet-socket")
+  "MPV Input Socket.")
 
 (defcustom yeetube-player (concat
-			   (executable-find "mpv") " --input-ipc-server=" yeetube--mpv-socket)
+			   (executable-find "mpv") " --input-ipc-server=" yeetube-mpv-socket)
   "Select default video player.
 
 It's recommended you keep it as the default value."
@@ -136,7 +133,7 @@ It's recommended you keep it as the default value."
 (defun yeetube-toggle-video-mpv ()
   "Toggle video on/off for mpv player."
   (interactive)
-  (let ((socket (concat " --input-ipc-server=" yeetube--mpv-socket))
+  (let ((socket (concat " --input-ipc-server=" yeetube-mpv-socket))
 	(no-video " --no-video")
 	(mpv (executable-find "mpv")))
     (setq yeetube-player
@@ -149,7 +146,7 @@ It's recommended you keep it as the default value."
   (interactive)
   (if (string-match "mpv" yeetube-player)
       (progn
-	(shell-command (concat "echo '{ \"command\": [\"cycle\", \"pause\"] }' | socat - " yeetube--mpv-socket))
+	(shell-command (concat "echo '{ \"command\": [\"cycle\", \"pause\"] }' | socat - " yeetube-mpv-socket))
 	(message "mpv play/pause"))
     (error "To use this function you need to have mpv installed & set yeetube-player to the default value")))
 
