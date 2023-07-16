@@ -110,6 +110,8 @@ It's recommended you keep it as the default value."
 
 (defvar yeetube--currently-playing nil)
 
+(defvar yeetube--yt-dlp (executable-find "yt-dlp"))
+
 (defun yeetube-check-if-youtube (url)
   "Check if it's a youtube URL."
   (if (string-match-p "youtube" url)
@@ -262,10 +264,13 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
       (let ((default-directory yeetube-download-directory))
         (async-shell-command
          (if yeetube-download-audio-format
-             (format "yt-dlp %s --extract-audio --audio-format %s"
+             (format "%s %s --extract-audio --audio-format %s"
+		     (shell-quote-argument yeetube--yt-dlp)
                      (shell-quote-argument url)
                      (shell-quote-argument yeetube-download-audio-format))
-           (format "yt-dlp %s" (shell-quote-argument url)))
+           (format "%s %s"
+		   (shell-quote-argument yeetube--yt-dlp)
+		   (shell-quote-argument url)))
          (message "Downloading %s " url))))))
 
 (defun yeetube-download-videos ()
@@ -303,11 +308,13 @@ then run this command interactively."
             (buffer-name (format "download-video-%d" buffer-counter)))
         (async-shell-command
          (if yeetube-download-audio-format
-             (format "yt-dlp %s --extract-audio --audio-format %s -o %s"
+             (format "%s %s --extract-audio --audio-format %s -o %s"
+		     (shell-quote-argument yeetube--yt-dlp)
                      (shell-quote-argument url)
                      (shell-quote-argument yeetube-download-audio-format)
                      (shell-quote-argument name))
-           (format "yt-dlp %s -o %s"
+           (format "%s %s -o %s"
+		   (shell-quote-argument yeetube--yt-dlp)
                    (shell-quote-argument url)
                    (shell-quote-argument name)))
          buffer-name)
