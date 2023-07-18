@@ -199,6 +199,7 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
     (search-forward yeetube-results-prefix)
     (yeetube-mode)))
 
+
 (defun yeetube-search (query)
   "Search for QUERY."
   (interactive "sYeetube Search: ")
@@ -225,9 +226,6 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
                          (if is-youtube?
                              (+ start 3)
                            (+ start 1))
-                         ;; They are the same in both cases,
-                         ;; /but/ for debugging/adding more sites
-                         ;; it's easier this way.
                          (if is-youtube?
                              (- end 2)
                            (- end 2)))))
