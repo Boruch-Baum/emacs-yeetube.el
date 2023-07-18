@@ -119,7 +119,7 @@ It's recommended you keep it as the default value."
     nil))
 
 (defun yeetube-play ()
-  "Open the url at point in an `'org-mode buffer using 'yeetube-player'."
+  "Open the url at point in an `'org-mode buffer using ='yeetube-player'."
   (interactive)
   (let ((url (org-element-property
               :raw-link (org-element-context))))
@@ -200,58 +200,79 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
     (yeetube-mode)))
 
 
+(defvar yeetube--video-ids '())
+(defvar yeetube--video-titles '())
+
 (defun yeetube-search (query)
   "Search for QUERY."
   (interactive "sYeetube Search: ")
-  (let ((video-ids '())
-        (video-titles '())
-        (is-youtube? (yeetube-check-if-youtube yeetube-query-url)))
+  (let ((is-youtube? (yeetube-check-if-youtube yeetube-query-url)))
     (with-current-buffer
-        (url-retrieve-synchronously
-         (concat yeetube-query-url
-                 "/search?q="
-                 (replace-regexp-in-string " " "+" query))
-         t t)
+	(url-retrieve-synchronously
+	 (concat yeetube-query-url
+		 "/search?q="
+		 (replace-regexp-in-string " " "+" query))
+	 t t)
       (goto-char (point-min))
       (toggle-enable-multibyte-characters)
-      (while (and (< (length video-ids) yeetube-results-limit)
-                  (if is-youtube?
-                      (search-forward "videoId" nil t)
-                    (search-forward "watch?v" nil t)))
+      (if is-youtube?
+	  (yeetube--get-content-youtube)
+	(yeetube--get-content-invidious))
+      (yeetube--draw-buffer query yeetube--video-titles yeetube--video-ids))))
+
+
+(defun yeetube--get-content-youtube ()
+  "Get content from youtube."
+  (setq yeetube--video-ids nil)
+  (setq yeetube--video-titles nil)
+  (while (and (< (length yeetube--video-ids) yeetube-results-limit)
+              (search-forward "videoId" nil t))
+    (let* ((start (point))
+           (end (search-forward ","))
+           (videoid (buffer-substring
+                     (+ start 3)
+                     (- end 2))))
+      (unless (or (member videoid yeetube--video-ids)
+                  (not (and (>= (length videoid) 9)
+                            (<= (length videoid) 13)
+                            (string-match-p "^[a-zA-Z0-9_-]*$" videoid))))
+        (push videoid yeetube--video-ids)
+        (search-forward "text")
         (let* ((start (point))
-               (end (if is-youtube?
-                        (search-forward ",")
-                      (search-forward ">")))
-               (videoid (buffer-substring
-                         (if is-youtube?
-                             (+ start 3)
-                           (+ start 1))
-                         (if is-youtube?
-                             (- end 2)
-                           (- end 2)))))
-          (unless (or (member videoid video-ids)
-                      (not (and (>= (length videoid) 9)
-                                (<= (length videoid) 13)
-                                (string-match-p "^[a-zA-Z0-9_-]*$" videoid))))
-            (push videoid video-ids)
-            (if is-youtube?
-                (search-forward "text")
-              (search-forward "\"auto\">"))
-            (let* ((start (point))
-                   (end (if is-youtube?
-                            (search-forward ",\"")
-                          (search-forward ">")))
-                   (title (buffer-substring
-                           (if is-youtube?
-                               (+ start 3)
-                             (+ start 0))
-                           (if is-youtube?
-                               (- end 5)
-                             (- end 4)))))
-              (if (string-match-p "vssLoggingContext" title)
-                  (pop video-ids)
-                (push title video-titles)))))))
-    (yeetube--draw-buffer query video-titles video-ids)))
+               (end (search-forward ",\""))
+               (title (buffer-substring
+                       (+ start 3)
+                       (- end 5))))
+          (if (string-match-p "vssLoggingContext" title)
+              (pop yeetube--video-ids)
+            (push title yeetube--video-titles)))))))
+
+(defun yeetube--get-content-invidious ()
+  "Get content from an invidious instance."
+  (setq yeetube--video-ids nil)
+  (setq yeetube--video-titles nil)
+  (while (and (< (length yeetube--video-ids) yeetube-results-limit)
+              (search-forward "watch?v" nil t))
+    (let* ((start (point))
+           (end (search-forward ">"))
+           (videoid (buffer-substring
+                     (+ start 1)
+                     (- end 2))))
+      (unless (or (member videoid yeetube--video-ids)
+                  (not (and (>= (length videoid) 9)
+                            (<= (length videoid) 13)
+                            (string-match-p "^[a-zA-Z0-9_-]*$" videoid))))
+        (push videoid yeetube--video-ids)
+        (search-forward "\"auto\">")
+        (let* ((start (point))
+               (end (search-forward ">"))
+               (title (buffer-substring
+                       (+ start 0)
+                       (- end 4))))
+          (if (string-match-p "vssLoggingContext" title)
+              (pop yeetube--video-ids)
+            (push title yeetube--video-titles)))))))
+
 
 (defun yeetube-download-video ()
   "Download using link at point in an `'org-mode buffer with yt-dlp."
@@ -391,7 +412,7 @@ NEW-VALUE is the new value for the symbol.
 OPERATION is the operation to perform (e.g., insert or replace).
 WHERE indicates where in the buffer the update should happen.
 
-OPERATION & WHERE are required to work with 'add-variable-watcher."
+OPERATION & WHERE are required to work with ='add-variable-watcher."
   (when (get-buffer "*Yeetube Search*")
     (push-mark)
     (let ((to-change
