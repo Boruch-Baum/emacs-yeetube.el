@@ -9,7 +9,6 @@ Search for videos, download them, or just play them using your favorite multimed
 
 *All without leaving Emacs*
 
-[Demo Video](https://www.youtube.com/watch?v=PImtR8QJhzU)
 
 ## Installation 
 You can install it via [MELPA](https://melpa.org/#/yeetube)
