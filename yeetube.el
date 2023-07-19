@@ -159,10 +159,6 @@ It's recommended you keep it as the default value."
         (message "mpv play/pause"))
     (error "To use this function you need to have mpv installed & set yeetube-player to the default value")))
 
-;; we should use something like
-;; (decode-coding-region (point-min) (point-max) 'utf-8
-;;                        (get-buffer-create "decoded"))
-;; in yeetube-search to make sure titles are always correct
 ;; this is a quick "duck-tape" fix.
 (defun yeetube-fix-title (title)
   "Adjust TITLE."
@@ -216,6 +212,7 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
 		 "/search?q="
 		 (replace-regexp-in-string " " "+" query))
 	 t t)
+      (decode-coding-region (point-min) (point-max) 'utf-8)
       (goto-char (point-min))
       (toggle-enable-multibyte-characters)
       (if is-youtube?
