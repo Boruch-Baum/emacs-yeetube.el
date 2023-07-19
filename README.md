@@ -30,4 +30,4 @@ git clone https://git.sr.ht/~thanosapollo/yeetube.el
 ## Contributing 
 
 - [Mailing list](https://lists.sr.ht/~thanosapollo/yeetube.el)
-- [Issue Tracker](https://todo.sr.ht/~thanosapollo/yeetube.el)
+- [Tickets](https://todo.sr.ht/~thanosapollo/yeetube.el)
