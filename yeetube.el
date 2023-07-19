@@ -115,6 +115,10 @@ It's recommended you keep it as the default value."
 
 (defvar yeetube--yt-dlp (executable-find "yt-dlp"))
 
+(defvar yeetube--video-ids '())
+
+(defvar yeetube--video-titles '())
+
 (defun yeetube-check-if-youtube (url)
   "Check if it's a youtube URL."
   (if (string-match-p "youtube" url)
@@ -183,7 +187,7 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
                               prefix url video-id
                               (yeetube-fix-title video-title)))))
 
-(defun yeetube--draw-buffer (query video-titles video-ids)
+(defun yeetube-create-buffer (query video-titles video-ids)
   "Create *Yeetube-Search* buffer for QUERY, using VIDEO-TITLES with VIDEO-IDS."
   (with-current-buffer
       (switch-to-buffer
@@ -202,10 +206,6 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
     (search-forward yeetube-results-prefix)
     (yeetube-mode)))
 
-
-(defvar yeetube--video-ids '())
-(defvar yeetube--video-titles '())
-
 (defun yeetube-search (query)
   "Search for QUERY."
   (interactive "sYeetube Search: ")
@@ -221,7 +221,7 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
       (if is-youtube?
 	  (yeetube--get-content-youtube)
 	(yeetube--get-content-invidious))
-      (yeetube--draw-buffer query yeetube--video-titles yeetube--video-ids))))
+      (yeetube-create-buffer query yeetube--video-titles yeetube--video-ids))))
 
 
 (defun yeetube--get-content-youtube ()
@@ -393,7 +393,6 @@ then run this command interactively."
 
 (defun yeetube--get-title ()
   "Get the title of the latest video/song played."
-  (interactive)
   (push-mark)
   (search-backward yeetube-results-prefix)
   (set-mark-command nil)
