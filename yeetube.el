@@ -74,8 +74,11 @@ Example Usage:
   :safe #'booleanp
   :group 'yeetube)
 
-(defvar yeetube-mpv-socket (concat temporary-file-directory "yeet-socket")
-  "MPV Input Socket.")
+(defcustom yeetube-mpv-socket (concat temporary-file-directory "yeet-socket")
+  "MPV Input Socket."
+  :type 'string
+  :safe #'stringp
+  :group 'yeetube)
 
 (defcustom yeetube-player (concat
                            (executable-find "mpv") " --input-ipc-server=" yeetube-mpv-socket)
