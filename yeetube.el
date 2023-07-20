@@ -159,12 +159,18 @@ It's recommended you keep it as the default value."
         (message "mpv play/pause"))
     (error "To use this function you need to have mpv installed & set yeetube-player to the default value")))
 
-;; this is a quick "duck-tape" fix.
+;; Usually titles from youtube get messed up,
+;; This should be fix some of the common issues.
 (defun yeetube-fix-title (title)
   "Adjust TITLE."
-  (replace-regexp-in-string "&amp;" "&"
-                            (replace-regexp-in-string "&quot;" "\""
-                                                      (replace-regexp-in-string "&#39;" "'" title))))
+  (let ((replacements '(("&amp;" . "&")
+                        ("&quot;" . "\"")
+                        ("&#39;" . "'")
+			("u0026" . "&"))))
+    (mapc (lambda (replacement)
+            (setq title (replace-regexp-in-string (car replacement) (cdr replacement) title)))
+          replacements)
+    title))
 
 (defun yeetube-insert-content (prefix url video-titles video-ids)
   "Insert video links with titles into the buffer.
