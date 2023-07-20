@@ -6,6 +6,8 @@
 ;; Keywords: extensions youtube videos invidious
 ;; URL: https://git.sr.ht/~thanosapollo/yeetube.el
 ;; Version: 1.3.3
+(defvar yeetube--version '1.3.3)
+
 ;; Package-Requires: ((emacs "27.2"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -439,6 +441,12 @@ OPERATION & WHERE are required to work with ='add-variable-watcher."
       (setq-local buffer-read-only t)
       (switch-to-buffer buffer-cur))
     (goto-char (mark))))
+
+
+(defun yeetube-version ()
+  "Show Yeetube Version."
+  (interactive)
+  (message "Yeetube Version: %s" yeetube--version))
 
 
 ;; Variable to watch
