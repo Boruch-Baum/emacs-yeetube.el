@@ -5,8 +5,8 @@
 ;; Author: Thanos Apollo <public@thanosapollo.com>
 ;; Keywords: extensions youtube videos invidious
 ;; URL: https://git.sr.ht/~thanosapollo/yeetube.el
-;; Version: 1.3.3
-(defvar yeetube--version '1.3.3)
+;; Version: 1.3.4
+(defvar yeetube--version '1.3.4)
 
 ;; Package-Requires: ((emacs "27.2"))
 
