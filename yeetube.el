@@ -138,8 +138,15 @@ It's recommended you keep it as the default value."
     (when (string-prefix-p "http" url)
       (call-process-shell-command
        (format "%s %s" yeetube-player url) nil 0)
-      (message "Opening with %s" yeetube-player)))
-  (yeetube--get-title))
+      (message "Opening with %s" yeetube-player))
+    (push url yeetube--history)))
+
+(defun yeetube-clear-history ( )
+  "Clear yeetube history."
+  (interactive)
+  (let ((clear-history (y-or-n-p "Delete history?")))
+    (when clear-history
+      (setq yeetube--history nil))))
 
 (defun yeetube-toggle-video-mpv ()
   "Toggle video on/off for mpv player."
