@@ -110,6 +110,8 @@ It's recommended you keep it as the default value."
             (define-key yeetube-mode-map (kbd "a") 'yeetube-change-download-audio-format)
             (define-key yeetube-mode-map (kbd "p") 'yeetube-toggle-pause-mpv)
             (define-key yeetube-mode-map (kbd "v") 'yeetube-toggle-video-mpv)
+	    (define-key yeetube-mode-map (kbd "s") 'yeetube-save-video)
+	    (define-key yeetube-mode-map (kbd "P") 'yeetube-play-saved-video)
             yeetube-mode-map))
 
 
@@ -405,7 +407,9 @@ then run this command interactively."
      "\n~D~       -> Change Download Directory\n"
      "\n~a~       -> Change Download (Audio) Format\n"
      "\n~u~       -> Change search URL (youtube.com, any invidious instance or localhost)\n"
-     "\n~q~       -> Quit\n")))
+     "\n~q~       -> Quit\n"
+     "\n~s~       -> Save video\n"
+     "\n~P~       -> Play Saved Video")))
 
 (defun yeetube-change-download-directory ()
   "Change download directory."
