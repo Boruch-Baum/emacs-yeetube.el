@@ -18,9 +18,9 @@
 
 
 (ert-deftest test-is-youtube? ()
-  (should (equal (yeetube-check-if-youtube "youtube.com") t))
-  (should (equal (yeetube-check-if-youtube "localhost") nil))
-  (should (equal (yeetube-check-if-youtube "yewtu.be") nil)))
+  (should (equal (yeetube-youtube-p "youtube.com") t))
+  (should (equal (yeetube-youtube-p "localhost") nil))
+  (should (equal (yeetube-youtube-p "yewtu.be") nil)))
 
 (ert-deftest test-download-audio-format ()
   (should (equal yeetube-download-audio-format nil))
