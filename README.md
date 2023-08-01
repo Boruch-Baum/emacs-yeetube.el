@@ -26,6 +26,11 @@ git clone https://git.sr.ht/~thanosapollo/yeetube.el
 (load-file "~/path/to/yeetube.el")
 ```
 
+- Make sure you have installed `mpv` and `yt-dlp` as well
+*Debian/Ubuntu*
+``` shell
+sudo apt install yt-dlp mpv
+```
 
 ## Contributing 
 

@@ -150,12 +150,14 @@ It's recommended you keep it as the default value."
 (defun yeetube-load-saved-videos ()
   "Load saved videos."
   (interactive)
-  (let ((file-path (concat user-emacs-directory "yeetube-saved")))
-    (with-temp-buffer
-      (insert-file-contents file-path)
-      (goto-char (point-min))
-      (let ((contents (read (current-buffer))))
-	(setq yeetube-saved-videos contents)))))
+  (let ((file-path (concat user-emacs-directory "yeetube")))
+    (if (file-exists-p file-path)
+	(with-temp-buffer
+	  (insert-file-contents file-path)
+	  (goto-char (point-min))
+	  (let ((contents (read (current-buffer))))
+	    (setq yeetube-saved-videos contents)))
+      (write-region "nil" nil file-path))))
 
 (defun yeetube-save-video ()
   "Save url at point."
@@ -473,8 +475,13 @@ OPERATION & WHERE are required to work with ='add-variable-watcher."
 	(goto-char (mark))))
 
 (defun yeetube-update-saved-videos-list (_symbol new-value _where _environment)
-  "Updated saved videos."
-  (with-temp-buffer (find-file (concat user-emacs-directory "yeetube-saved"))
+  "Updated saved videos.
+
+SYMBOL-NAME is the name of the symbol to update.
+NEW-VALUE is the new value for the symbol.
+OPERATION is the operation to perform (e.g., insert or replace).
+WHERE indicates where in the buffer the update should happen."
+  (with-temp-buffer (find-file (concat user-emacs-directory "yeetube"))
     (erase-buffer)
     (setq yeetube-saved-videos new-value)
     (insert (pp-to-string yeetube-saved-videos))
