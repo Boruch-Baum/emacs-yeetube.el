@@ -117,11 +117,14 @@ It's recommended you keep it as the default value."
 
 (defvar yeetube--yt-dlp (executable-find "yt-dlp"))
 
-(defvar yeetube--video-ids '())
+(defvar yeetube--video-ids nil)
 
-(defvar yeetube--video-titles '())
+(defvar yeetube--video-titles nil)
 
-(defun yeetube-check-if-youtube (url)
+(defvar yeetube-saved-videos nil)
+
+(defvar yeetube--last-played nil)
+
 (defun yeetube-youtube-p (url)
   "Check if it's a youtube URL."
   (if (string-match-p "youtube" url)
