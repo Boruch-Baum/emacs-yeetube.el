@@ -315,7 +315,7 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
               (pop yeetube--video-ids)
             (push title yeetube--video-titles)))))))
 
-
+;;;###autoload
 (defun yeetube-download-video ()
   "Download using link at point in an `'org-mode buffer with yt-dlp."
   (interactive)
@@ -334,6 +334,7 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
                    (shell-quote-argument url)))
          (message "Downloading %s " url))))))
 
+;;;###autoload
 (defun yeetube-download-videos ()
   "Download one or multiple videos using yt-dlp.
 
