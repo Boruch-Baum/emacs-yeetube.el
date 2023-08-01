@@ -122,6 +122,7 @@ It's recommended you keep it as the default value."
 (defvar yeetube--video-titles '())
 
 (defun yeetube-check-if-youtube (url)
+(defun yeetube-youtube-p (url)
   "Check if it's a youtube URL."
   (if (string-match-p "youtube" url)
       t
@@ -217,10 +218,11 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
     (search-forward yeetube-results-prefix)
     (yeetube-mode)))
 
+;;;###autoload
 (defun yeetube-search (query)
   "Search for QUERY."
   (interactive "sYeetube Search: ")
-  (let ((is-youtube? (yeetube-check-if-youtube yeetube-query-url)))
+  (let ((is-youtube? (yeetube-youtube-p yeetube-query-url)))
     (with-current-buffer
 	(url-retrieve-synchronously
 	 (concat yeetube-query-url
