@@ -400,10 +400,7 @@ then run this command interactively."
   (insert
    "\n\n** Info"
    (format "\nDownload Directory: %s" yeetube-download-directory)
-   (format "\nDownload as audio format: %s" yeetube-download-audio-format)
-   (if yeetube-player
-       (format "\nYeetube Player: %s" yeetube-player)
-     (format "\nYeetube Player: mpv not found. /Set this value manually or install mpv/")))
+   (format "\nDownload as audio format: %s" yeetube-download-audio-format))
   (when yeetube-display-info-keys
     (insert
      "\n\n*** Keybindings"
@@ -457,7 +454,6 @@ WHERE indicates where in the buffer the update should happen.
 OPERATION & WHERE are required to work with ='add-variable-watcher."
       (let ((to-change
 	     (pcase symbol-name
-	       ('yeetube-player "Yeetube Player:")
 	       ('yeetube-download-directory "Download Directory:")
 	       ('yeetube-download-audio-format "Download as audio format:")
 	       ('yeetube-query-url "searching:")))
@@ -492,7 +488,6 @@ OPERATION & WHERE are required to work with ='add-variable-watcher."
 
 ;; Variable to watch
 (add-variable-watcher 'yeetube-download-directory #'yeetube-update-info)
-(add-variable-watcher 'yeetube-player #'yeetube-update-info)
 (add-variable-watcher 'yeetube-download-audio-format #'yeetube-update-info)
 (add-variable-watcher 'yeetube-query-url #'yeetube-update-info)
 (add-variable-watcher 'yeetube-saved-videos #'yeetube-update-saved-videos-list)
