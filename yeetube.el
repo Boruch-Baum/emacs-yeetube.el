@@ -184,7 +184,8 @@ It's recommended you keep it as the default value."
     (setq yeetube-player
           (if (string-match no-video yeetube-player)
               (concat mpv socket)
-            (concat mpv no-video socket)))))
+            (concat mpv no-video socket)))
+    (message (format "Yeetube Player: %s" yeetube-player))))
 
 (defun yeetube-toggle-pause-mpv ()
   "Play/Pause mpv."
