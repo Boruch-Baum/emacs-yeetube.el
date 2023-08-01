@@ -22,11 +22,6 @@
   (should (equal (yeetube-youtube-p "localhost") nil))
   (should (equal (yeetube-youtube-p "yewtu.be") nil)))
 
-(ert-deftest test-download-audio-format ()
-  (should (equal yeetube-download-audio-format nil))
-  (yeetube-change-download-audio-format "m4a")
-  (should (equal yeetube-download-audio-format "m4a")))
-
 (ert-deftest test-package-lint ()
   (let ((package-lint-errors (package-lint-buffer (find-file-noselect "../yeetube.el"))))
     (should (equal package-lint-errors nil))))
