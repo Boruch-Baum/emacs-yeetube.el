@@ -153,6 +153,15 @@ It's recommended you keep it as the default value."
 	      :raw-link (org-element-context))))
     (push (cons name url) yeetube-saved-videos)))
 
+(defun yeetube-play-saved-video ()
+  "Select & Play a saved video."
+  (interactive)
+  (let ((video (completing-read "Select video: " yeetube-saved-videos nil t)))
+    (if (string-match "mpv" yeetube-player)
+        (shell-command (format "pkill -9 -f mpv"))
+      (shell-command (format "pkill -9 -f %s" (shell-quote-argument yeetube-player))))
+    (call-process-shell-command
+     (format "%s %s" yeetube-player (cdr (assoc video yeetube-saved-videos))) nil 0)))
 (defun yeetube-toggle-video-mpv ()
   "Toggle video on/off for mpv player."
   (interactive)
