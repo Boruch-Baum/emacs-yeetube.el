@@ -145,12 +145,13 @@ It's recommended you keep it as the default value."
       (message "Opening with %s" yeetube-player))
     (push url yeetube--history)))
 
-(defun yeetube-clear-history ( )
-  "Clear yeetube history."
+(defun yeetube-save-video ()
+  "Save url at point."
   (interactive)
-  (let ((clear-history (y-or-n-p "Delete history?")))
-    (when clear-history
-      (setq yeetube--history nil))))
+  (let ((name (read-string "Save as: "))
+	(url (org-element-property
+	      :raw-link (org-element-context))))
+    (push (cons name url) yeetube-saved-videos)))
 
 (defun yeetube-toggle-video-mpv ()
   "Toggle video on/off for mpv player."
