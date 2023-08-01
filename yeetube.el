@@ -147,9 +147,20 @@ It's recommended you keep it as the default value."
               :raw-link (org-element-context))))
     (yeetube-play-url url)))
 
+(defun yeetube-load-saved-videos ()
+  "Load saved videos."
+  (interactive)
+  (let ((file-path "~/.emacs.d/yeetube-saved"))
+    (with-temp-buffer
+      (insert-file-contents file-path)
+      (goto-char (point-min))
+      (let ((contents (read (current-buffer))))
+	(setq yeetube-saved-videos contents)))))
+
 (defun yeetube-save-video ()
   "Save url at point."
   (interactive)
+  (yeetube-load-saved-videos)
   (let ((name (read-string "Save as: "))
 	(url (org-element-property
 	      :raw-link (org-element-context))))
@@ -158,12 +169,14 @@ It's recommended you keep it as the default value."
 (defun yeetube-play-saved-video ()
   "Select & Play a saved video."
   (interactive)
+  (yeetube-load-saved-videos)
   (let ((video (completing-read "Select video: " yeetube-saved-videos nil t)))
     (yeetube-play-url (cdr (assoc video yeetube-saved-videos)))))
 
 (defun yeetube-remove-saved-video ()
   "Select video to remove from saved videos."
   (interactive)
+  (yeetube-load-saved-videos)
   (let ((video (completing-read "Select video: " yeetube-saved-videos nil t)))
     (setq yeetube-saved-videos (remove (assoc video yeetube-saved-videos) yeetube-saved-videos))))
 
@@ -442,39 +455,47 @@ OPERATION is the operation to perform (e.g., insert or replace).
 WHERE indicates where in the buffer the update should happen.
 
 OPERATION & WHERE are required to work with ='add-variable-watcher."
-  (when (get-buffer "*Yeetube Search*")
-    (push-mark)
-    (let ((to-change
-           (pcase symbol-name
-             ('yeetube-player "Yeetube Player:")
-             ('yeetube-download-directory "Download Directory:")
-             ('yeetube-download-audio-format "Download as audio format:")
-             ('yeetube-query-url "searching:")))
-          (buffer-cur (buffer-name)))
-      (switch-to-buffer (get-buffer "*Yeetube Search*"))
-      (setq-local buffer-read-only nil)
-      (goto-char (point-min))
-      (search-forward to-change)
-      (beginning-of-visual-line)
-      (kill-region (point) (line-end-position))
-      (insert
-       (format "%s %s" to-change new-value))
-      (setq-local buffer-read-only t)
-      (switch-to-buffer buffer-cur))
-    (goto-char (mark))))
+      (let ((to-change
+	     (pcase symbol-name
+	       ('yeetube-player "Yeetube Player:")
+	       ('yeetube-download-directory "Download Directory:")
+	       ('yeetube-download-audio-format "Download as audio format:")
+	       ('yeetube-query-url "searching:")))
+	    (buffer-cur (buffer-name)))
+	(when (get-buffer "*Yeetube Search*")
+	  (push-mark)
+	  (switch-to-buffer (get-buffer "*Yeetube Search*"))
+	  (setq buffer-read-only nil)
+	  (goto-char (point-min))
+	  (search-forward to-change)
+	  (beginning-of-visual-line)
+	  (kill-region (point) (line-end-position))
+	  (insert
+	   (format "%s %s" to-change new-value))
+	  (setq-local buffer-read-only t)
+	  (switch-to-buffer buffer-cur))
+	(goto-char (mark))))
 
+(defun yeetube-update-saved-videos-list (_symbol new-value _where _environment)
+  "Updated saved videos."
+  (with-temp-buffer (find-file "~/.emacs.d/yeetube-saved")
+    (erase-buffer)
+    (setq yeetube-saved-videos new-value)
+    (insert (pp-to-string yeetube-saved-videos))
+    (save-buffer)
+    (kill-buffer)))
 
 (defun yeetube-version ()
   "Show Yeetube Version."
   (interactive)
   (message "Yeetube Version: %s" yeetube--version))
 
-
 ;; Variable to watch
 (add-variable-watcher 'yeetube-download-directory #'yeetube-update-info)
 (add-variable-watcher 'yeetube-player #'yeetube-update-info)
 (add-variable-watcher 'yeetube-download-audio-format #'yeetube-update-info)
 (add-variable-watcher 'yeetube-query-url #'yeetube-update-info)
+(add-variable-watcher 'yeetube-saved-videos #'yeetube-update-saved-videos-list)
 
 (provide 'yeetube)
 ;;; yeetube.el ends here
