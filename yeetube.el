@@ -131,19 +131,22 @@ It's recommended you keep it as the default value."
       t
     nil))
 
+(defun yeetube-play-url (url)
+  "Open URL using yeetube-player."
+  (when (string-prefix-p "http" url)
+    (if (string-match "mpv" yeetube-player)
+        (shell-command (format "pkill -9 -f mpv"))
+      (shell-command (format "pkill -9 -f %s" (shell-quote-argument yeetube-player))))
+    (call-process-shell-command
+     (format "%s %s" yeetube-player url) nil 0)
+    (message "Opening with %s" yeetube-player)))
+
 (defun yeetube-play ()
   "Open the url at point in an `'org-mode buffer using ='yeetube-player'."
   (interactive)
   (let ((url (org-element-property
               :raw-link (org-element-context))))
-    (if (string-match "mpv" yeetube-player)
-        (shell-command (format "pkill -9 -f mpv"))
-      (shell-command (format "pkill -9 -f %s" (shell-quote-argument yeetube-player))))
-    (when (string-prefix-p "http" url)
-      (call-process-shell-command
-       (format "%s %s" yeetube-player url) nil 0)
-      (message "Opening with %s" yeetube-player))
-    (push url yeetube--history)))
+    (yeetube-play-url url)))
 
 (defun yeetube-save-video ()
   "Save url at point."
@@ -157,11 +160,7 @@ It's recommended you keep it as the default value."
   "Select & Play a saved video."
   (interactive)
   (let ((video (completing-read "Select video: " yeetube-saved-videos nil t)))
-    (if (string-match "mpv" yeetube-player)
-        (shell-command (format "pkill -9 -f mpv"))
-      (shell-command (format "pkill -9 -f %s" (shell-quote-argument yeetube-player))))
-    (call-process-shell-command
-     (format "%s %s" yeetube-player (cdr (assoc video yeetube-saved-videos))) nil 0)))
+    (yeetube-play-url (cdr (assoc video yeetube-saved-videos)))))
 
 (defun yeetube-remove-saved-video ()
   "Select video to remove from saved videos."
@@ -263,7 +262,6 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
 	  (yeetube--get-content-youtube)
 	(yeetube--get-content-invidious))
       (yeetube-create-buffer query yeetube--video-titles yeetube--video-ids))))
-
 
 (defun yeetube--get-content-youtube ()
   "Get content from youtube."
