@@ -162,6 +162,20 @@ It's recommended you keep it as the default value."
       (shell-command (format "pkill -9 -f %s" (shell-quote-argument yeetube-player))))
     (call-process-shell-command
      (format "%s %s" yeetube-player (cdr (assoc video yeetube-saved-videos))) nil 0)))
+
+(defun yeetube-remove-saved-video ()
+  "Select video to remove from saved videos."
+  (interactive)
+  (let ((video (completing-read "Select video: " yeetube-saved-videos nil t)))
+    (setq yeetube-saved-videos (remove (assoc video yeetube-saved-videos) yeetube-saved-videos))))
+
+(defun yeetube-remove-all-saved-videos ( )
+  "Clear yeetube saved."
+  (interactive)
+  (let ((clear-saved (y-or-n-p "Delete saved?")))
+    (when clear-saved
+      (setq yeetube-saved-videos nil))))
+
 (defun yeetube-toggle-video-mpv ()
   "Toggle video on/off for mpv player."
   (interactive)
