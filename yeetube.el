@@ -150,7 +150,7 @@ It's recommended you keep it as the default value."
 (defun yeetube-load-saved-videos ()
   "Load saved videos."
   (interactive)
-  (let ((file-path "~/.emacs.d/yeetube-saved"))
+  (let ((file-path (concat user-emacs-directory "yeetube-saved")))
     (with-temp-buffer
       (insert-file-contents file-path)
       (goto-char (point-min))
@@ -474,7 +474,7 @@ OPERATION & WHERE are required to work with ='add-variable-watcher."
 
 (defun yeetube-update-saved-videos-list (_symbol new-value _where _environment)
   "Updated saved videos."
-  (with-temp-buffer (find-file "~/.emacs.d/yeetube-saved")
+  (with-temp-buffer (find-file (concat user-emacs-directory "yeetube-saved"))
     (erase-buffer)
     (setq yeetube-saved-videos new-value)
     (insert (pp-to-string yeetube-saved-videos))
