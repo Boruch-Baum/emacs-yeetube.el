@@ -187,7 +187,7 @@ It's recommended you keep it as the default value."
   (let ((video (completing-read "Select video: " yeetube-saved-videos nil t)))
     (setq yeetube-saved-videos (remove (assoc video yeetube-saved-videos) yeetube-saved-videos))))
 
-(defun yeetube-remove-all-saved-videos ( )
+(defun yeetube-remove-all-saved-videos ()
   "Clear yeetube saved."
   (interactive)
   (let ((clear-saved (y-or-n-p "Delete saved?")))
@@ -216,7 +216,7 @@ It's recommended you keep it as the default value."
     (error "To use this function you need to have mpv installed & set yeetube-player to the default value")))
 
 ;; Usually titles from youtube get messed up,
-;; This should be fix some of the common issues.
+;; This should fix some of the common issues.
 (defun yeetube-fix-title (title)
   "Adjust TITLE."
   (let ((replacements '(("&amp;" . "&")
@@ -369,7 +369,10 @@ then run this command interactively."
         (url "")
         (name "")
         (buffer-counter 1)
-        (name-counter 1))
+        (name-counter 1)
+	(audio-only-p (y-or-n-p "Download videos as audio only format?")))
+    (when audio-only-p
+      (yeetube-change-download-audio-format (read-string "Specify audio format: ")))
     ;; Read links and names until "q" is entered
     (while (not (string= url "q"))
       (setq url (read-string "Enter URL (q to quit): "))
