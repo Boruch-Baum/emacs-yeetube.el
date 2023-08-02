@@ -479,8 +479,8 @@ OPERATION & WHERE are required to work with ='add-variable-watcher."
 	  (insert
 	   (format "%s %s" to-change new-value))
 	  (setq-local buffer-read-only t)
-	  (switch-to-buffer buffer-cur))
-	(goto-char (mark))))
+	  (switch-to-buffer buffer-cur)
+	  (goto-char (mark)))))
 
 (defun yeetube-update-saved-videos-list (_symbol new-value _where _environment)
   "Updated saved videos.
