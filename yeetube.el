@@ -444,6 +444,18 @@ prompt blank to keep the default name."
   (when (string-suffix-p "/" yeetube-query-url)
     (setq yeetube-query-url (substring yeetube-query-url 0 -1))))
 
+(defun yeetube-change-platform ()
+  "Change video platform."
+  (interactive)
+  (let ((platform (completing-read "Choose video platform: "
+				   '("YouTube" "Invidious" "Localhost" "Custom"))))
+    (pcase platform
+      ("Invidious" (yeetube-change-query-url
+		    (completing-read "Select Instance: " yeetube-invidious-instances)))
+      ("Localhost" (yeetube-change-query-url "localhost"))
+      ("YouTube" (yeetube-change-query-url "youtube.com"))
+      ("Custom" (yeetube-change-query-url (read-string "URL: "))))))
+
 
 (defun yeetube-update-info (symbol-name new-value _operation _where)
   "Update information for SYMBOL-NAME with NEW-VALUE.
