@@ -310,31 +310,39 @@ It's recommended you keep it as the default value."
             (push title video-titles)
 	    (push (cons videoid title) yeetube-content))))))))
 
+;; same as youtube but with different values, it's easier this way
+;; even though it's "wrong".  It would be better if we could have a
+;; (yeetube-get-content (platform)) that depending on the platform value
+;; we could have different search-forward, videoid/title-start/end, in
+;; a way that would not require too much time to maintain. If you have
+;; any ideas feel free to email them.
 (defun yeetube-get-content-invidious ()
   "Get content from an invidious instance."
-  (setq yeetube--video-ids nil)
-  (setq yeetube--video-titles nil)
-  (while (and (< (length yeetube--video-ids) yeetube-results-limit)
-              (search-forward "watch?v" nil t))
-    (let* ((start (point))
-           (end (search-forward ">"))
-           (videoid (buffer-substring
-                     (+ start 1)
-                     (- end 2))))
-      (unless (or (member videoid yeetube--video-ids)
-                  (not (and (>= (length videoid) 9)
-                            (<= (length videoid) 13)
-                            (string-match-p "^[a-zA-Z0-9_-]*$" videoid))))
-        (push videoid yeetube--video-ids)
-        (search-forward "\"auto\">")
-        (let* ((start (point))
-               (end (search-forward ">"))
-               (title (buffer-substring
-                       (+ start 0)
-                       (- end 4))))
-          (if (string-match-p "vssLoggingContext" title)
-              (pop yeetube--video-ids)
-            (push title yeetube--video-titles)))))))
+  (setq yeetube-content nil)
+  (let ((video-ids nil)
+	(video-titles nil))
+    (while (and (< (length video-ids) yeetube-results-limit)
+		(search-forward "watch?v" nil t))
+      (let* ((videoid-start (point))
+             (videoid-end (search-forward ">"))
+             (videoid (buffer-substring
+                       (+ videoid-start 1)
+                       (- videoid-end 2))))
+	(unless (or (member videoid video-ids)
+                    (not (and (>= (length videoid) 9)
+                              (<= (length videoid) 13)
+                              (string-match-p "^[a-zA-Z0-9_-]*$" videoid))))
+          (push videoid video-ids)
+          (search-forward "\"auto\">")
+          (let* ((title-start (point))
+		 (title-end (search-forward ">"))
+		 (title (buffer-substring
+			 (+ title-start 0)
+			 (- title-end 4))))
+            (if (string-match-p "vssLoggingContext" title)
+		(pop video-ids)
+              (push title video-titles)
+	      (push (cons videoid title) yeetube-content))))))))
 
 ;;;###autoload
 (defun yeetube-download-video ()
