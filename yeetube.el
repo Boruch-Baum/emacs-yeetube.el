@@ -433,10 +433,10 @@ then run this command interactively."
   (setq yeetube-download-directory
         (read-directory-name "Select a directory: ")))
 
-(defun yeetube-change-download-audio-format (format)
+(defun yeetube-change-download-audio-format (audio-format)
   "Change download format to audio FORMAT."
   (interactive "sSpecify Audio Format(no for nil): ")
-  (setq yeetube-download-audio-format format)
+  (setq yeetube-download-audio-format audio-format)
   (when (equal yeetube-download-audio-format "no")
     (setq yeetube-download-audio-format nil)))
 
