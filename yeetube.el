@@ -357,41 +357,33 @@ PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
 ;;;###autoload
 (defun yeetube-download-videos ()
   "Download one or multiple videos using yt-dlp.
-
 This command is not meant to be used in the *Yeetube Search* buffer.
 
 Usage Example:
 Open a Dired buffer and navigate where you want to download your videos,
-then run this command interactively."
+then run this command interactively.  You can leave the 'Custom name:'
+prompt blank to keep the default name."
   (interactive)
-  (let ((links '())
-        (names '())
-        (url "")
+  (let ((url "")
         (name "")
-        (buffer-counter 1)
-        (name-counter 1)
-	(audio-only-p (y-or-n-p "Download videos as audio only format?")))
-    (when audio-only-p
-      (yeetube-change-download-audio-format (read-string "Specify audio format: ")))
+        (download-counter 1)
+	(audio-only-p (y-or-n-p "Download videos as audio only format?"))
+	(stored-contents nil))
+    (if audio-only-p
+	(yeetube-change-download-audio-format (read-string "Specify audio format: "))
+      (yeetube-change-download-audio-format nil))
     ;; Read links and names until "q" is entered
     (while (not (string= url "q"))
       (setq url (read-string "Enter URL (q to quit): "))
       (unless (string= url "q")
-        (setq links (cons url links))
-        (setq name (read-string (format "Enter name (%d-NAME): " name-counter)))
-        (while (get-buffer (format "download-video-%d" buffer-counter))
-          (setq buffer-counter (1+ buffer-counter)))
-        (setq names (cons name names))
-        (setq buffer-counter (1+ buffer-counter))
-        (setq name-counter (1+ name-counter))))
+        (setq name (read-string (format "Custom name (download counter: %d) " download-counter)))
+	(push (cons url name) stored-contents)
+        (setq download-counter (1+ download-counter))))
     ;; Process the collected links and names
-    (setq links (reverse links))
-    (setq names (reverse names))
-    (dolist (pair (cl-mapcar 'cons links names))
+    (dolist (pair stored-contents)
       (let ((url (car pair))
-            (name (cdr pair))
-            (buffer-name (format "download-video-%d" buffer-counter)))
-        (async-shell-command
+            (name (cdr pair)))
+        (call-process-shell-command
          (if yeetube-download-audio-format
              (format "%s %s --extract-audio --audio-format %s -o %s"
                      (shell-quote-argument yeetube--yt-dlp)
@@ -402,8 +394,7 @@ then run this command interactively."
                    (shell-quote-argument yeetube--yt-dlp)
                    (shell-quote-argument url)
                    (shell-quote-argument name)))
-         buffer-name)
-        (setq buffer-counter (1+ buffer-counter))))))
+	 nil 0)))))
 
 (defun yeetube-insert-info ()
   "Insert default keybindings at *Yeetube Search* buffer."
