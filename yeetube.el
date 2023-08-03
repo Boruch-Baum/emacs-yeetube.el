@@ -238,19 +238,21 @@ It's recommended you keep it as the default value."
           replacements)
     title))
 
-(defun yeetube-create-buffer (query video-titles video-ids)
-  "Create *Yeetube-Search* buffer for QUERY, using VIDEO-TITLES with VIDEO-IDS."
-  (with-current-buffer
-      (switch-to-buffer
-       (get-buffer-create "*Yeetube Search*"))
+(defun yeetube-create-buffer (query content)
+  "Create *Yeetube-Search* buffer for QUERY, using CONTENT."
+  (with-temp-buffer
+    (switch-to-buffer
+     (get-buffer-create "*Yeetube Search*"))
     (setq buffer-read-only nil)
     (erase-buffer)
     (org-mode)
     (insert
      (format "searching: %s\nfor: %s \n* Search Results: \n \n" yeetube-query-url query))
-    (yeetube-insert-content
-     yeetube-results-prefix yeetube-query-url
-     video-titles video-ids)
+    (dolist (pair content)
+      (let ((videoid (car pair))
+	    (title (yeetube-fix-title (cdr pair))))
+	(insert (format "%s [[%s/watch?v=%s][%s ]]\n"
+			yeetube-results-prefix yeetube-query-url videoid title))))
     (yeetube-insert-info)
     (setq buffer-read-only t)
     (goto-char (point-min))
