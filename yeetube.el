@@ -425,7 +425,7 @@ prompt blank to keep the default name."
         (read-directory-name "Select a directory: ")))
 
 (defun yeetube-change-download-audio-format (audio-format)
-  "Change download format to audio FORMAT."
+  "Change download format to AUDIO-FORMAT."
   (interactive "sSpecify Audio Format(no for nil): ")
   (setq yeetube-download-audio-format audio-format)
   (when (equal yeetube-download-audio-format "no")
@@ -449,9 +449,8 @@ prompt blank to keep the default name."
 
 SYMBOL-NAME is the name of the symbol to update.
 NEW-VALUE is the new value for the symbol.
-OPERATION is the operation to perform (e.g., insert or replace).
+OPERATION is the operation to perform.
 WHERE indicates where in the buffer the update should happen.
-
 OPERATION & WHERE are required to work with ='add-variable-watcher."
       (let ((to-change
 	     (pcase symbol-name
@@ -478,7 +477,7 @@ OPERATION & WHERE are required to work with ='add-variable-watcher."
 
 SYMBOL-NAME is the name of the symbol to update.
 NEW-VALUE is the new value for the symbol.
-OPERATION is the operation to perform (e.g., insert or replace).
+OPERATION is the operation to perform.
 WHERE indicates where in the buffer the update should happen."
   (with-temp-buffer (find-file (concat user-emacs-directory "yeetube"))
     (erase-buffer)
