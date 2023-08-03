@@ -432,10 +432,10 @@ prompt blank to keep the default name."
   (when (equal yeetube-download-audio-format "no")
     (setq yeetube-download-audio-format nil)))
 
-(defun yeetube-change-query-url ()
-  "Change `yeetube-query-url'."
-  (interactive)
-  (setq yeetube-query-url (read-string "URL: "))
+(defun yeetube-change-query-url (url)
+  "Change `yeetube-query-url' to URL."
+  (interactive "sURL:")
+  (setq yeetube-query-url url)
   (when (string-prefix-p "localhost" yeetube-query-url)
     (setq yeetube-query-url (concat "http://localhost:" (read-string "Port: "))))
   (unless (or (string-prefix-p "http://" yeetube-query-url)
