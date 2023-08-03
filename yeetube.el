@@ -109,7 +109,7 @@ It's recommended you keep it as the default value."
   :keymap (let ((yeetube-mode-map (make-sparse-keymap)))
             (define-key yeetube-mode-map (kbd "RET") 'yeetube-play)
             (define-key yeetube-mode-map (kbd "d") 'yeetube-download-video)
-            (define-key yeetube-mode-map (kbd "u") 'yeetube-change-query-url)
+            (define-key yeetube-mode-map (kbd "u") 'yeetube-change-platform)
             (define-key yeetube-mode-map (kbd "q") 'kill-current-buffer)
             (define-key yeetube-mode-map (kbd "D") 'yeetube-change-download-directory)
             (define-key yeetube-mode-map (kbd "a") 'yeetube-change-download-audio-format)
@@ -414,7 +414,7 @@ prompt blank to keep the default name."
      "\n~d~       -> Download\n"
      "\n~D~       -> Change Download Directory\n"
      "\n~a~       -> Change Download (Audio) Format\n"
-     "\n~u~       -> Change search URL (youtube.com, any invidious instance or localhost)\n"
+     "\n~u~       -> Change Video Platform (YouTube, Invidious, Localhost, Custom)\n"
      "\n~q~       -> Quit\n"
      "\n~s~       -> Save video\n"
      "\n~P~       -> Play Saved Video")))
