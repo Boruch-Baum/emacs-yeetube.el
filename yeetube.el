@@ -128,6 +128,19 @@ It's recommended you keep it as the default value."
 (defvar yeetube-saved-videos nil)
 
 (defvar yeetube--last-played nil)
+(defvar yeetube-last-played nil)
+
+(defvar yeetube-invidious-instances
+  '(("https://yewtu.be")
+    ("https://vid.puffyan.us")
+    ("https://yt.artemislena.eu")
+    ("https://invidious.flokinet.to")
+    ("https://invidious.projectsegfau.lt")
+    ("https://invidious.tiekoetter.com")
+    ("https://invidious.slipfox.xyz")
+    ("https://inv.pistasjis.net")
+    ("https://invidious.privacydev.net")
+    ("https://vid.priv.au")))
 
 (defun yeetube-youtube-p (url)
   "Check if it's a youtube URL."
