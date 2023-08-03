@@ -238,23 +238,6 @@ It's recommended you keep it as the default value."
           replacements)
     title))
 
-(defun yeetube-insert-content (prefix url video-titles video-ids)
-  "Insert video links with titles into the buffer.
-
-Arguments:
-- PREFIX: The prefix string for each link.
-- URL: The base URL for the YouTube links.
-- VIDEO-TITLES: A list of video titles.
-- VIDEO-IDS: A list of video IDs.
-
-For each video ID and video title, inserts a link into the buffer in the format:
-PREFIX [[URL/watch?v=VIDEOID][VIDEOTITLE ]]"
-  (cl-loop for (video-id . video-title) in
-           (cl-mapcar #'cons (reverse video-ids) (reverse video-titles))
-           do (insert (format "%s [[%s/watch?v=%s][%s ]]\n"
-                              prefix url video-id
-                              (yeetube-fix-title video-title)))))
-
 (defun yeetube-create-buffer (query video-titles video-ids)
   "Create *Yeetube-Search* buffer for QUERY, using VIDEO-TITLES with VIDEO-IDS."
   (with-current-buffer
