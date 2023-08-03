@@ -121,13 +121,10 @@ It's recommended you keep it as the default value."
 
 (defvar yeetube--yt-dlp (executable-find "yt-dlp"))
 
-(defvar yeetube--video-ids nil)
-
-(defvar yeetube--video-titles nil)
+(defvar yeetube-content nil)
 
 (defvar yeetube-saved-videos nil)
 
-(defvar yeetube--last-played nil)
 (defvar yeetube-last-played nil)
 
 (defvar yeetube-invidious-instances
