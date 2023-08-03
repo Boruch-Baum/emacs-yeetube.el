@@ -148,6 +148,7 @@ It's recommended you keep it as the default value."
 (defun yeetube-play-url (url)
   "Open URL using yeetube-player."
   (when (string-prefix-p "http" url)
+    (setq yeetube-last-played url)
     (if (string-match "mpv" yeetube-player)
         (shell-command (format "pkill -9 -f mpv"))
       (shell-command (format "pkill -9 -f %s" (shell-quote-argument yeetube-player))))
