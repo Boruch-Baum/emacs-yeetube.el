@@ -440,17 +440,6 @@ prompt blank to keep the default name."
   (when (equal yeetube-download-audio-format "no")
     (setq yeetube-download-audio-format nil)))
 
-(defun yeetube-change-query-url (url)
-  "Change `yeetube-query-url' to URL."
-  (interactive "sURL:")
-  (setq yeetube-query-url url)
-  (when (string-prefix-p "localhost" yeetube-query-url)
-    (setq yeetube-query-url (concat "http://localhost:" (read-string "Port: "))))
-  (unless (or (string-prefix-p "http://" yeetube-query-url)
-              (string-prefix-p "https://" yeetube-query-url))
-    (setq yeetube-query-url (concat "https://" yeetube-query-url)))
-  (when (string-suffix-p "/" yeetube-query-url)
-    (setq yeetube-query-url (substring yeetube-query-url 0 -1))))
 
 (defun yeetube-change-platform ()
   "Change video platform."
@@ -458,11 +447,18 @@ prompt blank to keep the default name."
   (let ((platform (completing-read "Choose video platform: "
 				   '("YouTube" "Invidious" "Localhost" "Custom"))))
     (pcase platform
-      ("Invidious" (yeetube-change-query-url
-		    (completing-read "Select Instance: " yeetube-invidious-instances)))
-      ("Localhost" (yeetube-change-query-url "localhost"))
-      ("YouTube" (yeetube-change-query-url "youtube.com"))
-      ("Custom" (yeetube-change-query-url (read-string "URL: "))))))
+      ("Invidious" (setq yeetube-query-url
+			 (completing-read "Select Instance: " yeetube-invidious-instances)))
+      ("Localhost" (setq yeetube-query-url "localhost"))
+      ("YouTube" (setq yeetube-query-url "youtube.com"))
+      ("Custom" (setq yeetube-query-url (read-string "URL: ")))))
+  (when (string-prefix-p "localhost" yeetube-query-url)
+    (setq yeetube-query-url (concat "http://localhost:" (read-string "Port: "))))
+  (unless (or (string-prefix-p "http://" yeetube-query-url)
+	      (string-prefix-p "https://" yeetube-query-url))
+    (setq yeetube-query-url (concat "https://" yeetube-query-url)))
+  (when (string-suffix-p "/" yeetube-query-url)
+    (setq yeetube-query-url (substring yeetube-query-url 0 -1))))
 
 
 (defun yeetube-update-info (symbol-name new-value _operation _where)
