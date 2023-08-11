@@ -249,7 +249,7 @@ It's recommended you keep it as the default value."
     (org-mode)
     (insert
      (format "searching: %s\nfor: %s \n* Search Results: \n \n" yeetube-query-url query))
-    (dolist (pair content)
+    (dolist (pair (reverse content))
       (let ((videoid (car pair))
 	    (title (yeetube-fix-title (cdr pair))))
 	(insert (format "%s [[%s/watch?v=%s][%s ]]\n"
