@@ -121,6 +121,8 @@ It's recommended you keep it as the default value."
 
 (defvar yeetube-yt-dlp (executable-find "yt-dlp"))
 
+(defvar yeetube-socat (executable-find "socat"))
+
 (defvar yeetube-content nil)
 
 (defvar yeetube-saved-videos nil)
@@ -220,11 +222,14 @@ It's recommended you keep it as the default value."
 (defun yeetube-toggle-pause-mpv ()
   "Play/Pause mpv."
   (interactive)
-  (if (string-match "mpv" yeetube-player)
+  (if (and (string-match "mpv" yeetube-player)
+	   yeetube-socat)
       (progn
-        (shell-command (concat "echo '{ \"command\": [\"cycle\", \"pause\"] }' | socat - " yeetube-mpv-socket))
+        (shell-command
+	 (concat "echo '{ \"command\": [\"cycle\", \"pause\"] }' | "
+		 yeetube-socat " - " yeetube-mpv-socket))
         (message "mpv play/pause"))
-    (error "To use this function you need to have mpv installed & set yeetube-player to the default value")))
+    (error "To use this function you need have mpv & socat installed")))
 
 ;; Usually titles from youtube get messed up,
 ;; This should fix some of the common issues.
