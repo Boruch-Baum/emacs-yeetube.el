@@ -258,7 +258,7 @@ It's recommended you keep it as the default value."
     (dolist (pair (reverse content))
       (let ((videoid (car pair))
 	    (title (yeetube-fix-title (cdr pair))))
-	(insert (format "%s [[%s/watch?v=%s][%s ]]\n"
+	(insert (format "%s [[%s/watch?v=%s][%s]]\n"
 			yeetube-results-prefix yeetube-query-url videoid title))))
     (yeetube-insert-info)
     (setq buffer-read-only t)
