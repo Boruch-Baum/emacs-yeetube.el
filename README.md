@@ -36,10 +36,14 @@ git clone https://git.sr.ht/~thanosapollo/yeetube.el
 ```
 
 
-Install `mpv` & `yt-dlp`
+### Dependencies
+- [mpv](https://mpv.io/): default multimedia player 
+- [yt-dlp](https://github.com/yt-dlp/yt-dlp): download functionality 
+- socat: control mpv *e.g pause/play*
+
 *Debian/Ubuntu*
 ``` shell
-sudo apt install yt-dlp mpv
+sudo apt install mpv yt-dlp socat
 ```
 
 ## Contributing 
