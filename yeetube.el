@@ -119,7 +119,7 @@ It's recommended you keep it as the default value."
 	    (define-key yeetube-mode-map (kbd "P") 'yeetube-play-saved-video)
             yeetube-mode-map))
 
-(defvar yeetube--yt-dlp (executable-find "yt-dlp"))
+(defvar yeetube-yt-dlp (executable-find "yt-dlp"))
 
 (defvar yeetube-content nil)
 
@@ -355,11 +355,11 @@ It's recommended you keep it as the default value."
         (async-shell-command
          (if yeetube-download-audio-format
              (format "%s %s --extract-audio --audio-format %s"
-                     (shell-quote-argument yeetube--yt-dlp)
+                     (shell-quote-argument yeetube-yt-dlp)
                      (shell-quote-argument url)
                      (shell-quote-argument yeetube-download-audio-format))
            (format "%s %s"
-                   (shell-quote-argument yeetube--yt-dlp)
+                   (shell-quote-argument yeetube-yt-dlp)
                    (shell-quote-argument url)))
          (message "Downloading %s " url))))))
 
@@ -395,12 +395,12 @@ prompt blank to keep the default name."
         (call-process-shell-command
          (if yeetube-download-audio-format
              (format "%s %s --extract-audio --audio-format %s -o %s"
-                     (shell-quote-argument yeetube--yt-dlp)
+                     (shell-quote-argument yeetube-yt-dlp)
                      (shell-quote-argument url)
                      (shell-quote-argument yeetube-download-audio-format)
                      (shell-quote-argument name))
            (format "%s %s -o %s"
-                   (shell-quote-argument yeetube--yt-dlp)
+                   (shell-quote-argument yeetube-yt-dlp)
                    (shell-quote-argument url)
                    (shell-quote-argument name)))
 	 nil 0)))))
