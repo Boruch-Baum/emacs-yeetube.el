@@ -257,7 +257,7 @@ It's recommended you keep it as the default value."
      (format "searching: %s\nfor: %s \n* Search Results: \n \n" yeetube-query-url query))
     (dolist (pair (reverse content))
       (let ((videoid (car pair))
-	    (title (yeetube-fix-title (cdr pair))))
+	    (title (yeetube-fix-title (cadr pair))))
 	;; gap [%s ] for titles that end with ]
 	(insert (format "%s [[%s/watch?v=%s][%s ]]\n"
 			yeetube-results-prefix yeetube-query-url videoid title))))
@@ -315,7 +315,7 @@ It's recommended you keep it as the default value."
           (if (string-match-p "vssLoggingContext" title)
               (pop video-ids)
             (push title video-titles)
-	    (push (cons videoid title) yeetube-content))))))))
+	    (push `(,videoid ,title) yeetube-content))))))))
 
 ;; same as youtube but with different values, it's easier this way
 ;; even though it's "wrong".  It would be better if we could have a
@@ -346,10 +346,8 @@ It's recommended you keep it as the default value."
 		 (title (buffer-substring
 			 (+ title-start 0)
 			 (- title-end 4))))
-            (if (string-match-p "vssLoggingContext" title)
-		(pop video-ids)
-              (push title video-titles)
-	      (push (cons videoid title) yeetube-content))))))))
+            (push title video-titles)
+	    (push `(,videoid ,title) yeetube-content)))))))
 
 ;;;###autoload
 (defun yeetube-download-video ()
