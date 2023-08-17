@@ -102,6 +102,12 @@ It's recommended you keep it as the default value."
   :safe #'stringp
   :group 'yeetube)
 
+(defcustom yeetube-display-view-count t
+  "Show video view count."
+  :type 'boolean
+  :safe #'booleanp
+  :group 'yeetube)
+
 (define-minor-mode yeetube-mode
   "Yeetube mode."
   :init-value nil
