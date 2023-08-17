@@ -306,35 +306,43 @@ It's recommended you keep it as the default value."
   ;; yeetube-content
   (let ((video-ids nil)
 	(video-titles nil))
-   (while (and (< (length video-ids) yeetube-results-limit)
-              (search-forward "videoId" nil t))
-    (let* ((videoid-start (point))
-           (videoid-end (search-forward ","))
-           (videoid (buffer-substring
-                     (+ videoid-start 3)
-                     (- videoid-end 2))))
-      (unless (or (member videoid video-ids)
-                  (not (and (>= (length videoid) 9)
-                            (<= (length videoid) 13)
-                            (string-match-p "^[a-zA-Z0-9_-]*$" videoid))))
-        (push videoid video-ids)
-        (search-forward "text")
-        (let* ((title-start (point))
-               (title-end (search-forward ",\""))
-               (title (buffer-substring
-                       (+ title-start 3)
-                       (- title-end 5))))
-          (if (string-match-p "vssLoggingContext" title)
-              (pop video-ids)
-            (push title video-titles)
-	    (push `(,videoid ,title) yeetube-content))))))))
+    (while (and (< (length video-ids) yeetube-results-limit)
+		(search-forward "videoId" nil t))
+      (let* ((videoid-start (point))
+             (videoid-end (search-forward ","))
+             (videoid (buffer-substring
+                       (+ videoid-start 3)
+                       (- videoid-end 2))))
+	(unless (or (member videoid video-ids)
+                    (not (and (>= (length videoid) 9)
+                              (<= (length videoid) 13)
+                              (string-match-p "^[a-zA-Z0-9_-]*$" videoid))))
+          (push videoid video-ids)
+          (search-forward "text")
+          (let* ((title-start (point))
+		 (title-end (search-forward ",\""))
+		 (title (buffer-substring
+			 (+ title-start 3)
+			 (- title-end 5))))
+            (if (string-match-p "vssLoggingContext" title)
+		(pop video-ids)
+              (push title video-titles)
+	      (search-forward "viewCountText")
+	      (search-forward "text")
+	      (let* ((view-count-start (point))
+		     (view-count-end (search-forward " "))
+		     (view-count (buffer-substring
+				  (+ view-count-start 3)
+				  (- view-count-end 1))))
+		;; Don't remove this!
+		(search-backward "videoid")
+		;; Just in case something gets messed
+		(if (string-match-p "text" view-count)
+		    (push `(,videoid ,title "nil") yeetube-content)
+		  (push `(,videoid ,title ,view-count) yeetube-content))))))))))
 
 ;; same as youtube but with different values, it's easier this way
-;; even though it's "wrong".  It would be better if we could have a
-;; (yeetube-get-content (platform)) that depending on the platform value
-;; we could have different search-forward, videoid/title-start/end, in
-;; a way that would not require too much time to maintain. If you have
-;; any ideas feel free to email them.
+;; even though it's "wrong".
 (defun yeetube-get-content-invidious ()
   "Get content from an invidious instance."
   (setq yeetube-content nil)
