@@ -500,25 +500,25 @@ NEW-VALUE is the new value for the symbol.
 OPERATION is the operation to perform.
 WHERE indicates where in the buffer the update should happen.
 OPERATION & WHERE are required to work with ='add-variable-watcher."
-      (let ((to-change
-	     (pcase symbol-name
-	       ('yeetube-download-directory "Download Directory:")
-	       ('yeetube-download-audio-format "Download as audio format:")
-	       ('yeetube-query-url "searching:")))
-	    (buffer-cur (buffer-name)))
-	(when (get-buffer "*Yeetube Search*")
-	  (push-mark)
-	  (switch-to-buffer (get-buffer "*Yeetube Search*"))
-	  (setq buffer-read-only nil)
-	  (goto-char (point-min))
-	  (search-forward to-change)
-	  (beginning-of-visual-line)
-	  (kill-region (point) (line-end-position))
-	  (insert
-	   (format "%s %s" to-change new-value))
-	  (setq-local buffer-read-only t)
-	  (switch-to-buffer buffer-cur)
-	  (goto-char (mark)))))
+  (let ((to-change
+	 (pcase symbol-name
+	   ('yeetube-download-directory "Download Directory:")
+	   ('yeetube-download-audio-format "Download as audio format:")
+	   ('yeetube-query-url "searching:")))
+	(buffer-cur (buffer-name)))
+    (when (get-buffer "*Yeetube Search*")
+      (push-mark)
+      (switch-to-buffer (get-buffer "*Yeetube Search*"))
+      (setq buffer-read-only nil)
+      (goto-char (point-min))
+      (search-forward to-change)
+      (beginning-of-visual-line)
+      (kill-region (point) (line-end-position))
+      (insert
+       (format "%s %s" to-change new-value))
+      (setq-local buffer-read-only t)
+      (switch-to-buffer buffer-cur)
+      (goto-char (mark)))))
 
 (defun yeetube-update-saved-videos-list (_symbol new-value _where _environment)
   "Updated saved videos.
@@ -528,11 +528,11 @@ NEW-VALUE is the new value for the symbol.
 OPERATION is the operation to perform.
 WHERE indicates where in the buffer the update should happen."
   (with-temp-buffer (find-file (concat user-emacs-directory "yeetube"))
-    (erase-buffer)
-    (setq yeetube-saved-videos new-value)
-    (insert (pp-to-string yeetube-saved-videos))
-    (save-buffer)
-    (kill-buffer)))
+		    (erase-buffer)
+		    (setq yeetube-saved-videos new-value)
+		    (insert (pp-to-string yeetube-saved-videos))
+		    (save-buffer)
+		    (kill-buffer)))
 
 (defun yeetube-version ()
   "Show Yeetube Version."
