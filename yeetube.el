@@ -155,6 +155,9 @@ It's recommended you keep it as the default value."
 
 (defun yeetube-play-url (url)
   "Open URL using yeetube-player."
+  (let ((player (car (split-string yeetube-player))))
+    (unless (executable-find player)
+      (error (format "%s not found." player))))
   (when (string-prefix-p "http" url)
     (setq yeetube-last-played url)
     (if (string-match "mpv" yeetube-player)
