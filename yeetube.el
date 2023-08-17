@@ -1,4 +1,4 @@
-;;; yeetube.el --- YouTube/Invidious Front End  -*- lexical-binding: t; -*-
+;;; yeetube.el --- YouTube & Invidious Front End  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023  Thanos Apollo
 
@@ -30,10 +30,10 @@
 
 ;; Key features:
 ;;  - Search video query
-;;  - Play video URL, by default with MPV
+;;  - Play video URL, by default with mpv
 ;;  - Save video URL with a custom name/label
 ;;  - Download video, this package serves also as a front-end for
-;;    yt-dlp, thus supporting platforms beyond Youtube/Invidious.
+;;    yt-dlp, thus supporting platforms beyond Youtube & Invidious.
 
 ;;; Code:
 
@@ -43,7 +43,7 @@
 
 
 (defgroup yeetube nil
-  "Youtube/Invidious Front-end."
+  "Youtube & Invidious Front-end."
   :group 'external
   :prefix "yeetube-")
 
