@@ -367,7 +367,13 @@ It's recommended you keep it as the default value."
 			 (+ title-start 0)
 			 (- title-end 4))))
             (push title video-titles)
-	    (push `(,videoid ,title) yeetube-content)))))))
+	    (search-forward "views")
+	    (let* ((view-count-start (search-backward ">"))
+		   (view-count-end (search-forward " "))
+		   (view-count (buffer-substring
+				(+ view-count-start 1)
+				(- view-count-end 1))))
+	    (push `(,videoid ,title ,view-count) yeetube-content))))))))
 
 ;;;###autoload
 (defun yeetube-download-video ()
