@@ -261,12 +261,18 @@ It's recommended you keep it as the default value."
     (org-mode)
     (insert
      (format "searching: %s\nfor: %s \n* Search Results: \n \n" yeetube-query-url query))
-    (dolist (pair (reverse content))
-      (let ((videoid (car pair))
-	    (title (yeetube-fix-title (cadr pair))))
+    (dolist (info (reverse content))
+      (let ((videoid (car info))
+	    (title (yeetube-fix-title (cadr info)))
+	    (view-count (caddr info)))
 	;; gap [%s ] for titles that end with ]
-	(insert (format "%s [[%s/watch?v=%s][%s ]]\n"
-			yeetube-results-prefix yeetube-query-url videoid title))))
+	(if yeetube-display-view-count
+	    (insert (format "%s [[%s/watch?v=%s][%s ]] =%s=\n"
+			yeetube-results-prefix yeetube-query-url
+			videoid title view-count))
+	  (insert (format "%s [[%s/watch?v=%s][%s ]]\n"
+			yeetube-results-prefix yeetube-query-url
+			videoid title)))))
     (yeetube-insert-info)
     (setq buffer-read-only t)
     (goto-char (point-min))
