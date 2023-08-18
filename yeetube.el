@@ -304,8 +304,9 @@ It's recommended you keep it as the default value."
 	(url-retrieve-synchronously
 	 (concat yeetube-query-url
 		 "/search?q="
-		 (replace-regexp-in-string " " "+" query))
-	 t t)
+		 (replace-regexp-in-string " " "+" query)
+		 "&type=video")
+	 t t 30)
       (decode-coding-region (point-min) (point-max) 'utf-8)
       (goto-char (point-min))
       (toggle-enable-multibyte-characters)
