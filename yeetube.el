@@ -127,8 +127,6 @@ It's recommended you keep it as the default value."
 
 (defvar yeetube-yt-dlp (executable-find "yt-dlp"))
 
-(defvar yeetube-socat (executable-find "socat"))
-
 (defvar yeetube-content nil)
 
 (defvar yeetube-saved-videos nil)
@@ -231,14 +229,15 @@ It's recommended you keep it as the default value."
 (defun yeetube-toggle-pause-mpv ()
   "Toggle play/pause mpv."
   (interactive)
-  (unless yeetube-socat (error "Required program 'socat' not found"))
-  (unless (string-match "mpv" yeetube-player)
-    (error "Not using mpv as yeetube-player"))
-  (when (and (string-match "mpv" yeetube-player) yeetube-socat)
-    (shell-command
-     (format "echo '{ \"command\": [\"cycle\", \"pause\"] }' | %s - %s"
-	     yeetube-socat yeetube-mpv-socket))
-    (message "mpv toggle pause")))
+  (let ((socat (executable-find "socat")))
+    (unless socat (error "Required program 'socat' not found"))
+    (unless (string-match "mpv" yeetube-player)
+      (error "Not using mpv as yeetube-player"))
+    (when (and (string-match "mpv" yeetube-player) socat)
+      (shell-command
+       (format "echo '{ \"command\": [\"cycle\", \"pause\"] }' | %s - %s"
+	       socat yeetube-mpv-socket))
+      (message "mpv toggle pause"))))
 
 ;; Usually titles from youtube get messed up,
 ;; This should fix some of the common issues.
@@ -339,7 +338,7 @@ It's recommended you keep it as the default value."
 				  (- view-count-end 1))))
 		;; Don't remove this!
 		(search-backward "videoid")
-		;; Just in case something gets messed
+		;; show livestreams views as nil
 		(if (string-match-p "text" view-count)
 		    (push `(,videoid ,title "nil") yeetube-content)
 		  (push `(,videoid ,title ,view-count) yeetube-content))))))))))
