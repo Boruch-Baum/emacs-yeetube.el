@@ -240,6 +240,12 @@ It's recommended you keep it as the default value."
     (sit-for 0.1) ; wait for the process to finish
     (with-current-buffer proc-buffer
       (buffer-string))))
+
+(defun yeetube--send-command (property value)
+  "Send command with PROPERTY and VALUE as json-data to mpv socket."
+  (let ((json-data (format "{ \"command\": [\"%s\", \"%s\"]}" property value)))
+    (yeetube-send-command-to-socket yeetube-mpv-socket json-data)))
+
 (defun yeetube-toggle-pause-mpv ()
   "Toggle play/pause mpv."
   (interactive)
