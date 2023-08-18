@@ -87,9 +87,11 @@ Example Usage:
   :safe #'stringp
   :group 'yeetube)
 
-(defcustom yeetube-player (concat
-                           (executable-find "mpv") " --input-ipc-server=" yeetube-mpv-socket)
-  "Select default video player.
+(defcustom yeetube-player 'mpv
+  "Select video player."
+  :type 'symbol
+  :safe #'symbolp
+  :group 'yeetube)
 
 It's recommended you keep it as the default value."
   :type 'string
