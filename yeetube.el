@@ -214,7 +214,9 @@ It's recommended you keep it as the default value."
     (when clear-saved
       (setq yeetube-saved-videos nil))))
 
-(defun yeetube-toggle-video-mpv ()
+;; MPV STUFF
+
+(defun yeetube-disable-video-mpv ()
   "Toggle video on/off for mpv player."
   (interactive)
   (let ((socket (concat " --input-ipc-server=" yeetube-mpv-socket))
