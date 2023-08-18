@@ -253,6 +253,11 @@ Example Usage:
   (interactive)
   (process-send-string "yeetube" "f")
   (message "toggle fullscreen"))
+
+(defun yeetube-mpv-send-keypress (key)
+  "Send KEY to mpv process."
+  (interactive "sKeypress: ")
+  (process-send-string "yeetube" key))
   "Toggle video on/off mpv."
   (interactive)
   (unless (string-match "mpv" yeetube-player)
