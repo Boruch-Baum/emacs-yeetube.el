@@ -226,6 +226,20 @@ It's recommended you keep it as the default value."
             (concat mpv no-video socket)))
     (message (format "Yeetube Player: %s" yeetube-player))))
 
+(defun yeetube-send-command-to-socket (socket-file json-data)
+  "Send command with JSON-DATA to SOCKET-FILE."
+  (let* ((proc-name "mpv-socket")
+         (proc-buffer (generate-new-buffer proc-name))
+         (proc (make-network-process :name proc-name
+                                     :family 'local
+                                     :buffer proc-buffer
+                                     :service socket-file)))
+    (let ((json-string (concat json-data "\n")))
+      (process-send-string proc json-string))
+    (accept-process-output proc)
+    (sit-for 0.1) ; wait for the process to finish
+    (with-current-buffer proc-buffer
+      (buffer-string))))
 (defun yeetube-toggle-pause-mpv ()
   "Toggle play/pause mpv."
   (interactive)
