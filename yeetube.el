@@ -156,17 +156,14 @@ Example Usage:
 
 (defun yeetube-play-url (url)
   "Open URL using yeetube-player."
-  (let ((player (car (split-string yeetube-player))))
-    (unless (executable-find player)
-      (error (format "%s not found." player))))
-  (when (string-prefix-p "http" url)
-    (setq yeetube-last-played url)
-    (if (string-match "mpv" yeetube-player)
-        (shell-command (format "pkill -9 -f mpv"))
-      (shell-command (format "pkill -9 -f %s" (shell-quote-argument yeetube-player))))
-    (call-process-shell-command
-     (format "%s %s" yeetube-player url) nil 0)
-    (message "Opening with %s" yeetube-player)))
+  (let ((media-player (executable-find (symbol-name yeetube-player))))
+    (unless media-player
+      (error (format "%s not found." media-player)))
+    (when (string-prefix-p "http" url)
+      (setq yeetube-last-played url)
+      (if (eq yeetube-player 'mpv)
+	  (yeetube--mpv-play url)
+	(call-process-shell-command (format "%s %s" media-player url))))))
 
 (defun yeetube-play ()
   "Open the url at point in an `'org-mode buffer using ='yeetube-player'."
