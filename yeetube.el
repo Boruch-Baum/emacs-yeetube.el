@@ -214,8 +214,6 @@ It's recommended you keep it as the default value."
     (when clear-saved
       (setq yeetube-saved-videos nil))))
 
-;; MPV STUFF
-
 (defun yeetube-disable-video-mpv ()
   "Toggle video on/off for mpv player."
   (interactive)
@@ -228,20 +226,13 @@ It's recommended you keep it as the default value."
             (concat mpv no-video socket)))
     (message (format "Yeetube Player: %s" yeetube-player))))
 
-(defun yeetube-send-command-to-socket (socket-file json-data)
-  "Send command with JSON-DATA to SOCKET-FILE."
-  (let* ((proc-name "mpv-socket")
-         (proc-buffer (generate-new-buffer proc-name))
-         (proc (make-network-process :name proc-name
+(defun yeetube-send-command-to-socket (socket json-data)
+  "Send command with JSON-DATA to SOCKET."
+  (let* ((proc (make-network-process :name "yeet-socket"
                                      :family 'local
-                                     :buffer proc-buffer
-                                     :service socket-file)))
-    (let ((json-string (concat json-data "\n")))
-      (process-send-string proc json-string))
-    (accept-process-output proc)
-    (sit-for 0.1) ; wait for the process to finish
-    (with-current-buffer proc-buffer
-      (buffer-string))))
+                                     :service socket)))
+    (process-send-string proc (concat json-data "\n"))
+    (accept-process-output proc)))
 
 (defun yeetube--send-command (property value)
   "Send command with PROPERTY and VALUE as json-data to mpv socket."
