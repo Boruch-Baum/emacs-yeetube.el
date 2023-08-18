@@ -231,6 +231,9 @@ Example Usage:
        (if yeetube-mpv-disable-video
 	   (format "%s --no-video --input-ipc-server=%s %s" mpv socket url)
 	 (format "%s --input-ipc-server= %s %s" mpv socket url))))))
+
+(defun yeetube-mpv-toggle-disable-video ()
+  "Disable/Enable video for mpv player."
   (interactive)
   (let ((socket (concat " --input-ipc-server=" yeetube-mpv-socket))
         (no-video " --no-video")
