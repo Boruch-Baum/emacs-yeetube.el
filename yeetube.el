@@ -242,12 +242,11 @@ Example Usage:
             (concat mpv no-video socket)))
     (message (format "Yeetube Player: %s" yeetube-player))))
 
-(defun yeetube-toggle-pause-mpv ()
+(defun yeetube-mpv-toggle-pause ()
   "Toggle play/pause mpv."
   (interactive)
-  (unless (string-match "mpv" yeetube-player)
-    (error "Not using mpv as yeetube-player"))
-  (yeetube--send-command 'cycle 'pause))
+  (process-send-string "yeetube" "p")
+  (message "yeetube: toggle pause"))
 
 (defun yeetube-toggle-video-mpv ()
   "Toggle video on/off mpv."
