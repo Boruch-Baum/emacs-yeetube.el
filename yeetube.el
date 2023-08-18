@@ -214,8 +214,6 @@ Example Usage:
     (when clear-saved
       (setq yeetube-saved-videos nil))))
 
-(defun yeetube-disable-video-mpv ()
-  "Toggle video on/off for mpv player."
 (defun yeetube--mpv-play (url)
   "Use mpv to play URL."
   (let ((mpv (executable-find "mpv"))
@@ -243,19 +241,6 @@ Example Usage:
               (concat mpv socket)
             (concat mpv no-video socket)))
     (message (format "Yeetube Player: %s" yeetube-player))))
-
-(defun yeetube-send-command-to-socket (socket json-data)
-  "Send command with JSON-DATA to SOCKET."
-  (let* ((proc (make-network-process :name "yeet-socket"
-                                     :family 'local
-                                     :service socket)))
-    (process-send-string proc (concat json-data "\n"))
-    (accept-process-output proc)))
-
-(defun yeetube--send-command (property value)
-  "Send command with PROPERTY and VALUE as json-data to mpv socket."
-  (let ((json-data (format "{ \"command\": [\"%s\", \"%s\"]}" property value)))
-    (yeetube-send-command-to-socket yeetube-mpv-socket json-data)))
 
 (defun yeetube-toggle-pause-mpv ()
   "Toggle play/pause mpv."
