@@ -248,7 +248,11 @@ Example Usage:
   (process-send-string "yeetube" "p")
   (message "yeetube: toggle pause"))
 
-(defun yeetube-toggle-video-mpv ()
+(defun yeetube-mpv-toggle-fullscreen ()
+  "Toggle fullscreen."
+  (interactive)
+  (process-send-string "yeetube" "f")
+  (message "toggle fullscreen"))
   "Toggle video on/off mpv."
   (interactive)
   (unless (string-match "mpv" yeetube-player)
