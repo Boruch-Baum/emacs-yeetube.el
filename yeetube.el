@@ -249,15 +249,16 @@ It's recommended you keep it as the default value."
 (defun yeetube-toggle-pause-mpv ()
   "Toggle play/pause mpv."
   (interactive)
-  (let ((socat (executable-find "socat")))
-    (unless socat (error "Required program 'socat' not found"))
-    (unless (string-match "mpv" yeetube-player)
-      (error "Not using mpv as yeetube-player"))
-    (when (and (string-match "mpv" yeetube-player) socat)
-      (shell-command
-       (format "echo '{ \"command\": [\"cycle\", \"pause\"] }' | %s - %s"
-	       socat yeetube-mpv-socket))
-      (message "mpv toggle pause"))))
+  (unless (string-match "mpv" yeetube-player)
+    (error "Not using mpv as yeetube-player"))
+  (yeetube--send-command 'cycle 'pause))
+
+(defun yeetube-toggle-video-mpv ()
+  "Toggle video on/off mpv."
+  (interactive)
+  (unless (string-match "mpv" yeetube-player)
+    (error "Not using mpv as yeetube-player"))
+  (yeetube--send-command 'cycle 'video))
 
 ;; Usually titles from youtube get messed up,
 ;; This should fix some of the common issues.
