@@ -258,11 +258,13 @@ Example Usage:
   "Send KEY to mpv process."
   (interactive "sKeypress: ")
   (process-send-string "yeetube" key))
+
+(defun yeetube-mpv-toggle-video ()
   "Toggle video on/off mpv."
   (interactive)
-  (unless (string-match "mpv" yeetube-player)
-    (error "Not using mpv as yeetube-player"))
-  (yeetube--send-command 'cycle 'video))
+  (process-send-string "yeetube" "_")
+  (message "yeetube: toggle video"))
+
 
 ;; Usually titles from youtube get messed up,
 ;; This should fix some of the common issues.
@@ -362,7 +364,8 @@ Example Usage:
 		     (view-count (buffer-substring
 				  (+ view-count-start 3)
 				  (- view-count-end 1))))
-		;; Don't remove this!
+		;; Don't remove this! It'll make it easier to scrape more
+		;; info in the future
 		(search-backward "videoid")
 		;; show livestreams views as nil
 		(if (string-match-p "text" view-count)
