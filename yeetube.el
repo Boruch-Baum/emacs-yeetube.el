@@ -93,9 +93,10 @@ Example Usage:
   :safe #'symbolp
   :group 'yeetube)
 
-It's recommended you keep it as the default value."
-  :type 'string
-  :safe #'stringp
+(defcustom yeetube-mpv-disable-video nil
+  "Add no-video flag when using mpv."
+  :type 'boolean
+  :safe #'booleanp
   :group 'yeetube)
 
 (defcustom yeetube-download-directory "~/Downloads"
