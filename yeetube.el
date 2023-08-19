@@ -209,21 +209,16 @@ Example Usage:
     (when clear-saved
       (setq yeetube-saved-videos nil))))
 
-(defun yeetube--mpv-play (url)
-  "Use mpv to play URL."
-  (let ((mpv (executable-find "mpv"))
-	(socket (concat (temporary-file-directory) "yeetube-socket"))
-	(process-name "yeetube"))
+(defun yeetube-start-process (command)
+  "Start yeetube process for shell COMMAND."
+  (let ((process-name "yeetube"))
     (dolist (process (process-list))
       (when (string-match process-name (process-name process))
 	(kill-process process)))
     (sit-for 0.1)
     (unless (get-process process-name)
       (start-process-shell-command
-       "yeetube" nil
-       (if yeetube-mpv-disable-video
-	   (format "%s --no-video --input-ipc-server=%s %s" mpv socket url)
-	 (format "%s --input-ipc-server= %s %s" mpv socket url))))))
+       "yeetube" nil command))))
 
 (defun yeetube-mpv-toggle-disable-video ()
   "Disable/Enable video for mpv player."
