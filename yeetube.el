@@ -81,12 +81,6 @@ Example Usage:
   :safe #'booleanp
   :group 'yeetube)
 
-(defcustom yeetube-mpv-socket (concat temporary-file-directory "yeet-socket")
-  "MPV Input Socket."
-  :type 'string
-  :safe #'stringp
-  :group 'yeetube)
-
 (defcustom yeetube-player 'mpv
   "Select video player."
   :type 'symbol
