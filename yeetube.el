@@ -220,8 +220,12 @@ Example Usage:
       (start-process-shell-command
        "yeetube" nil command))))
 
-(defun yeetube-mpv-toggle-disable-video ()
-  "Disable/Enable video for mpv player."
+(defun yeetube-start-mpv-process (url)
+  "Start yeetube process to play URL using mpv."
+  (yeetube-start-process
+   (if yeetube-mpv-disable-video
+       (format "%s --no-video %s" (executable-find "mpv") url)
+     (format "%s %s" (executable-find "mpv") url))))
   (interactive)
   (let ((socket (concat " --input-ipc-server=" yeetube-mpv-socket))
         (no-video " --no-video")
