@@ -226,15 +226,14 @@ Example Usage:
    (if yeetube-mpv-disable-video
        (format "%s --no-video %s" (executable-find "mpv") url)
      (format "%s %s" (executable-find "mpv") url))))
+(defun yeetube-mpv-toggle-no-video-flag ()
+  "Toggle no video flag for mpv player."
   (interactive)
-  (let ((socket (concat " --input-ipc-server=" yeetube-mpv-socket))
-        (no-video " --no-video")
-        (mpv (executable-find "mpv")))
-    (setq yeetube-player
-          (if (string-match no-video yeetube-player)
-              (concat mpv socket)
-            (concat mpv no-video socket)))
-    (message (format "Yeetube Player: %s" yeetube-player))))
+  (if yeetube-mpv-disable-video
+      (progn (setq yeetube-mpv-disable-video nil)
+	     (message "yeetube: mpv removed no-video flag"))
+    (setq yeetube-mpv-disable-video t)
+    (message "yeetube: mpv added no-video flag")))
 
 (defun yeetube-mpv-toggle-pause ()
   "Toggle play/pause mpv."
