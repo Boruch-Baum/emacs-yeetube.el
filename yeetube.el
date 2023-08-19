@@ -226,6 +226,7 @@ Example Usage:
    (if yeetube-mpv-disable-video
        (format "%s --no-video %s" (executable-find "mpv") url)
      (format "%s %s" (executable-find "mpv") url))))
+
 (defun yeetube-mpv-toggle-no-video-flag ()
   "Toggle no video flag for mpv player."
   (interactive)
@@ -235,27 +236,27 @@ Example Usage:
     (setq yeetube-mpv-disable-video t)
     (message "yeetube: mpv added no-video flag")))
 
+(defun yeetube-send-keypress (key)
+  "Send KEY to yeetube-process."
+  (interactive "sKey: ")
+  (process-send-string "yeetube" key))
+
 (defun yeetube-mpv-toggle-pause ()
-  "Toggle play/pause mpv."
+  "Toggle pause mpv."
   (interactive)
-  (process-send-string "yeetube" "p")
+  (yeetube-send-keypress "p")
   (message "yeetube: toggle pause"))
 
 (defun yeetube-mpv-toggle-fullscreen ()
   "Toggle fullscreen."
   (interactive)
-  (process-send-string "yeetube" "f")
+  (yeetube-send-keypress "f")
   (message "toggle fullscreen"))
 
-(defun yeetube-mpv-send-keypress (key)
-  "Send KEY to mpv process."
-  (interactive "sKeypress: ")
-  (process-send-string "yeetube" key))
-
 (defun yeetube-mpv-toggle-video ()
-  "Toggle video on/off mpv."
+  "Toggle video mpv."
   (interactive)
-  (process-send-string "yeetube" "_")
+  (yeetube-send-keypress "_")
   (message "yeetube: toggle video"))
 
 
