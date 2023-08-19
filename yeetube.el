@@ -6,7 +6,7 @@
 ;; Keywords: extensions youtube videos invidious
 ;; URL: https://git.sr.ht/~thanosapollo/yeetube.el
 ;; Version: 1.5.0
-(defvar yeetube--version '1.5.0)
+(defvar yeetube--version '2.0.0)
 
 ;; Package-Requires: ((emacs "27.2"))
 
@@ -475,7 +475,7 @@ prompt blank to keep the default name."
      "\n~RET~     -> Play Video\n"
      "\n~v~       -> Toggle Video\n"
      "\n~V~       -> Toggle no-video flag\n"
-     "\n~p~       -> Toggle Pausen"
+     "\n~p~       -> Toggle Pause\n"
      "\n~C-c C-o~ -> Open In Browser\n"
      "\n~d~       -> Download\n"
      "\n~D~       -> Change Download Directory\n"
