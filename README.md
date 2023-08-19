@@ -39,11 +39,29 @@ git clone https://git.sr.ht/~thanosapollo/yeetube.el
 ### Dependencies
 - [mpv](https://mpv.io/): default multimedia player 
 - [yt-dlp](https://github.com/yt-dlp/yt-dlp): download functionality 
-- socat: control mpv *e.g pause/play*
 
 *Debian/Ubuntu*
 ``` shell
-sudo apt install mpv yt-dlp socat
+sudo apt install mpv yt-dlp
+```
+
+### Configuration 
+#### Media Player 
+Changing `yeetube-player` example: 
+
+``` emacs-lisp
+(setq yeetube-player 'vlc)
+```
+
+You can also use [mpv.el](https://github.com/kljohann/mpv.el) or other
+similar packages with yeetube by simple redefining `yeetube-play-url`
+to something like this:
+
+``` emacs-lisp
+  (defun yeetube-play-url (url)
+    "Open URL using mpv-play-url."
+    (when (string-prefix-p "http" url)
+      (mpv-play-url url)))
 ```
 
 ## Contributing 
