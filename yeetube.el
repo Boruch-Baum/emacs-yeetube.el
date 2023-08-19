@@ -156,8 +156,9 @@ Example Usage:
     (when (string-prefix-p "http" url)
       (setq yeetube-last-played url)
       (if (eq yeetube-player 'mpv)
-	  (yeetube--mpv-play url)
-	(call-process-shell-command (format "%s %s" media-player url))))))
+	  (yeetube-start-mpv-process url)
+        (yeetube-start-process
+	 (format "%s %s"  media-player url))))))
 
 (defun yeetube-play ()
   "Open the url at point in an `'org-mode buffer using ='yeetube-player'."
