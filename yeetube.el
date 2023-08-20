@@ -212,12 +212,12 @@ Example Usage:
 
 (defun yeetube-start-process (command)
   "Start yeetube process for shell COMMAND."
-  (let ((process-name "yeetube"))
+  (let ((yeetube-process "yeetube"))
     (dolist (process (process-list))
-      (when (string-match process-name (process-name process))
+      (when (string-match yeetube-process (process-name process))
 	(kill-process process)))
     (sit-for 0.1)
-    (unless (get-process process-name)
+    (unless (get-process yeetube-process)
       (start-process-shell-command
        "yeetube" nil command))))
 
