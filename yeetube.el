@@ -226,7 +226,8 @@ Example Usage:
   (yeetube-start-process
    (if yeetube-mpv-disable-video
        (format "%s --no-video %s" (executable-find "mpv") url)
-     (format "%s %s" (executable-find "mpv") url))))
+     (format "%s %s" (executable-find "mpv") url)))
+  (message "yeetube: starting mpv process"))
 
 (defun yeetube-mpv-toggle-no-video-flag ()
   "Toggle no video flag for mpv player."
