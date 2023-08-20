@@ -1,5 +1,7 @@
 # Yeetube.el
-[![builds.sr.ht status](https://builds.sr.ht/~thanosapollo/yeetube.el.svg)](https://builds.sr.ht/~thanosapollo/yeetube.el?)
+Tests: [![builds.sr.ht status](https://builds.sr.ht/~thanosapollo/yeetube.el.svg)](https://builds.sr.ht/~thanosapollo/yeetube.el?)
+
+Repo: [![Sourcehut](https://img.shields.io/badge/Master-sourcehut-lightgrey.svg?logo=sourcehut)](https://sr.ht/~thanosapollo/yeetube.el)
 
 Available via
 [![MELPA](https://melpa.org/packages/yeetube-badge.svg)](https://melpa.org/#/yeetube)
