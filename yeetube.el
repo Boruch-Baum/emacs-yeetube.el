@@ -159,7 +159,7 @@ Example Usage:
       (if (eq yeetube-player 'mpv)
 	  (yeetube-start-mpv-process url)
         (yeetube-start-process
-	 (format "%s %s"  media-player url))))))
+	 (format "%s '%s'"  media-player url))))))
 
 (defun yeetube-play ()
   "Open the url at point in an `'org-mode buffer using ='yeetube-player'."
@@ -412,11 +412,11 @@ Example Usage:
       (let ((default-directory yeetube-download-directory))
         (async-shell-command
          (if yeetube-download-audio-format
-             (format "%s %s --extract-audio --audio-format %s"
+             (format "%s '%s' --extract-audio --audio-format %s"
                      (shell-quote-argument yeetube-yt-dlp)
                      (shell-quote-argument url)
                      (shell-quote-argument yeetube-download-audio-format))
-           (format "%s %s"
+           (format "%s '%s'"
                    (shell-quote-argument yeetube-yt-dlp)
                    (shell-quote-argument url)))
          (message "Downloading %s " url))))))
@@ -452,12 +452,12 @@ prompt blank to keep the default name."
             (name (cdr pair)))
         (call-process-shell-command
          (if yeetube-download-audio-format
-             (format "%s %s --extract-audio --audio-format %s -o %s"
+             (format "%s '%s' --extract-audio --audio-format %s -o %s"
                      (shell-quote-argument yeetube-yt-dlp)
                      (shell-quote-argument url)
                      (shell-quote-argument yeetube-download-audio-format)
                      (shell-quote-argument name))
-           (format "%s %s -o %s"
+           (format "%s '%s' -o %s"
                    (shell-quote-argument yeetube-yt-dlp)
                    (shell-quote-argument url)
                    (shell-quote-argument name)))
