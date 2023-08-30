@@ -410,16 +410,15 @@ Example Usage:
               :raw-link (org-element-context))))
     (when (string-prefix-p "http" url)
       (let ((default-directory yeetube-download-directory))
-        (async-shell-command
+        (call-process-shell-command
          (if yeetube-download-audio-format
              (format "%s '%s' --extract-audio --audio-format %s"
                      (shell-quote-argument yeetube-yt-dlp)
                      (shell-quote-argument url)
                      (shell-quote-argument yeetube-download-audio-format))
-           (format "%s '%s'"
-                   (shell-quote-argument yeetube-yt-dlp)
-                   (shell-quote-argument url)))
-         (message "Downloading %s " url))))))
+	   (format "%s '%s'" (executable-find "yt-dlp") url))
+	 nil 0)
+        (message "Downloading %s " url)))))
 
 ;;;###autoload
 (defun yeetube-download-videos ()
