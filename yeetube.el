@@ -412,10 +412,7 @@ Example Usage:
       (let ((default-directory yeetube-download-directory))
         (call-process-shell-command
          (if yeetube-download-audio-format
-             (format "%s '%s' --extract-audio --audio-format %s"
-                     (shell-quote-argument yeetube-yt-dlp)
-                     (shell-quote-argument url)
-                     (shell-quote-argument yeetube-download-audio-format))
+             (format "%s '%s' --extract-audio --audio-format %s" (executable-find "yt-dlp") url yeetube-download-audio-format)
 	   (format "%s '%s'" (executable-find "yt-dlp") url))
 	 nil 0)
         (message "Downloading %s " url)))))
