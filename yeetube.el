@@ -430,11 +430,7 @@ prompt blank to keep the default name."
   (let ((url "")
         (name "")
         (download-counter 1)
-	(audio-only-p (y-or-n-p "Download videos as audio only format?"))
 	(stored-contents nil))
-    (if audio-only-p
-	(yeetube-change-download-audio-format (read-string "Specify audio format: "))
-      (yeetube-change-download-audio-format nil))
     ;; Read links and names until "q" is entered
     (while (not (string= url "q"))
       (setq url (read-string "Enter URL (q to quit): "))
@@ -447,16 +443,7 @@ prompt blank to keep the default name."
       (let ((url (car pair))
             (name (cdr pair)))
         (call-process-shell-command
-         (if yeetube-download-audio-format
-             (format "%s '%s' --extract-audio --audio-format %s -o %s"
-                     (shell-quote-argument yeetube-yt-dlp)
-                     (shell-quote-argument url)
-                     (shell-quote-argument yeetube-download-audio-format)
-                     (shell-quote-argument name))
-           (format "%s '%s' -o %s"
-                   (shell-quote-argument yeetube-yt-dlp)
-                   (shell-quote-argument url)
-                   (shell-quote-argument name)))
+         (format "%s '%s' -o %s" (executable-find "yt-dlp") url name)
 	 nil 0)))))
 
 (defun yeetube-insert-info ()
