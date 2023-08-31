@@ -70,7 +70,7 @@
 If nil download output will be the default format.
 
 Example Usage:
- (setq yeetube-download-audio-format \"m4a\")"
+ (setf yeetube-download-audio-format \"m4a\")"
   :type 'string
   :safe #'stringp
   :group 'yeetube)
@@ -155,7 +155,7 @@ Example Usage:
     (unless media-player
       (error (format "%s not found." media-player)))
     (when (string-prefix-p "http" url)
-      (setq yeetube-last-played url)
+      (setf yeetube-last-played url)
       (if (eq yeetube-player 'mpv)
 	  (yeetube-start-mpv-process url)
         (yeetube-start-process
@@ -177,7 +177,7 @@ Example Usage:
 	  (insert-file-contents file-path)
 	  (goto-char (point-min))
 	  (let ((contents (read (current-buffer))))
-	    (setq yeetube-saved-videos contents)))
+	    (setf yeetube-saved-videos contents)))
       (write-region "nil" nil file-path))))
 
 (defun yeetube-save-video ()
@@ -201,14 +201,14 @@ Example Usage:
   (interactive)
   (yeetube-load-saved-videos)
   (let ((video (completing-read "Select video: " yeetube-saved-videos nil t)))
-    (setq yeetube-saved-videos (remove (assoc video yeetube-saved-videos) yeetube-saved-videos))))
+    (setf yeetube-saved-videos (remove (assoc video yeetube-saved-videos) yeetube-saved-videos))))
 
 (defun yeetube-remove-all-saved-videos ()
   "Clear yeetube saved."
   (interactive)
   (let ((clear-saved (y-or-n-p "Delete saved?")))
     (when clear-saved
-      (setq yeetube-saved-videos nil))))
+      (setf yeetube-saved-videos nil))))
 
 (defun yeetube-start-process (command)
   "Start yeetube process for shell COMMAND."
@@ -233,9 +233,9 @@ Example Usage:
   "Toggle no video flag for mpv player."
   (interactive)
   (if yeetube-mpv-disable-video
-      (progn (setq yeetube-mpv-disable-video nil)
+      (progn (setf yeetube-mpv-disable-video nil)
 	     (message "yeetube: mpv removed no-video flag"))
-    (setq yeetube-mpv-disable-video t)
+    (setf yeetube-mpv-disable-video t)
     (message "yeetube: mpv added no-video flag")))
 
 (defun yeetube-mpv-send-keypress (key)
@@ -272,7 +272,7 @@ Example Usage:
 			("u0026" . "&")
 			("\\\\" . ""))))
     (mapc (lambda (replacement)
-            (setq title (replace-regexp-in-string (car replacement) (cdr replacement) title)))
+            (setf title (replace-regexp-in-string (car replacement) (cdr replacement) title)))
           replacements)
     title))
 
@@ -281,7 +281,7 @@ Example Usage:
   (with-temp-buffer
     (switch-to-buffer
      (get-buffer-create "*Yeetube Search*"))
-    (setq buffer-read-only nil)
+    (setf buffer-read-only nil)
     (erase-buffer)
     (org-mode)
     (insert
@@ -299,7 +299,7 @@ Example Usage:
 			yeetube-results-prefix yeetube-query-url
 			videoid title)))))
     (yeetube-insert-info)
-    (setq buffer-read-only t)
+    (setf buffer-read-only t)
     (goto-char (point-min))
     (search-forward yeetube-results-prefix)
     (yeetube-mode)))
@@ -326,7 +326,7 @@ Example Usage:
 
 (defun yeetube-get-content-youtube ()
   "Get content from youtube."
-  (setq yeetube-content nil)
+  (setf yeetube-content nil)
   ;; we define these temp lists to keep tract of video-ids and
   ;; video-titles, ensuring we push only unique ones to
   ;; yeetube-content
@@ -372,7 +372,7 @@ Example Usage:
 ;; even though it's "wrong".
 (defun yeetube-get-content-invidious ()
   "Get content from an invidious instance."
-  (setq yeetube-content nil)
+  (setf yeetube-content nil)
   (let ((video-ids nil)
 	(video-titles nil))
     (while (and (< (length video-ids) yeetube-results-limit)
@@ -433,11 +433,11 @@ prompt blank to keep the default name."
 	(stored-contents nil))
     ;; Read links and names until "q" is entered
     (while (not (string= url "q"))
-      (setq url (read-string "Enter URL (q to quit): "))
+      (setf url (read-string "Enter URL (q to quit): "))
       (unless (string= url "q")
-        (setq name (read-string (format "Custom name (download counter: %d) " download-counter)))
+        (setf name (read-string (format "Custom name (download counter: %d) " download-counter)))
 	(push (cons url name) stored-contents)
-        (setq download-counter (1+ download-counter))))
+        (setf download-counter (1+ download-counter))))
     ;; Process the collected links and names
     (dolist (pair stored-contents)
       (let ((url (car pair))
@@ -472,15 +472,15 @@ prompt blank to keep the default name."
 (defun yeetube-change-download-directory ()
   "Change download directory."
   (interactive)
-  (setq yeetube-download-directory
+  (setf yeetube-download-directory
         (read-directory-name "Select a directory: ")))
 
 (defun yeetube-change-download-audio-format (audio-format)
   "Change download format to AUDIO-FORMAT."
   (interactive "sSpecify Audio Format(no for nil): ")
-  (setq yeetube-download-audio-format audio-format)
+  (setf yeetube-download-audio-format audio-format)
   (when (equal yeetube-download-audio-format "no")
-    (setq yeetube-download-audio-format nil)))
+    (setf yeetube-download-audio-format nil)))
 
 
 (defun yeetube-change-platform ()
@@ -489,18 +489,18 @@ prompt blank to keep the default name."
   (let ((platform (completing-read "Choose video platform: "
 				   '("YouTube" "Invidious" "Localhost" "Custom"))))
     (pcase platform
-      ("Invidious" (setq yeetube-query-url
+      ("Invidious" (setf yeetube-query-url
 			 (completing-read "Select Instance: " yeetube-invidious-instances)))
-      ("Localhost" (setq yeetube-query-url "localhost"))
-      ("YouTube" (setq yeetube-query-url "youtube.com"))
-      ("Custom" (setq yeetube-query-url (read-string "URL: ")))))
+      ("Localhost" (setf yeetube-query-url "localhost"))
+      ("YouTube" (setf yeetube-query-url "youtube.com"))
+      ("Custom" (setf yeetube-query-url (read-string "URL: ")))))
   (when (string-prefix-p "localhost" yeetube-query-url)
-    (setq yeetube-query-url (concat "http://localhost:" (read-string "Port: "))))
+    (setf yeetube-query-url (concat "http://localhost:" (read-string "Port: "))))
   (unless (or (string-prefix-p "http://" yeetube-query-url)
 	      (string-prefix-p "https://" yeetube-query-url))
-    (setq yeetube-query-url (concat "https://" yeetube-query-url)))
+    (setf yeetube-query-url (concat "https://" yeetube-query-url)))
   (when (string-suffix-p "/" yeetube-query-url)
-    (setq yeetube-query-url (substring yeetube-query-url 0 -1))))
+    (setf yeetube-query-url (substring yeetube-query-url 0 -1))))
 
 
 (defun yeetube-update-info (symbol-name new-value _operation _where)
@@ -520,7 +520,7 @@ OPERATION & WHERE are required to work with ='add-variable-watcher."
     (when (get-buffer "*Yeetube Search*")
       (push-mark)
       (switch-to-buffer (get-buffer "*Yeetube Search*"))
-      (setq buffer-read-only nil)
+      (setf buffer-read-only nil)
       (goto-char (point-min))
       (search-forward to-change)
       (beginning-of-visual-line)
@@ -540,7 +540,7 @@ OPERATION is the operation to perform.
 WHERE indicates where in the buffer the update should happen."
   (with-temp-buffer (find-file (concat user-emacs-directory "yeetube"))
 		    (erase-buffer)
-		    (setq yeetube-saved-videos new-value)
+		    (setf yeetube-saved-videos new-value)
 		    (insert (pp-to-string yeetube-saved-videos))
 		    (save-buffer)
 		    (kill-buffer)))
