@@ -7,15 +7,6 @@
 This package provides the ability to scrape YouTube or any Invidious
 instance, with the results displayed in a read-only org-mode buffer.
 
-Key features:
- - Search video query
- - Play video URL, *by default with MPV*
- - Save video URL with a custom name/label
- - Download video, *this package serves also as a front-end for
-   yt-dlp, thus supporting platforms beyond YouTube/Invidious.*
-
-
-
 ## Installation 
 You can install it via [MELPA](https://melpa.org/#/yeetube)
 
@@ -44,24 +35,9 @@ sudo apt install mpv yt-dlp
 
 ### Configuration 
 #### Media Player 
-Changing `yeetube-player` example: 
+By default `yeetube-player` is set to `yeetube-mpv`, you can use
+[mpv.el](https://github.com/kljohann/mpv.el), [GNU/Emms](https://www.gnu.org/software/emms/) or other similar packages like so:
 
 ``` emacs-lisp
-(setq yeetube-player 'vlc)
+(setq yeetube-player 'emms-play-url)
 ```
-
-You can also use [mpv.el](https://github.com/kljohann/mpv.el) or other
-similar packages with yeetube by simple redefining `yeetube-play-url`
-to something like this:
-
-``` emacs-lisp
-  (defun yeetube-play-url (url)
-    "Open URL using mpv-play-url."
-    (when (string-prefix-p "http" url)
-      (mpv-play-url url)))
-```
-
-## Contributing 
-
-- [Mailing list](https://lists.sr.ht/~thanosapollo/yeetube.el)
-- [Tickets](https://todo.sr.ht/~thanosapollo/yeetube.el)
