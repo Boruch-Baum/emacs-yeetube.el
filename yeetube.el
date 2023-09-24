@@ -4,9 +4,9 @@
 
 ;; Author: Thanos Apollo <public@thanosapollo.com>
 ;; Keywords: extensions youtube videos invidious
-;; URL: https://git.sr.ht/~thanosapollo/yeetube.el
-;; Version: 1.5.0
-(defvar yeetube--version '2.0.0)
+;; URL: https://git.thanosapollo.com/yeetube
+;; Version: 2.0.1
+(defvar yeetube--version '2.0.1)
 
 ;; Package-Requires: ((emacs "27.2"))
 
@@ -28,19 +28,12 @@
 ;; This package provides the ability to scrape YouTube or any Invidious
 ;; instance, with the results displayed in a read-only org-mode buffer.
 
-;; Key features:
-;;  - Search video query
-;;  - Play video URL, by default with mpv
-;;  - Save video URL with a custom name/label
-;;  - Download video, this package serves also as a front-end for
-;;    yt-dlp, thus supporting platforms beyond Youtube & Invidious.
-
 ;;; Code:
 
 (require 'url)
 (require 'org-element)
 (require 'cl-lib)
-
+(require 'yeetube-mpv)
 
 (defgroup yeetube nil
   "Youtube & Invidious Front-end."
@@ -81,16 +74,10 @@ Example Usage:
   :safe #'booleanp
   :group 'yeetube)
 
-(defcustom yeetube-player 'mpv
+(defcustom yeetube-player 'yeetube-mpv
   "Select video player."
   :type 'symbol
   :safe #'symbolp
-  :group 'yeetube)
-
-(defcustom yeetube-mpv-disable-video nil
-  "Add no-video flag when using mpv."
-  :type 'boolean
-  :safe #'booleanp
   :group 'yeetube)
 
 (defcustom yeetube-download-directory "~/Downloads"
@@ -149,24 +136,12 @@ Example Usage:
       t
     nil))
 
-(defun yeetube-play-url (url)
-  "Open URL using yeetube-player."
-  (let ((media-player (executable-find (symbol-name yeetube-player))))
-    (unless media-player
-      (error (format "%s not found." media-player)))
-    (when (string-prefix-p "http" url)
-      (setf yeetube-last-played url)
-      (if (eq yeetube-player 'mpv)
-	  (yeetube-start-mpv-process url)
-        (yeetube-start-process
-	 (format "%s '%s'"  media-player url))))))
-
 (defun yeetube-play ()
   "Open the url at point in an `'org-mode buffer using ='yeetube-player'."
   (interactive)
   (let ((url (org-element-property
               :raw-link (org-element-context))))
-    (yeetube-play-url url)))
+    (funcall yeetube-player url)))
 
 (defun yeetube-load-saved-videos ()
   "Load saved videos."
@@ -209,58 +184,6 @@ Example Usage:
   (let ((clear-saved (y-or-n-p "Delete saved?")))
     (when clear-saved
       (setf yeetube-saved-videos nil))))
-
-(defun yeetube-start-process (command)
-  "Start yeetube process for shell COMMAND."
-  (let ((yeetube-process "yeetube"))
-    (dolist (process (process-list))
-      (when (string-match yeetube-process (process-name process))
-	(kill-process process)))
-    (sit-for 0.1)
-    (unless (get-process yeetube-process)
-      (start-process-shell-command
-       "yeetube" nil command))))
-
-(defun yeetube-start-mpv-process (url)
-  "Start yeetube process to play URL using mpv."
-  (yeetube-start-process
-   (if yeetube-mpv-disable-video
-       (format "%s --no-video '%s'" (executable-find "mpv") url)
-     (format "%s '%s'" (executable-find "mpv") url)))
-  (message "yeetube: starting mpv process"))
-
-(defun yeetube-mpv-toggle-no-video-flag ()
-  "Toggle no video flag for mpv player."
-  (interactive)
-  (if yeetube-mpv-disable-video
-      (progn (setf yeetube-mpv-disable-video nil)
-	     (message "yeetube: mpv removed no-video flag"))
-    (setf yeetube-mpv-disable-video t)
-    (message "yeetube: mpv added no-video flag")))
-
-(defun yeetube-mpv-send-keypress (key)
-  "Send KEY to yeetube-process."
-  (interactive "sKey: ")
-  (process-send-string "yeetube" key))
-
-(defun yeetube-mpv-toggle-pause ()
-  "Toggle pause mpv."
-  (interactive)
-  (yeetube-mpv-send-keypress "p")
-  (message "yeetube: toggle pause"))
-
-(defun yeetube-mpv-toggle-fullscreen ()
-  "Toggle fullscreen."
-  (interactive)
-  (yeetube-mpv-send-keypress "f")
-  (message "toggle fullscreen"))
-
-(defun yeetube-mpv-toggle-video ()
-  "Toggle video mpv."
-  (interactive)
-  (yeetube-mpv-send-keypress "_")
-  (message "yeetube: toggle video"))
-
 
 ;; Usually titles from youtube get messed up,
 ;; This should fix some of the common issues.
