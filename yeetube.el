@@ -188,19 +188,18 @@ Example Usage:
 (defun yeetube-search (query)
   "Search for QUERY."
   (interactive "sYeetube Search: ")
-  (let ((is-youtube? (yeetube-youtube-p yeetube-query-url)))
-    (with-current-buffer
-	(url-retrieve-synchronously
-	 (concat yeetube-query-url
-		 "/search?q="
-		 (replace-regexp-in-string " " "+" query)
-		 "&type=video")
-	 t t 30)
-      (decode-coding-region (point-min) (point-max) 'utf-8)
-      (goto-char (point-min))
-      (toggle-enable-multibyte-characters)
-      (yeetube-get-content-youtube)
-      (yeetube-buffer-create query yeetube-content 'yeetube-mode))))
+  (with-current-buffer
+      (url-retrieve-synchronously
+       (concat yeetube-query-url
+	       "/search?q="
+	       (replace-regexp-in-string " " "+" query)
+	       "&type=video")
+       t t 30)
+    (decode-coding-region (point-min) (point-max) 'utf-8)
+    (goto-char (point-min))
+    (toggle-enable-multibyte-characters)
+    (yeetube-get-content-youtube)
+    (yeetube-buffer-create query yeetube-content 'yeetube-mode)))
 
 (defun yeetube-get-content-youtube ()
   "Get content from youtube."
