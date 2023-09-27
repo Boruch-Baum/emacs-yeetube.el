@@ -1,4 +1,4 @@
-;;; yeetube.el --- Yeetube Buffer  -*- lexical-binding: t; -*-
+;;; yeetube-buffer.el --- Yeetube Buffer  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023  Thanos Apollo
 
@@ -27,9 +27,8 @@
 ;; This package provides yeetube-buffer functionality
 
 ;; TODO: Fix titles with emojis (ruin formatting)
-;;; Code:
 
-(require 'yeetube)
+;;; Code:
 
 (defun yeetube-buffer-fix-title (title)
   "Adjust TITLE."
@@ -60,13 +59,12 @@
 
 (defun yeetube-buffer-render-header (query)
   "Render header for *yeetube* buffer for QUERY."
-  (header-line-indent-mode)
   (setf header-line-format
 	(concat
-	 (format "Yeetube Search: %s" (propertize query 'face 'message-header-subject)))))
+	 (format "Yeetube Search: %s" (propertize query 'face 'yeetube-header-query-face)))))
 
 ;; Inspired from ytel
-(defun yeetube--format-title (title)
+(defun yeetube-buffer--format-title (title)
   "Format a video TITLE to be inserted in the *yeetube* buffer."
   (let* ((n (string-width title))
 	 (extra-chars (- n 60))
@@ -76,9 +74,9 @@
 				       " ")
 			     (concat (seq-subseq title 0 60)
 				     " "))))
-    formatted-string))
+    (propertize formatted-string 'face 'yeetube-face-title)))
 
-(defun yeetube--format-view-count (view-count)
+(defun yeetube-buffer--format-view-count (view-count)
   "Format a video VIEW-COUNT to be inserted in the *yeetube* buffer."
   (let* ((n (string-width view-count))
 	 (extra-chars (- n 20))
@@ -88,9 +86,9 @@
 				       " ")
 			     (concat (seq-subseq view-count 0 20)
 				     "..."))))
-    (propertize formatted-string 'face 'message-header-name)))
+    (propertize formatted-string 'face 'yeetube-face-view-count)))
 
-(defun yeetube--format-video-duration (video-duration)
+(defun yeetube-buffer--format-video-duration (video-duration)
   "Format a video VIDEO-DURATION to be inserted in the *yeetube* buffer."
   (let* ((n (string-width video-duration))
 	 (extra-chars (- n 20))
@@ -100,13 +98,13 @@
 				       " ")
 			     (concat (seq-subseq video-duration 0 20)
 				     "..."))))
-    (propertize formatted-string 'face 'message-header-xheader)))
+    (propertize formatted-string 'face 'yeetube-face-duration)))
 
 (defun yeetube-buffer-create (query content buffer-mode)
-  "Create *yeetube* buffer with MODE for QUERY, displaying CONTENT."
+  "Create *yeetube* buffer with BUFFER-MODE for QUERY, displaying CONTENT."
   (with-current-buffer
-      (switch-to-buffer (get-buffer-create "*yeetube*")
-			(funcall buffer-mode))
+      (switch-to-buffer (get-buffer-create "*yeetube*"))
+    (funcall buffer-mode)
     (erase-buffer)
     (pop content) ;; Remove filtes
     (yeetube-buffer-render-header query)
@@ -114,20 +112,20 @@
 		  (let ((title (yeetube-buffer-fix-title (car info)))
 			(view-count (caddr info))
 			(video-duration (cadddr info)))
-		    (insert (yeetube--format-title
+		    (insert (yeetube-buffer--format-title
 			     (format "%s "
 				    (propertize title 'face 'message-header-subject))))
 		    ;; Add commas, using this in yeetube-buffer-fix-view-count
 		    ;; causes display issues with unicode characters
 		    (end-of-line)
 		    (insert  (format "| %s"
-			     (yeetube--format-view-count
+			     (yeetube-buffer--format-view-count
 				    (if (< (length view-count) 20)
 					 (yeetube-buffer-view-count-add-commas
 					  (yeetube-buffer-fix-view-count view-count))
 				      "nil")))
 			     (format "%s\n"
-				     (yeetube--format-video-duration
+				     (yeetube-buffer--format-video-duration
 				      (if (string-match-p "^[0-9:]+$" video-duration)
 					  video-duration
 					"nil"))))))))
