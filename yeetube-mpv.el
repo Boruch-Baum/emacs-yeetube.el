@@ -29,8 +29,6 @@
 
 ;;; Code:
 
-(require 'yeetube)
-
 (defcustom yeetube-mpv-disable-video nil
   "Add no-video flag when using mpv."
   :type 'boolean
