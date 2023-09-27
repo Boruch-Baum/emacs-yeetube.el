@@ -33,6 +33,7 @@
 (require 'url)
 (require 'org-element)
 (require 'cl-lib)
+
 (require 'yeetube-mpv)
 
 (defgroup yeetube nil
@@ -74,10 +75,10 @@ Example Usage:
   :safe #'booleanp
   :group 'yeetube)
 
-(defcustom yeetube-player 'yeetube-mpv
-  "Select video player."
-  :type 'symbol
-  :safe #'symbolp
+(defcustom yeetube-player #'yeetube-mpv
+  "Select media player function."
+  :type 'function
+  :safe #'function
   :group 'yeetube)
 
 (defcustom yeetube-download-directory "~/Downloads"
@@ -169,7 +170,7 @@ Example Usage:
   (interactive)
   (yeetube-load-saved-videos)
   (let ((video (completing-read "Select video: " yeetube-saved-videos nil t)))
-    (yeetube-play-url (cdr (assoc video yeetube-saved-videos)))))
+    (funcall yeetube-player (cdr (assoc video yeetube-saved-videos)))))
 
 (defun yeetube-remove-saved-video ()
   "Select video to remove from saved videos."
@@ -212,12 +213,13 @@ Example Usage:
     (dolist (info (reverse content))
       (let ((videoid (car info))
 	    (title (yeetube-fix-title (cadr info)))
-	    (view-count (caddr info)))
+	    (view-count (caddr info))
+	    (video-duration (cadddr info)))
 	;; gap [%s ] for titles that end with ]
 	(if yeetube-display-view-count
-	    (insert (format "%s [[%s/watch?v=%s][%s ]] =%s=\n"
+	    (insert (format "%s [[%s/watch?v=%s][%s ]] |%s| |%s|\n"
 			yeetube-results-prefix yeetube-query-url
-			videoid title view-count))
+			videoid title video-duration view-count ))
 	  (insert (format "%s [[%s/watch?v=%s][%s ]]\n"
 			yeetube-results-prefix yeetube-query-url
 			videoid title)))))
@@ -286,10 +288,19 @@ Example Usage:
 		;; Don't remove this! It'll make it easier to scrape more
 		;; info in the future
 		(search-backward "videoid")
-		;; show livestreams views as nil
-		(if (string-match-p "text" view-count)
-		    (push `(,videoid ,title "nil") yeetube-content)
-		  (push `(,videoid ,title ,view-count) yeetube-content))))))))))
+		;; Get video duration
+		(search-forward "lengthText")
+		(search-forward "simpletext")
+		(let* ((video-duration-start (point))
+		       (video-duration-end (search-forward "},"))
+		       (video-duration (buffer-substring
+				    (+ video-duration-start 3)
+				    (- video-duration-end 3))))
+		  (search-backward "videoid")
+		  ;; show livestreams views as nil
+		  (if (string-match-p "text" view-count)
+		      (push `(,videoid ,title "nil") yeetube-content)
+		    (push `(,videoid ,title ,view-count ,video-duration) yeetube-content)))))))))))
 
 ;; same as youtube but with different values, it's easier this way
 ;; even though it's "wrong".
