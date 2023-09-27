@@ -193,7 +193,8 @@ Example Usage:
        (concat yeetube-query-url
 	       "/search?q="
 	       (replace-regexp-in-string " " "+" query)
-	       "&type=video")
+	       ;; Filter parameter to remove live videos.
+	       "&sp=EgQQASAB")
        t t 30)
     (decode-coding-region (point-min) (point-max) 'utf-8)
     (goto-char (point-min))
