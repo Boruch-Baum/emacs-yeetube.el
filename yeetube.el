@@ -30,7 +30,6 @@
 ;;; Code:
 
 (require 'url)
-(require 'org-element)
 (require 'cl-lib)
 (require 'yeetube-buffer)
 (require 'yeetube-mpv)
@@ -118,19 +117,17 @@ Example Usage:
 
 (defvar yeetube-last-played nil)
 
-(defun yeetube-youtube-p (url)
-  "Check if it's a youtube URL."
-  (if (string-match-p "youtube" url)
-      t
-    nil))
+(defun yeetube-get-url ()
+  "Get url for subject in *yeetube* buffer at point."
+  (let ((item-num (line-number-at-pos)))
+    (cadr (nth (- item-num 1) (reverse yeetube-content)))))
 
 (defun yeetube-play ()
   "Play video at point in *yeetube* buffer."
   (interactive)
-  (let ((item-num (line-number-at-pos)))
+  (let ((url (yeetube-get-url)))
     (funcall yeetube-player
-	     (concat "https://youtube.com/watch?v="
-		     (cadr (nth (- item-num 1) (reverse yeetube-content)))))))
+	     (concat "https://youtube.com/watch?v=" url))))
 
 (defun yeetube-load-saved-videos ()
   "Load saved videos."
@@ -149,8 +146,7 @@ Example Usage:
   (interactive)
   (yeetube-load-saved-videos)
   (let ((name (read-string "Save as: "))
-	(url (org-element-property
-	      :raw-link (org-element-context))))
+	(url (yeetube-get-url)))
     (push (cons name url) yeetube-saved-videos)))
 
 (defun yeetube-play-saved-video ()
@@ -257,10 +253,9 @@ Example Usage:
 
 ;;;###autoload
 (defun yeetube-download-video ()
-  "Download using link at point in an `'org-mode buffer with yt-dlp."
+  "Download using link at point in *yeetube* buffer with yt-dlp."
   (interactive)
-  (let ((url (org-element-property
-              :raw-link (org-element-context))))
+  (let ((url (yeetube-get-url)))
     (when (string-prefix-p "http" url)
       (let ((default-directory yeetube-download-directory))
         (call-process-shell-command
