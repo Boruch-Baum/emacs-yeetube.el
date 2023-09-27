@@ -35,20 +35,20 @@
   :safe #'booleanp
   :group 'yeetube)
 
-(defun yeetube-process (command)
+(defun yeetube-mpv-process (command)
   "Start yeetube process for shell COMMAND."
-  (let ((yeetube-process "yeetube"))
+  (let ((yeetube-mpv-process "yeetube"))
     (dolist (process (process-list))
-      (when (string-match yeetube-process (process-name process))
+      (when (string-match yeetube-mpv-process (process-name process))
 	(kill-process process)))
     (sit-for 0.1)
-    (unless (get-process yeetube-process)
+    (unless (get-process yeetube-mpv-process)
       (start-process-shell-command
        "yeetube" nil command))))
 
 (defun yeetube-mpv (url)
   "Start yeetube process to play URL using mpv."
-  (yeetube-process
+  (yeetube-mpv-process
    (if yeetube-mpv-disable-video
        (format "%s --no-video '%s'" (executable-find "mpv") url)
      (format "%s '%s'" (executable-find "mpv") url)))
@@ -64,7 +64,7 @@
     (message "yeetube: mpv added no-video flag")))
 
 (defun yeetube-mpv-send-keypress (key)
-  "Send KEY to yeetube-process."
+  "Send KEY to yeetube-mpv-process."
   (interactive "sKey: ")
   (process-send-string "yeetube" key))
 
