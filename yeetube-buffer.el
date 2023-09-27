@@ -106,7 +106,8 @@
   "Create *yeetube* buffer with BUFFER-MODE for QUERY, displaying CONTENT."
   (with-current-buffer
       (switch-to-buffer (get-buffer-create "*yeetube*"))
-    (funcall buffer-mode)
+    (unless buffer-mode
+      (funcall buffer-mode))
     (erase-buffer)
     (pop content) ;; Remove filtes
     (yeetube-buffer--format-header query)
