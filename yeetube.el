@@ -1,12 +1,12 @@
-;;; yeetube.el --- YouTube & Invidious Front End  -*- lexical-binding: t; -*-
+;;; yeetube.el --- YouTube Front End  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023  Thanos Apollo
 
 ;; Author: Thanos Apollo <public@thanosapollo.com>
-;; Keywords: extensions youtube videos invidious
+;; Keywords: extensions youtube videos
 ;; URL: https://git.thanosapollo.com/yeetube
-;; Version: 2.0.1
-(defvar yeetube--version '2.0.1)
+;; Version: 2.0.2
+(defvar yeetube--version '2.0.2)
 
 ;; Package-Requires: ((emacs "27.2"))
 
@@ -25,19 +25,18 @@
 
 ;;; Commentary:
 
-;; This package provides the ability to scrape YouTube or any Invidious
-;; instance, with the results displayed in a read-only org-mode buffer.
+;; This package provides a YouTube front-end for Emacs.
 
 ;;; Code:
 
 (require 'url)
 (require 'org-element)
 (require 'cl-lib)
-
+(require 'yeetube-buffer)
 (require 'yeetube-mpv)
 
 (defgroup yeetube nil
-  "Youtube & Invidious Front-end."
+  "Youtube Front-end."
   :group 'external
   :prefix "yeetube-")
 
@@ -119,18 +118,6 @@ Example Usage:
 
 (defvar yeetube-last-played nil)
 
-(defvar yeetube-invidious-instances
-  '(("https://yewtu.be")
-    ("https://vid.puffyan.us")
-    ("https://yt.artemislena.eu")
-    ("https://invidious.flokinet.to")
-    ("https://invidious.projectsegfau.lt")
-    ("https://invidious.tiekoetter.com")
-    ("https://invidious.slipfox.xyz")
-    ("https://inv.pistasjis.net")
-    ("https://invidious.privacydev.net")
-    ("https://vid.priv.au")))
-
 (defun yeetube-youtube-p (url)
   "Check if it's a youtube URL."
   (if (string-match-p "youtube" url)
@@ -138,11 +125,12 @@ Example Usage:
     nil))
 
 (defun yeetube-play ()
-  "Open the url at point in an `'org-mode buffer using ='yeetube-player'."
+  "Play video at point in *yeetube* buffer."
   (interactive)
-  (let ((url (org-element-property
-              :raw-link (org-element-context))))
-    (funcall yeetube-player url)))
+  (let ((item-num (line-number-at-pos)))
+    (funcall yeetube-player
+	     (concat "https://youtube.com/watch?v="
+		     (cadr (nth (- item-num 1) (reverse yeetube-content)))))))
 
 (defun yeetube-load-saved-videos ()
   "Load saved videos."
@@ -200,35 +188,6 @@ Example Usage:
           replacements)
     title))
 
-(defun yeetube-create-buffer (query content)
-  "Create *Yeetube-Search* buffer for QUERY, using CONTENT."
-  (with-temp-buffer
-    (switch-to-buffer
-     (get-buffer-create "*Yeetube Search*"))
-    (setf buffer-read-only nil)
-    (erase-buffer)
-    (org-mode)
-    (insert
-     (format "searching: %s\nfor: %s \n* Search Results: \n \n" yeetube-query-url query))
-    (dolist (info (reverse content))
-      (let ((videoid (car info))
-	    (title (yeetube-fix-title (cadr info)))
-	    (view-count (caddr info))
-	    (video-duration (cadddr info)))
-	;; gap [%s ] for titles that end with ]
-	(if yeetube-display-view-count
-	    (insert (format "%s [[%s/watch?v=%s][%s ]] |%s| |%s|\n"
-			yeetube-results-prefix yeetube-query-url
-			videoid title video-duration view-count ))
-	  (insert (format "%s [[%s/watch?v=%s][%s ]]\n"
-			yeetube-results-prefix yeetube-query-url
-			videoid title)))))
-    (yeetube-insert-info)
-    (setf buffer-read-only t)
-    (goto-char (point-min))
-    (search-forward yeetube-results-prefix)
-    (yeetube-mode)))
-
 ;;;###autoload
 (defun yeetube-search (query)
   "Search for QUERY."
@@ -244,10 +203,8 @@ Example Usage:
       (decode-coding-region (point-min) (point-max) 'utf-8)
       (goto-char (point-min))
       (toggle-enable-multibyte-characters)
-      (if is-youtube?
-	  (yeetube-get-content-youtube)
-	(yeetube-get-content-invidious))
-      (yeetube-create-buffer query yeetube-content))))
+      (yeetube-get-content-youtube)
+      (yeetube-buffer-create query yeetube-content 'yeetube-mode))))
 
 (defun yeetube-get-content-youtube ()
   "Get content from youtube."
@@ -264,77 +221,39 @@ Example Usage:
              (videoid (buffer-substring
                        (+ videoid-start 3)
                        (- videoid-end 2))))
-	(unless (or (member videoid video-ids)
-                    (not (and (>= (length videoid) 9)
-                              (<= (length videoid) 13)
-                              (string-match-p "^[a-zA-Z0-9_-]*$" videoid))))
+	(unless (and (member videoid video-ids)
+		     (not (and (>= (length videoid) 9)
+			       (<= (length videoid) 13)
+			       (string-match-p "^[a-zA-Z0-9_-]*$" videoid))))
           (push videoid video-ids)
+	  ;; (search-backward "videoid")
+	  (search-forward "\"title\":")
           (search-forward "text")
           (let* ((title-start (point))
 		 (title-end (search-forward ",\""))
 		 (title (buffer-substring
 			 (+ title-start 3)
 			 (- title-end 5))))
-            (if (string-match-p "vssLoggingContext" title)
-		(pop video-ids)
-              (push title video-titles)
-	      (search-forward "viewCountText")
-	      (search-forward "text")
+	    (unless (member title video-titles)
+	      (push title video-titles)
+	      ;; (search-backward "videoid")
+	      (search-forward "viewCountText" nil t)
+	      (search-forward "text" nil t)
 	      (let* ((view-count-start (point))
 		     (view-count-end (search-forward " "))
 		     (view-count (buffer-substring
 				  (+ view-count-start 3)
-				  (- view-count-end 1))))
-		;; Don't remove this! It'll make it easier to scrape more
-		;; info in the future
-		(search-backward "videoid")
+				  (- view-count-end 0))))
 		;; Get video duration
-		(search-forward "lengthText")
-		(search-forward "simpletext")
+		(search-forward "lengthText" nil t)
+		(search-forward "text" nil t)
 		(let* ((video-duration-start (point))
 		       (video-duration-end (search-forward "},"))
 		       (video-duration (buffer-substring
-				    (+ video-duration-start 3)
-				    (- video-duration-end 3))))
+					(+ video-duration-start 3)
+					(- video-duration-end 3))))
 		  (search-backward "videoid")
-		  ;; show livestreams views as nil
-		  (if (string-match-p "text" view-count)
-		      (push `(,videoid ,title "nil") yeetube-content)
-		    (push `(,videoid ,title ,view-count ,video-duration) yeetube-content)))))))))))
-
-;; same as youtube but with different values, it's easier this way
-;; even though it's "wrong".
-(defun yeetube-get-content-invidious ()
-  "Get content from an invidious instance."
-  (setf yeetube-content nil)
-  (let ((video-ids nil)
-	(video-titles nil))
-    (while (and (< (length video-ids) yeetube-results-limit)
-		(search-forward "watch?v" nil t))
-      (let* ((videoid-start (point))
-             (videoid-end (search-forward ">"))
-             (videoid (buffer-substring
-                       (+ videoid-start 1)
-                       (- videoid-end 2))))
-	(unless (or (member videoid video-ids)
-                    (not (and (>= (length videoid) 9)
-                              (<= (length videoid) 13)
-                              (string-match-p "^[a-zA-Z0-9_-]*$" videoid))))
-          (push videoid video-ids)
-          (search-forward "\"auto\">")
-          (let* ((title-start (point))
-		 (title-end (search-forward ">"))
-		 (title (buffer-substring
-			 (+ title-start 0)
-			 (- title-end 4))))
-            (push title video-titles)
-	    (search-forward "views")
-	    (let* ((view-count-start (search-backward ">"))
-		   (view-count-end (search-forward " "))
-		   (view-count (buffer-substring
-				(+ view-count-start 1)
-				(- view-count-end 1))))
-	    (push `(,videoid ,title ,view-count) yeetube-content))))))))
+		  (push `(,title ,videoid ,view-count ,video-duration) yeetube-content))))))))))
 
 ;;;###autoload
 (defun yeetube-download-video ()
@@ -398,7 +317,6 @@ prompt blank to keep the default name."
      "\n~d~       -> Download\n"
      "\n~D~       -> Change Download Directory\n"
      "\n~a~       -> Change Download (Audio) Format\n"
-     "\n~u~       -> Change Video Platform (YouTube, Invidious, Localhost, Custom)\n"
      "\n~q~       -> Quit\n"
      "\n~s~       -> Save video\n"
      "\n~P~       -> Play Saved Video")))
@@ -415,55 +333,6 @@ prompt blank to keep the default name."
   (setf yeetube-download-audio-format audio-format)
   (when (equal yeetube-download-audio-format "no")
     (setf yeetube-download-audio-format nil)))
-
-
-(defun yeetube-change-platform ()
-  "Change video platform."
-  (interactive)
-  (let ((platform (completing-read "Choose video platform: "
-				   '("YouTube" "Invidious" "Localhost" "Custom"))))
-    (pcase platform
-      ("Invidious" (setf yeetube-query-url
-			 (completing-read "Select Instance: " yeetube-invidious-instances)))
-      ("Localhost" (setf yeetube-query-url "localhost"))
-      ("YouTube" (setf yeetube-query-url "youtube.com"))
-      ("Custom" (setf yeetube-query-url (read-string "URL: ")))))
-  (when (string-prefix-p "localhost" yeetube-query-url)
-    (setf yeetube-query-url (concat "http://localhost:" (read-string "Port: "))))
-  (unless (or (string-prefix-p "http://" yeetube-query-url)
-	      (string-prefix-p "https://" yeetube-query-url))
-    (setf yeetube-query-url (concat "https://" yeetube-query-url)))
-  (when (string-suffix-p "/" yeetube-query-url)
-    (setf yeetube-query-url (substring yeetube-query-url 0 -1))))
-
-
-(defun yeetube-update-info (symbol-name new-value _operation _where)
-  "Update information for SYMBOL-NAME with NEW-VALUE.
-
-SYMBOL-NAME is the name of the symbol to update.
-NEW-VALUE is the new value for the symbol.
-OPERATION is the operation to perform.
-WHERE indicates where in the buffer the update should happen.
-OPERATION & WHERE are required to work with ='add-variable-watcher."
-  (let ((to-change
-	 (pcase symbol-name
-	   ('yeetube-download-directory "Download Directory:")
-	   ('yeetube-download-audio-format "Download as audio format:")
-	   ('yeetube-query-url "searching:")))
-	(buffer-cur (buffer-name)))
-    (when (get-buffer "*Yeetube Search*")
-      (push-mark)
-      (switch-to-buffer (get-buffer "*Yeetube Search*"))
-      (setf buffer-read-only nil)
-      (goto-char (point-min))
-      (search-forward to-change)
-      (beginning-of-visual-line)
-      (kill-region (point) (line-end-position))
-      (insert
-       (format "%s %s" to-change new-value))
-      (setq-local buffer-read-only t)
-      (switch-to-buffer buffer-cur)
-      (goto-char (mark)))))
 
 (defun yeetube-update-saved-videos-list (_symbol new-value _where _environment)
   "Updated saved videos.
@@ -483,12 +352,6 @@ WHERE indicates where in the buffer the update should happen."
   "Show Yeetube Version."
   (interactive)
   (message "Yeetube Version: %s" yeetube--version))
-
-;; Variable to watch
-(add-variable-watcher 'yeetube-download-directory #'yeetube-update-info)
-(add-variable-watcher 'yeetube-download-audio-format #'yeetube-update-info)
-(add-variable-watcher 'yeetube-query-url #'yeetube-update-info)
-(add-variable-watcher 'yeetube-saved-videos #'yeetube-update-saved-videos-list)
 
 (provide 'yeetube)
 ;;; yeetube.el ends here
