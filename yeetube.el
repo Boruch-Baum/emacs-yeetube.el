@@ -119,8 +119,8 @@ Example Usage:
 
 (defun yeetube-get-url ()
   "Get url for subject in *yeetube* buffer at point."
-  (let ((item-num (line-number-at-pos)))
-    (cadr (nth (- item-num 1) (reverse yeetube-content)))))
+  (let ((video-url (cadr (nth (- (line-number-at-pos) 1) (reverse yeetube-content)))))
+    video-url))
 
 (defun yeetube-play ()
   "Play video at point in *yeetube* buffer."
@@ -170,6 +170,20 @@ Example Usage:
     (when clear-saved
       (setf yeetube-saved-videos nil))))
 
+(defun yeetube-update-saved-videos-list (_symbol new-value _where _environment)
+  "Updated saved videos.
+
+SYMBOL-NAME is the name of the symbol to update.
+NEW-VALUE is the new value for the symbol.
+OPERATION is the operation to perform.
+WHERE indicates where in the buffer the update should happen."
+  (with-temp-buffer (find-file (concat user-emacs-directory "yeetube"))
+		    (erase-buffer)
+		    (setf yeetube-saved-videos new-value)
+		    (insert (pp-to-string yeetube-saved-videos))
+		    (save-buffer)
+		    (kill-buffer)))
+
 ;; Usually titles from youtube get messed up,
 ;; This should fix some of the common issues.
 (defun yeetube-fix-title (title)
@@ -202,6 +216,7 @@ Example Usage:
     (yeetube-get-content-youtube)
     (yeetube-buffer-create query yeetube-content 'yeetube-mode)))
 
+;; TODO: Adjust to exclude live videos directly.
 (defun yeetube-get-content-youtube ()
   "Get content from youtube."
   (setf yeetube-content nil)
@@ -311,6 +326,8 @@ prompt blank to keep the default name."
   "Show Yeetube Version."
   (interactive)
   (message "Yeetube Version: %s" yeetube--version))
+
+(add-variable-watcher 'yeetube-saved-videos #'yeetube-update-saved-videos-list)
 
 (provide 'yeetube)
 ;;; yeetube.el ends here
