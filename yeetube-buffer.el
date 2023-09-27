@@ -30,6 +30,8 @@
 
 ;;; Code:
 
+(require 'yeetube-face)
+
 (defun yeetube-buffer-fix-title (title)
   "Adjust TITLE."
   (let ((replacements '(("&amp;" . "&")
@@ -61,7 +63,7 @@
   "Render header for *yeetube* buffer for QUERY."
   (setf header-line-format
 	(concat
-	 (format "Yeetube Search: %s" (propertize query 'face 'yeetube-header-query-face)))))
+	 (format "Yeetube Search: %s" (propertize query 'face 'yeetube-face-header-query)))))
 
 ;; Inspired from ytel
 (defun yeetube-buffer--format-title (title)
