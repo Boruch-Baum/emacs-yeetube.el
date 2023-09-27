@@ -293,28 +293,6 @@ prompt blank to keep the default name."
          (format "%s '%s' -o %s" (executable-find "yt-dlp") url name)
 	 nil 0)))))
 
-(defun yeetube-insert-info ()
-  "Insert default keybindings at *Yeetube Search* buffer."
-  (insert
-   "\n\n** Info"
-   (format "\nDownload Directory: %s" yeetube-download-directory)
-   (format "\nDownload as audio format: %s" yeetube-download-audio-format))
-  (when yeetube-display-info-keys
-    (insert
-     "\n\n*** Keybindings"
-     "\n"
-     "\n~RET~     -> Play Video\n"
-     "\n~v~       -> Toggle Video\n"
-     "\n~V~       -> Toggle no-video flag\n"
-     "\n~p~       -> Toggle Pause\n"
-     "\n~C-c C-o~ -> Open In Browser\n"
-     "\n~d~       -> Download\n"
-     "\n~D~       -> Change Download Directory\n"
-     "\n~a~       -> Change Download (Audio) Format\n"
-     "\n~q~       -> Quit\n"
-     "\n~s~       -> Save video\n"
-     "\n~P~       -> Play Saved Video")))
-
 (defun yeetube-change-download-directory ()
   "Change download directory."
   (interactive)
@@ -327,20 +305,6 @@ prompt blank to keep the default name."
   (setf yeetube-download-audio-format audio-format)
   (when (equal yeetube-download-audio-format "no")
     (setf yeetube-download-audio-format nil)))
-
-(defun yeetube-update-saved-videos-list (_symbol new-value _where _environment)
-  "Updated saved videos.
-
-SYMBOL-NAME is the name of the symbol to update.
-NEW-VALUE is the new value for the symbol.
-OPERATION is the operation to perform.
-WHERE indicates where in the buffer the update should happen."
-  (with-temp-buffer (find-file (concat user-emacs-directory "yeetube"))
-		    (erase-buffer)
-		    (setf yeetube-saved-videos new-value)
-		    (insert (pp-to-string yeetube-saved-videos))
-		    (save-buffer)
-		    (kill-buffer)))
 
 (defun yeetube-version ()
   "Show Yeetube Version."
