@@ -59,7 +59,7 @@
         (setf result (concat "," result))))
     result))
 
-(defun yeetube-buffer-render-header (query)
+(defun yeetube-buffer--format-header (query)
   "Render header for *yeetube* buffer for QUERY."
   (setf header-line-format
 	(concat
@@ -109,16 +109,12 @@
     (funcall buffer-mode)
     (erase-buffer)
     (pop content) ;; Remove filtes
-    (yeetube-buffer-render-header query)
+    (yeetube-buffer--format-header query)
     (dolist (info (reverse content))
 		  (let ((title (yeetube-buffer-fix-title (car info)))
 			(view-count (caddr info))
 			(video-duration (cadddr info)))
-		    (insert (yeetube-buffer--format-title
-			     (format "%s "
-				    (propertize title 'face 'message-header-subject))))
-		    ;; Add commas, using this in yeetube-buffer-fix-view-count
-		    ;; causes display issues with unicode characters
+		    (insert (yeetube-buffer--format-title title))
 		    (end-of-line)
 		    (insert  (format "| %s"
 			     (yeetube-buffer--format-view-count
