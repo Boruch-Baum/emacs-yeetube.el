@@ -117,6 +117,15 @@ Example Usage:
 
 (defvar yeetube-last-played nil)
 
+(defun yeetube-mode ()
+  "Activate Yeetube Mode."
+  (interactive)
+  (kill-all-local-variables)
+  (setq major-mode 'yeetube-mode)
+  (setq mode-name "Yeetube Mode")
+  (display-line-numbers-mode 0)
+  (use-local-map yeetube-mode-map))
+
 (defun yeetube-get-url ()
   "Get url for subject in *yeetube* buffer at point."
   (let ((video-url (cadr (nth (- (line-number-at-pos) 1) (reverse yeetube-content)))))
