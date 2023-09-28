@@ -127,7 +127,6 @@
     (unless buffer-mode
       (funcall buffer-mode))
     (erase-buffer)
-    (pop content) ;; Remove filtes
     (yeetube-buffer--format-header query)
     (dolist (info (reverse content))
       (let ((title (yeetube-buffer-fix-title (car info)))
