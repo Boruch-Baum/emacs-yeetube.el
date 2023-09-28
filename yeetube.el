@@ -129,7 +129,8 @@ Example Usage:
 
 (defun yeetube-get-url ()
   "Get url for subject in *yeetube* buffer at point."
-  (let ((video-url (cadr (nth (- (line-number-at-pos) 1) (reverse yeetube-content)))))
+  (let ((video-url (concat "https://youtube.com/watch?v="
+			   (cadr (nth (- (line-number-at-pos) 1) (reverse yeetube-content))))))
     video-url))
 
 (defun yeetube-play ()
