@@ -1,28 +1,24 @@
 # Yeetube.el
- [![MELPA](https://melpa.org/packages/yeetube-badge.svg)](https://melpa.org/#/yeetube) [![builds.sr.ht status](https://builds.sr.ht/~thanosapollo/yeetube.el.svg)](https://builds.sr.ht/~thanosapollo/yeetube.el?)
+ [![MELPA](https://melpa.org/packages/yeetube-badge.svg)](https://melpa.org/#/yeetube) 
 
 ## About 
-- YouTube & Invidious Front-End for Emacs.
+- Emacs YouTube Front-End
 
-This package provides the ability to scrape YouTube or any Invidious
-instance, with the results displayed in a read-only org-mode buffer.
+This package provides the ability to scrape YouTube, with the results
+displayed in a proced-like buffer.
 
 ## Installation 
 You can install it via [MELPA](https://melpa.org/#/yeetube)
 
 *Or directly from source*
-- Download the latest tar-archive or clone the repo 
-
 ``` shell
-git clone https://git.sr.ht/~thanosapollo/yeetube.el
-```
+# Get yeetube using git
+git clone https://git.thanosapollo.com/yeetube
 
-- Load `yeetube.el`
-
-``` emacs-lisp
+# Load yeetube
+(add-to-list 'load-path "/path/to/yeetube")
 (load-file "~/path/to/yeetube.el")
 ```
-
 
 ### Dependencies
 - [mpv](https://mpv.io/): default multimedia player 
@@ -39,5 +35,5 @@ By default `yeetube-player` is set to `yeetube-mpv`, you can use
 [mpv.el](https://github.com/kljohann/mpv.el), [GNU/Emms](https://www.gnu.org/software/emms/) or other similar packages like so:
 
 ``` emacs-lisp
-(setq yeetube-player 'emms-play-url)
+(setf yeetube-player 'emms-play-url)
 ```
