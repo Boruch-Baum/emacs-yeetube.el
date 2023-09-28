@@ -226,8 +226,15 @@ WHERE indicates where in the buffer the update should happen."
     (yeetube-get-content-youtube)
     (yeetube-buffer-create query yeetube-content 'yeetube-mode)))
 
+(defun yeetube-get-item (query)
+  "Get item from youtube results for QUERY.
 
-(defun yeetube-get-content-youtube ()
+Video result starts with videorenderer.
+Search back to videorenderer (start of video results),
+then for item."
+  (search-backward "videorenderer" nil t)
+  (search-forward query nil t)
+  (search-forward "text" nil t))
   "Get content from youtube."
   (setf yeetube-content nil)
   ;; we define these temp lists to keep tract of video-ids and
