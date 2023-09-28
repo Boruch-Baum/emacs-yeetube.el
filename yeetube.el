@@ -225,7 +225,7 @@ WHERE indicates where in the buffer the update should happen."
     (yeetube-get-content-youtube)
     (yeetube-buffer-create query yeetube-content 'yeetube-mode)))
 
-;; TODO: Adjust to exclude live videos directly.
+
 (defun yeetube-get-content-youtube ()
   "Get content from youtube."
   (setf yeetube-content nil)
@@ -235,45 +235,36 @@ WHERE indicates where in the buffer the update should happen."
   (let ((video-ids nil)
 	(video-titles nil))
     (while (and (< (length video-ids) yeetube-results-limit)
-		(search-forward "videoId" nil t))
-      (let* ((videoid-start (point))
-             (videoid-end (search-forward ","))
-             (videoid (buffer-substring
-                       (+ videoid-start 3)
-                       (- videoid-end 2))))
-	(unless (and (member videoid video-ids)
+		(search-forward "videorenderer" nil t))
+      (search-forward "videoid")
+      (let ((videoid (buffer-substring (+ (point) 3) (- (search-forward ",") 2))))
+	(unless (and (member videoid (car yeetube-content))
 		     (not (and (>= (length videoid) 9)
 			       (<= (length videoid) 13)
 			       (string-match-p "^[a-zA-Z0-9_-]*$" videoid))))
           (push videoid video-ids)
-	  ;; (search-backward "videoid")
-	  (search-forward "\"title\":")
-          (search-forward "text")
-          (let* ((title-start (point))
-		 (title-end (search-forward ",\""))
-		 (title (buffer-substring
-			 (+ title-start 3)
-			 (- title-end 5))))
+	  (search-backward "videorenderer" nil t)
+	  (search-forward "\"title\":" nil t)
+          (search-forward "\"text" nil t)
+          (let ((title (buffer-substring (+ (point) 3) (- (search-forward ",\"") 5))))
 	    (unless (member title video-titles)
 	      (push title video-titles)
-	      ;; (search-backward "videoid")
+	      (search-backward "videorenderer")
 	      (search-forward "viewCountText" nil t)
 	      (search-forward "text" nil t)
-	      (let* ((view-count-start (point))
-		     (view-count-end (search-forward " "))
-		     (view-count (buffer-substring
-				  (+ view-count-start 3)
-				  (- view-count-end 0))))
+	      (let ((view-count (buffer-substring (+ (point) 3) (- (search-forward " ") 0))))
 		;; Get video duration
+		(search-backward "videorenderer" nil t)
 		(search-forward "lengthText" nil t)
 		(search-forward "text" nil t)
-		(let* ((video-duration-start (point))
-		       (video-duration-end (search-forward "},"))
-		       (video-duration (buffer-substring
-					(+ video-duration-start 3)
-					(- video-duration-end 3))))
-		  (search-backward "videoid")
-		  (push `(,title ,videoid ,view-count ,video-duration) yeetube-content))))))))))
+		(let ((video-duration (buffer-substring (+ (point) 3) (- (search-forward "},") 3))))
+		  ;; Get channel name
+		  (search-backward "videorenderer" nil t)
+		  (search-forward "longbylinetext" nil t)
+		  (search-forward "text")
+		  (let ((channel (buffer-substring (+ (point) 3) (- (search-forward ",") 2))))
+		    (push
+		     `(,title ,videoid ,view-count ,video-duration ,channel) yeetube-content)))))))))))
 
 ;;;###autoload
 (defun yeetube-download-video ()
