@@ -34,8 +34,8 @@
   "Face used for the video published date.")
 
 (defface yeetube-face-duration
-  '((((class color) (background light)) (:foreground "#525254"))
-    (((class color) (background dark))  (:foreground "#525254")))
+  '((((class color) (background light)) (:foreground "#e2c770"))
+    (((class color) (background dark))  (:foreground "#e2c770")))
   "Face used for the video duration.")
 
 (defface yeetube-face-view-count
@@ -46,6 +46,11 @@
 (defface yeetube-face-title
   '((((class color) (background light)) (:foreground "#fd971f"))
     (((class color) (background dark))  (:foreground "#fd971f")))
+  "Face used for video title.")
+
+(defface yeetube-face-channel
+  '((((class color) (background light)) (:foreground "#b6e63e"))
+    (((class color) (background dark))  (:foreground "#b6e63e")))
   "Face used for video title.")
 
 (provide 'yeetube-face)
