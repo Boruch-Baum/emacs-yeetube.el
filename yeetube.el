@@ -136,9 +136,7 @@ Example Usage:
 (defun yeetube-play ()
   "Play video at point in *yeetube* buffer."
   (interactive)
-  (let ((url (yeetube-get-url)))
-    (funcall yeetube-player
-	     (concat "https://youtube.com/watch?v=" url))))
+  (funcall yeetube-player (yeetube-get-url)))
 
 (defun yeetube-load-saved-videos ()
   "Load saved videos."
