@@ -91,6 +91,7 @@ Example Usage:
   :safe #'booleanp
   :group 'yeetube)
 
+;; TODO: Make it as derived from special mode
 (define-minor-mode yeetube-mode
   "Yeetube mode."
   :init-value nil

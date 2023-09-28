@@ -24,8 +24,8 @@
 
 ;;; Commentary:
 
-;; This package is a yeetube extension, to start an mpv process and
-;; control it
+;; This package is a yeetube extension, to start an mpv process &
+;; remotely control it.
 
 ;;; Code:
 

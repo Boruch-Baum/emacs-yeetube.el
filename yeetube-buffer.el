@@ -24,7 +24,8 @@
 
 ;;; Commentary:
 
-;; This package provides yeetube-buffer functionality
+;; This package is an extension for yeetube, to create a custom
+;; *yeetube* buffer.
 
 ;;; Code:
 
@@ -58,7 +59,7 @@
         (setf result (concat "," result))))
     result))
 
-;; Formatting inspired from ytel
+;;; Formatting inspired from ytel
 (defun yeetube-buffer--format-header-title (query)
   "Format header for QUERY."
   (let* ((n (string-width query))
@@ -68,19 +69,9 @@
 	      (concat query
 		      (make-string (abs extra-chars) ?\ )
 		      " ")
-	    (concat (seq-subseq query 0 53)
+	    (concat (seq-subseq query 0 50)
 		    "... " ))))
     (propertize formatted-string 'face 'yeetube-face-header-query)))
-
-(defun yeetube-buffer--format-header (query)
-  "Render header for *yeetube* buffer for QUERY."
-  (setf header-line-format
-	(concat
-	 (concat
-	  "Search: " (yeetube-buffer--format-header-title query)
-	  (yeetube-buffer--format-view-count "Views")
-	  (yeetube-buffer--format-video-duration "Duration")
-	  (yeetube-buffer--format-channel "Channel")))))
 
 (defun yeetube-buffer--format-title (title)
   "Format a video TITLE to be inserted in the *yeetube* buffer."
@@ -145,6 +136,16 @@
 		    "... " ))))
     (propertize formatted-string 'face 'yeetube-face-channel)))
 
+(defun yeetube-buffer--format-header (query)
+  "Render header for *yeetube* buffer for QUERY."
+  (setf header-line-format
+	(concat
+	 (concat
+	  "Search: " (yeetube-buffer--format-header-title query)
+	  (yeetube-buffer--format-view-count "Views")
+	  (yeetube-buffer--format-video-duration "Duration")
+	  (yeetube-buffer--format-channel "Channel")))))
+
 (defun yeetube-buffer-create (query content buffer-mode)
   "Create *yeetube* buffer with BUFFER-MODE for QUERY, displaying CONTENT."
   (with-current-buffer
@@ -171,6 +172,5 @@
 	 (yeetube-buffer--format-channel channel-name)
 	 "\n")))))
 
-(add-hook #'yeetube-buffer-create #'yeetube-mode)
 (provide 'yeetube-buffer)
 ;;; yeetube-buffer.el ends here

@@ -24,7 +24,8 @@
 
 ;;; Commentary:
 
-;; This package provides yeetube faces
+;; This package is a yeetube extension, providing custom faces for
+;; yeetube variables
 
 ;;; Code:
 
