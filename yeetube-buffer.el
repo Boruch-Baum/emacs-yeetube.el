@@ -59,35 +59,53 @@
         (setf result (concat "," result))))
     result))
 
+;; Formatting inspired from ytel
+(defun yeetube-buffer--format-header-title (query)
+  "Format header for QUERY."
+  (let* ((n (string-width query))
+	 (extra-chars (- n 53))
+	 (formatted-string
+	  (if (<= extra-chars 0)
+	      (concat query
+		      (make-string (abs extra-chars) ?\ )
+		      " ")
+	    (concat (seq-subseq query 0 53)
+		    "... " ))))
+    (propertize formatted-string 'face 'yeetube-face-header-query)))
+
 (defun yeetube-buffer--format-header (query)
   "Render header for *yeetube* buffer for QUERY."
   (setf header-line-format
 	(concat
-	 (format "Yeetube Search: %s" (propertize query 'face 'yeetube-face-header-query)))))
+	 (concat
+	  "Search: " (yeetube-buffer--format-header-title query)
+	  (yeetube-buffer--format-view-count "Views")
+	  (yeetube-buffer--format-video-duration "Duration")))))
 
-;; Inspired from ytel
 (defun yeetube-buffer--format-title (title)
   "Format a video TITLE to be inserted in the *yeetube* buffer."
   (let* ((n (string-width title))
 	 (extra-chars (- n 60))
-	 (formatted-string (if (<= extra-chars 0)
-			       (concat title
-				       (make-string (abs extra-chars) ?\ )
-				       " ")
-			     (concat (seq-subseq title 0 60)
-				     " "))))
+	 (formatted-string
+	  (if (<= extra-chars 0)
+	      (concat title
+		      (make-string (abs extra-chars) ?\ )
+		      " ")
+	    (concat (seq-subseq title 0 57)
+		    "... " ))))
     (propertize formatted-string 'face 'yeetube-face-title)))
 
 (defun yeetube-buffer--format-view-count (view-count)
   "Format a video VIEW-COUNT to be inserted in the *yeetube* buffer."
   (let* ((n (string-width view-count))
-	 (extra-chars (- n 20))
-	 (formatted-string (if (<= extra-chars 0)
-			       (concat view-count
-				       (make-string (abs extra-chars) ?\ )
-				       " ")
-			     (concat (seq-subseq view-count 0 20)
-				     "..."))))
+	 (extra-chars (- n 13))
+	 (formatted-string
+	  (if (<= extra-chars 0)
+	      (concat view-count
+		      (make-string (abs extra-chars) ?\ )
+		      " ")
+	    (concat (seq-subseq view-count 0 10)
+		    "..."))))
     (propertize formatted-string 'face 'yeetube-face-view-count)))
 
 (defun yeetube-buffer--format-video-duration (video-duration)
@@ -112,22 +130,21 @@
     (pop content) ;; Remove filtes
     (yeetube-buffer--format-header query)
     (dolist (info (reverse content))
-		  (let ((title (yeetube-buffer-fix-title (car info)))
-			(view-count (caddr info))
-			(video-duration (cadddr info)))
-		    (insert (yeetube-buffer--format-title title))
-		    (end-of-line)
-		    (insert  (format "| %s"
-			     (yeetube-buffer--format-view-count
-				    (if (< (length view-count) 20)
-					 (yeetube-buffer-view-count-add-commas
-					  (yeetube-buffer-fix-view-count view-count))
-				      "nil")))
-			     (format "%s\n"
-				     (yeetube-buffer--format-video-duration
-				      (if (string-match-p "^[0-9:]+$" video-duration)
-					  video-duration
-					"nil"))))))))
+      (let ((title (yeetube-buffer-fix-title (car info)))
+	    (view-count (caddr info))
+	    (video-duration (cadddr info)))
+	(insert
+	 (yeetube-buffer--format-title title)
+	 (yeetube-buffer--format-view-count
+	  (if (< (length view-count) 20)
+	      (yeetube-buffer-view-count-add-commas
+	       (yeetube-buffer-fix-view-count view-count))
+	    "nil"))
+	 (yeetube-buffer--format-video-duration
+	  (if (string-match-p "^[0-9:]+$" video-duration)
+	      video-duration
+	    "nil"))
+	 "\n")))))
 
 (provide 'yeetube-buffer)
 ;;; yeetube-buffer.el ends here
