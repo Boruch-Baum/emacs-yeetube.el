@@ -26,12 +26,11 @@
 
 ;; This package provides yeetube-buffer functionality
 
-;; TODO: Fix titles with emojis (ruin formatting)
-
 ;;; Code:
 
 (require 'yeetube-face)
 
+;; TODO: Fix titles with emojis (ruin formatting)
 (defun yeetube-buffer-fix-title (title)
   "Adjust TITLE."
   (let ((replacements '(("&amp;" . "&")
@@ -80,7 +79,8 @@
 	 (concat
 	  "Search: " (yeetube-buffer--format-header-title query)
 	  (yeetube-buffer--format-view-count "Views")
-	  (yeetube-buffer--format-video-duration "Duration")))))
+	  (yeetube-buffer--format-video-duration "Duration")
+	  (yeetube-buffer--format-channel "Channel")))))
 
 (defun yeetube-buffer--format-title (title)
   "Format a video TITLE to be inserted in the *yeetube* buffer."
@@ -111,7 +111,7 @@
 (defun yeetube-buffer--format-video-duration (video-duration)
   "Format a video VIDEO-DURATION to be inserted in the *yeetube* buffer."
   (let* ((n (string-width video-duration))
-	 (extra-chars (- n 20))
+	 (extra-chars (- n 10))
 	 (formatted-string (if (<= extra-chars 0)
 			       (concat video-duration
 				       (make-string (abs extra-chars) ?\ )
@@ -120,18 +120,43 @@
 				     "..."))))
     (propertize formatted-string 'face 'yeetube-face-duration)))
 
+(defun yeetube-buffer--format-video-duration (video-duration)
+  "Format a video VIDEO-DURATION to be inserted in the *yeetube* buffer."
+  (let* ((n (string-width video-duration))
+	 (extra-chars (- n 7))
+	 (formatted-string (if (<= extra-chars 0)
+			       (concat video-duration
+				       (make-string (abs extra-chars) ?\ )
+				       " ")
+			     (concat (seq-subseq video-duration 0 7)
+				     "..."))))
+    (propertize formatted-string 'face 'yeetube-face-duration)))
+
+(defun yeetube-buffer--format-channel (channel)
+  "Format a video CHANNEL to be inserted in the *yeetube* buffer."
+  (let* ((n (string-width channel))
+	 (extra-chars (- n 15))
+	 (formatted-string
+	  (if (<= extra-chars 0)
+	      (concat channel
+		      (make-string (abs extra-chars) ?\ )
+		      " ")
+	    (concat (seq-subseq channel 0 11)
+		    "... " ))))
+    (propertize formatted-string 'face 'yeetube-face-channel)))
+
 (defun yeetube-buffer-create (query content buffer-mode)
   "Create *yeetube* buffer with BUFFER-MODE for QUERY, displaying CONTENT."
   (with-current-buffer
       (switch-to-buffer (get-buffer-create "*yeetube*"))
-    (unless buffer-mode
-      (funcall buffer-mode))
+    (funcall buffer-mode)
     (erase-buffer)
     (yeetube-buffer--format-header query)
     (dolist (info (reverse content))
       (let ((title (yeetube-buffer-fix-title (car info)))
 	    (view-count (caddr info))
-	    (video-duration (cadddr info)))
+	    (video-duration (cadddr info))
+	    (channel-name (nth 4 info)))
 	(insert
 	 (yeetube-buffer--format-title title)
 	 (yeetube-buffer--format-view-count
@@ -143,7 +168,9 @@
 	  (if (string-match-p "^[0-9:]+$" video-duration)
 	      video-duration
 	    "nil"))
+	 (yeetube-buffer--format-channel channel-name)
 	 "\n")))))
 
+(add-hook #'yeetube-buffer-create #'yeetube-mode)
 (provide 'yeetube-buffer)
 ;;; yeetube-buffer.el ends here
