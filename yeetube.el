@@ -51,12 +51,6 @@
   :safe #'stringp
   :group 'yeetube)
 
-(defcustom yeetube-query-url "https://www.youtube.com"
-  "Search URL."
-  :type 'string
-  :safe #'stringp
-  :group 'yeetube)
-
 (defcustom yeetube-download-audio-format nil
   "Select download video as audio FORMAT.
 If nil download output will be the default format.
@@ -213,8 +207,7 @@ WHERE indicates where in the buffer the update should happen."
   (interactive "sYeetube Search: ")
   (with-current-buffer
       (url-retrieve-synchronously
-       (concat yeetube-query-url
-	       "/search?q="
+       (concat "https://youtube.com/search?q="
 	       (replace-regexp-in-string " " "+" query)
 	       ;; Filter parameter to remove live videos.
 	       "&sp=EgQQASAB")
@@ -222,7 +215,7 @@ WHERE indicates where in the buffer the update should happen."
     (decode-coding-region (point-min) (point-max) 'utf-8)
     (goto-char (point-min))
     (toggle-enable-multibyte-characters)
-    (yeetube-get-content-youtube)
+    (yeetube-get-content)
     (yeetube-buffer-create query yeetube-content 'yeetube-mode)))
 
 (defun yeetube-get-item (query)
