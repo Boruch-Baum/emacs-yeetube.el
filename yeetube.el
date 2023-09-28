@@ -235,44 +235,27 @@ then for item."
   (search-backward "videorenderer" nil t)
   (search-forward query nil t)
   (search-forward "text" nil t))
+
+(defun yeetube-get-content ()
   "Get content from youtube."
   (setf yeetube-content nil)
-  ;; we define these temp lists to keep tract of video-ids and
-  ;; video-titles, ensuring we push only unique ones to
-  ;; yeetube-content
-  (let ((video-ids nil)
-	(video-titles nil))
-    (while (and (< (length video-ids) yeetube-results-limit)
-		(search-forward "videorenderer" nil t))
-      (search-forward "videoid")
-      (let ((videoid (buffer-substring (+ (point) 3) (- (search-forward ",") 2))))
-	(unless (and (member videoid (car yeetube-content))
-		     (not (and (>= (length videoid) 9)
-			       (<= (length videoid) 13)
-			       (string-match-p "^[a-zA-Z0-9_-]*$" videoid))))
-          (push videoid video-ids)
-	  (search-backward "videorenderer" nil t)
-	  (search-forward "\"title\":" nil t)
-          (search-forward "\"text" nil t)
-          (let ((title (buffer-substring (+ (point) 3) (- (search-forward ",\"") 5))))
-	    (unless (member title video-titles)
-	      (push title video-titles)
-	      (search-backward "videorenderer")
-	      (search-forward "viewCountText" nil t)
-	      (search-forward "text" nil t)
-	      (let ((view-count (buffer-substring (+ (point) 3) (- (search-forward " ") 0))))
-		;; Get video duration
-		(search-backward "videorenderer" nil t)
-		(search-forward "lengthText" nil t)
-		(search-forward "text" nil t)
-		(let ((video-duration (buffer-substring (+ (point) 3) (- (search-forward "},") 3))))
-		  ;; Get channel name
-		  (search-backward "videorenderer" nil t)
-		  (search-forward "longbylinetext" nil t)
-		  (search-forward "text")
-		  (let ((channel (buffer-substring (+ (point) 3) (- (search-forward ",") 2))))
-		    (push
-		     `(,title ,videoid ,view-count ,video-duration ,channel) yeetube-content)))))))))))
+  (while (and (< (length yeetube-content) yeetube-results-limit)
+	      (search-forward "videorenderer" nil t))
+    (search-forward "videoid")
+    (let ((videoid (buffer-substring (+ (point) 3) (- (search-forward ",") 2))))
+      (unless (member videoid (car yeetube-content))
+	(yeetube-get-item "title") ;; Video Title
+        (let ((title (buffer-substring (+ (point) 3) (- (search-forward ",\"") 5))))
+	  (unless (member title (car yeetube-content))
+	    (yeetube-get-item "viewcounttext") ;; View Count
+	    (let ((view-count (buffer-substring (+ (point) 3) (- (search-forward " ") 0))))
+	      (yeetube-get-item "lengthtext") ;; Video Duration
+	      (let ((video-duration (buffer-substring (+ (point) 3) (- (search-forward "},") 3))))
+		(yeetube-get-item "longbylinetext") ;; Channel Name
+		(let ((channel (buffer-substring (+ (point) 3) (- (search-forward ",") 2))))
+		  (push
+		   `(,title ,videoid ,view-count ,video-duration ,channel)
+		   yeetube-content))))))))))
 
 ;;;###autoload
 (defun yeetube-download-video ()
