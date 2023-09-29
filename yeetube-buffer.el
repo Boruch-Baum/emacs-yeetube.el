@@ -32,6 +32,11 @@
 (require 'yeetube-face)
 
 ;; TODO: Fix titles with emojis (ruin formatting)
+(defcustom yeetube-buffer-display-emojis nil
+  "Display video title's emojis."
+  :type 'boolean
+  :safe #'booleanp
+  :group 'yeetube)
 (defun yeetube-buffer-fix-title (title)
   "Adjust TITLE."
   (let ((replacements '(("&amp;" . "&")
