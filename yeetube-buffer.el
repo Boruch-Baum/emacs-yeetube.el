@@ -111,18 +111,6 @@
 				     "..."))))
     (propertize formatted-string 'face 'yeetube-face-duration)))
 
-(defun yeetube-buffer--format-video-duration (video-duration)
-  "Format a video VIDEO-DURATION to be inserted in the *yeetube* buffer."
-  (let* ((n (string-width video-duration))
-	 (extra-chars (- n 7))
-	 (formatted-string (if (<= extra-chars 0)
-			       (concat video-duration
-				       (make-string (abs extra-chars) ?\ )
-				       " ")
-			     (concat (seq-subseq video-duration 0 7)
-				     "..."))))
-    (propertize formatted-string 'face 'yeetube-face-duration)))
-
 (defun yeetube-buffer--format-channel (channel)
   "Format a video CHANNEL to be inserted in the *yeetube* buffer."
   (let* ((n (string-width channel))
