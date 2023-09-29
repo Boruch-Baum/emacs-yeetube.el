@@ -93,8 +93,6 @@ Example Usage:
   :keymap (let ((yeetube-mode-map (make-sparse-keymap)))
             (define-key yeetube-mode-map (kbd "RET") 'yeetube-play)
             (define-key yeetube-mode-map (kbd "d") 'yeetube-download-video)
-            (define-key yeetube-mode-map (kbd "u") 'yeetube-change-platform)
-            (define-key yeetube-mode-map (kbd "q") 'kill-current-buffer)
             (define-key yeetube-mode-map (kbd "D") 'yeetube-change-download-directory)
             (define-key yeetube-mode-map (kbd "a") 'yeetube-change-download-audio-format)
             (define-key yeetube-mode-map (kbd "p") 'yeetube-mpv-toggle-pause)
@@ -102,6 +100,7 @@ Example Usage:
 	    (define-key yeetube-mode-map (kbd "V") 'yeetube-mpv-toggle-no-video-flag)
 	    (define-key yeetube-mode-map (kbd "s") 'yeetube-save-video)
 	    (define-key yeetube-mode-map (kbd "P") 'yeetube-play-saved-video)
+	    (define-key yeetube-mode-map (kbd "q") 'quit-window)
             yeetube-mode-map))
 
 (defvar yeetube-yt-dlp (executable-find "yt-dlp"))
