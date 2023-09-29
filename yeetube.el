@@ -96,7 +96,6 @@ Example Usage:
   :keymap (let ((yeetube-mode-map (make-sparse-keymap)))
             (define-key yeetube-mode-map (kbd "RET") 'yeetube-play)
             (define-key yeetube-mode-map (kbd "d") 'yeetube-download-video)
-            (define-key yeetube-mode-map (kbd "u") 'yeetube-change-platform)
             (define-key yeetube-mode-map (kbd "D") 'yeetube-change-download-directory)
             (define-key yeetube-mode-map (kbd "a") 'yeetube-change-download-audio-format)
             (define-key yeetube-mode-map (kbd "p") 'yeetube-mpv-toggle-pause)
