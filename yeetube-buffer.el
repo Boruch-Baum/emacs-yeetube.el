@@ -170,7 +170,10 @@
 	      video-duration
 	    "nil"))
 	 (yeetube-buffer--format-channel channel-name)
-	 "\n")))))
+	 "\n")))
+    (setf buffer-read-only nil)
+    (backward-delete-char 1) ;; Delete extra line
+    (beginning-of-buffer)))
 
 (provide 'yeetube-buffer)
 ;;; yeetube-buffer.el ends here
