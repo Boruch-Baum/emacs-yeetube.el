@@ -56,7 +56,9 @@ Emojis cause formatting issues, this should be off by default."
     (mapc (lambda (replacement)
             (setf title (replace-regexp-in-string (car replacement) (cdr replacement) title)))
           replacements)
-    title))
+    (if yeetube-buffer-display-emojis
+	title
+      (yeetube-buffer-strip-emojis title))))
 
 (defun yeetube-buffer-fix-view-count (view-count)
   "Fix VIEW-COUNT display issues."
