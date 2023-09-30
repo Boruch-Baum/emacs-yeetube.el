@@ -5,8 +5,8 @@
 ;; Author: Thanos Apollo <public@thanosapollo.com>
 ;; Keywords: extensions youtube videos
 ;; URL: https://git.thanosapollo.com/yeetube
-;; Version: 2.0.2
-(defvar yeetube--version '2.0.2)
+;; Version: 2.0.3
+(defvar yeetube--version '2.0.3)
 
 ;; Package-Requires: ((emacs "27.2"))
 
@@ -90,7 +90,6 @@ Example Usage:
   :init-value nil
   :interactive nil
   (abbrev-mode 0)
-  (setf buffer-read-only nil)
   (display-line-numbers-mode 0)
   :lighter " yeetube-mode"
   :keymap (let ((yeetube-mode-map (make-sparse-keymap)))

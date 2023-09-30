@@ -155,6 +155,7 @@ Emojis cause formatting issues, this should be off by default."
   (with-current-buffer
       (switch-to-buffer (get-buffer-create "*yeetube*"))
     (funcall buffer-mode)
+    (setf buffer-read-only nil)
     (erase-buffer)
     (yeetube-buffer--format-header query)
     (dolist (info (reverse content))
@@ -175,8 +176,8 @@ Emojis cause formatting issues, this should be off by default."
 	    "nil"))
 	 (yeetube-buffer--format-channel channel-name)
 	 "\n")))
-    (setf buffer-read-only nil)
     (backward-delete-char 1) ;; Delete extra line
+    (setf buffer-read-only nil)
     (beginning-of-buffer)))
 
 (provide 'yeetube-buffer)
