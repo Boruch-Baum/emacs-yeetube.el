@@ -5,7 +5,13 @@
 - Emacs YouTube Front-End
 
 This package provides the ability to scrape YouTube, with the results
-displayed in a proced-like buffer.
+displayed in a proced-like buffer. 
+
+*Inspired by [ytfzf](https://github.com/pystardust/ytfzf) & [ytel](https://github.com/grastello/ytel)*
+
+
+*This package does not use Invidious or YouTube's API*
+
 
 ## Installation 
 You can install it via [MELPA](https://melpa.org/#/yeetube)
