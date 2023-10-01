@@ -29,9 +29,6 @@
 
 ;;; Code:
 
-(require 'yeetube-face)
-
-
 (defcustom yeetube-buffer-display-emojis nil
   "Display video title's emojis.
 
@@ -39,6 +36,27 @@ Emojis cause formatting issues, this should be off by default."
   :type 'boolean
   :safe #'booleanp
   :group 'yeetube)
+
+
+(defface yeetube-face-header-query
+  '((t :inherit font-lock-function-name-face))
+  "Face used for the video published date.")
+
+(defface yeetube-face-duration
+  '((t :inherit font-lock-string-face))
+  "Face used for the video duration.")
+
+(defface yeetube-face-view-count
+  '((t :inherit font-lock-keyword-face))
+  "Face used for the video view count.")
+
+(defface yeetube-face-title
+  '((t :inherit font-lock-variable-use-face))
+  "Face used for video title.")
+
+(defface yeetube-face-channel
+  '((t :inherit font-lock-function-call-face))
+  "Face used for video title.")
 
 (defun yeetube-buffer-strip-emojis (str)
   "Remove characters which are part of the `emoji' script from STR."
