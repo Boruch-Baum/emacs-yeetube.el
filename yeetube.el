@@ -85,26 +85,6 @@ Example Usage:
   :safe #'booleanp
   :group 'yeetube)
 
-(define-derived-mode yeetube-mode special-mode "Yeetube"
-  "Yeetube mode."
-  :init-value nil
-  :interactive nil
-  (abbrev-mode 0)
-  (display-line-numbers-mode 0)
-  :lighter " yeetube-mode"
-  :keymap (let ((yeetube-mode-map (make-sparse-keymap)))
-            (define-key yeetube-mode-map (kbd "RET") 'yeetube-play)
-            (define-key yeetube-mode-map (kbd "d") 'yeetube-download-video)
-            (define-key yeetube-mode-map (kbd "D") 'yeetube-change-download-directory)
-            (define-key yeetube-mode-map (kbd "a") 'yeetube-change-download-audio-format)
-            (define-key yeetube-mode-map (kbd "p") 'yeetube-mpv-toggle-pause)
-            (define-key yeetube-mode-map (kbd "v") 'yeetube-mpv-toggle-video)
-	    (define-key yeetube-mode-map (kbd "V") 'yeetube-mpv-toggle-no-video-flag)
-	    (define-key yeetube-mode-map (kbd "s") 'yeetube-save-video)
-	    (define-key yeetube-mode-map (kbd "P") 'yeetube-play-saved-video)
-	    (define-key yeetube-mode-map (kbd "q") 'quit-window)
-            yeetube-mode-map))
-
 (defvar yeetube-yt-dlp (executable-find "yt-dlp"))
 
 (defvar yeetube-content nil)
@@ -112,15 +92,6 @@ Example Usage:
 (defvar yeetube-saved-videos nil)
 
 (defvar yeetube-last-played nil)
-
-(defun yeetube-mode ()
-  "Activate Yeetube Mode."
-  (interactive)
-  (kill-all-local-variables)
-  (setq major-mode 'yeetube-mode)
-  (setq mode-name "Yeetube Mode")
-  (display-line-numbers-mode 0)
-  (use-local-map yeetube-mode-map))
 
 (defun yeetube-get-url ()
   "Get url for subject in *yeetube* buffer at point."
@@ -313,6 +284,28 @@ prompt blank to keep the default name."
   (message "Yeetube Version: %s" yeetube--version))
 
 (add-variable-watcher 'yeetube-saved-videos #'yeetube-update-saved-videos-list)
+
+;; Yeetube Mode
+(defvar-keymap yeetube-mode-map
+  :doc "Keymap for yeetube commands"
+  "RET" #'yeetube-play
+  "d" #'yeetube-download-video
+  "D" #'yeetube-change-download-directory
+  "a" #'yeetube-change-download-audio-format
+  "p" #'yeetube-mpv-toggle-pause
+  "v" #'yeetube-mpv-toggle-video
+  "V" #'yeetube-mpv-toggle-no-video-flag
+  "s" #'yeetube-save-video
+  "P" #'yeetube-play-saved-video
+  "q" #'quit-window)
+
+(define-derived-mode yeetube-mode special-mode "Yeetube"
+  "Yeetube mode."
+  :interactive t
+  (abbrev-mode 0)
+  (display-line-numbers-mode 0)
+  :lighter " yeetube-mode"
+  :keymap yeetube-mode-map)
 
 (provide 'yeetube)
 ;;; yeetube.el ends here
