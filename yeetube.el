@@ -142,20 +142,6 @@ WHERE indicates where in the buffer the update should happen."
 		    (save-buffer)
 		    (kill-buffer)))
 
-;; Usually titles from youtube get messed up,
-;; This should fix some of the common issues.
-(defun yeetube-fix-title (title)
-  "Adjust TITLE."
-  (let ((replacements '(("&amp;" . "&")
-                        ("&quot;" . "\"")
-                        ("&#39;" . "'")
-			("u0026" . "&")
-			("\\\\" . ""))))
-    (mapc (lambda (replacement)
-            (setf title (replace-regexp-in-string (car replacement) (cdr replacement) title)))
-          replacements)
-    title))
-
 ;;;###autoload
 (defun yeetube-search (query)
   "Search for QUERY."
