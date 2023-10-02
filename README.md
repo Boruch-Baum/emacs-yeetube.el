@@ -1,5 +1,4 @@
 # Yeetube.el
- [![MELPA](https://melpa.org/packages/yeetube-badge.svg)](https://melpa.org/#/yeetube) 
 
 ## About 
 - Emacs YouTube Front-End
@@ -14,9 +13,7 @@ displayed in a proced-like buffer.
 
 
 ## Installation 
-You can install it via [MELPA](https://melpa.org/#/yeetube)
 
-*Or directly from source*
 ``` shell
 # Get yeetube using git
 git clone https://git.thanosapollo.com/yeetube
