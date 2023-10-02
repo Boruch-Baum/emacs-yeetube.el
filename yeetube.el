@@ -45,12 +45,6 @@
   :safe #'numberp
   :group 'yeetube)
 
-(defcustom yeetube-results-prefix "+"
-  "Define prefix to display results with."
-  :type 'string
-  :safe #'stringp
-  :group 'yeetube)
-
 (defcustom yeetube-download-audio-format nil
   "Select download video as audio FORMAT.
 If nil download output will be the default format.
@@ -59,12 +53,6 @@ Example Usage:
  (setf yeetube-download-audio-format \"m4a\")"
   :type 'string
   :safe #'stringp
-  :group 'yeetube)
-
-(defcustom yeetube-display-info-keys t
-  "Display default keybindings."
-  :type 'boolean
-  :safe #'booleanp
   :group 'yeetube)
 
 (defcustom yeetube-player #'yeetube-mpv
@@ -79,11 +67,6 @@ Example Usage:
   :safe #'stringp
   :group 'yeetube)
 
-(defcustom yeetube-display-view-count t
-  "Show video view count."
-  :type 'boolean
-  :safe #'booleanp
-  :group 'yeetube)
 
 (defvar yeetube-yt-dlp (executable-find "yt-dlp"))
 
