@@ -190,6 +190,11 @@ WHERE indicates where in the buffer the update should happen."
     (yeetube-get-content)
     (yeetube-buffer-create query yeetube-content 'yeetube-mode)))
 
+(defun yeetube-browse-url ()
+  "Open URL in browser."
+  (interactive)
+  (browse-url (yeetube-get-url)))
+
 (defun yeetube-get-item (query)
   "Get item from youtube results for QUERY.
 
