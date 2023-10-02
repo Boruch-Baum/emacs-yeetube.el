@@ -168,6 +168,7 @@ Emojis cause formatting issues, this should be off by default."
 	  (yeetube-buffer--format-video-duration "Duration")
 	  (yeetube-buffer--format-channel "Channel")))))
 
+;;;###autoload
 (defun yeetube-buffer-create (query content buffer-mode)
   "Create *yeetube* buffer with BUFFER-MODE for QUERY, displaying CONTENT."
   (with-current-buffer
