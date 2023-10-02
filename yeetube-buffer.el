@@ -40,25 +40,25 @@ Emojis cause formatting issues, this should be off by default."
   :group 'yeetube)
 
 
-(defface yeetube-face-header-query
+(defface yeetube-buffer-face-header-query
   '((t :inherit font-lock-function-name-face))
   "Face used for the video published date.")
 
-(defface yeetube-face-duration
+(defface yeetube-buffer-face-duration
   '((t :inherit font-lock-string-face))
   "Face used for the video duration.")
 
-(defface yeetube-face-view-count
+(defface yeetube-buffer-face-view-count
   '((t :inherit font-lock-keyword-face))
   "Face used for the video view count.")
 
-(defface yeetube-face-title
+(defface yeetube-buffer-face-title
   '((t :inherit font-lock-variable-use-face))
   "Face used for video title.")
 
-(defface yeetube-face-channel
+(defface yeetube-buffer-face-channel
   '((t :inherit font-lock-function-call-face))
-  "Face used for video title.")
+  "Face used for video channel name.")
 
 (defun yeetube-buffer-strip-emojis (str)
   "Remove characters which are part of the `emoji' script from STR."
@@ -66,6 +66,8 @@ Emojis cause formatting issues, this should be off by default."
                   (equal (aref char-script-table c) 'emoji))
                 str))
 
+;; Usually titles from youtube get messed up,
+;; This should fix some of the common issues.
 (defun yeetube-buffer-fix-title (title)
   "Adjust TITLE."
   (let ((replacements '(("&amp;" . "&")
@@ -107,7 +109,7 @@ Emojis cause formatting issues, this should be off by default."
 		      " ")
 	    (concat (seq-subseq query 0 50)
 		    "... " ))))
-    (propertize formatted-string 'face 'yeetube-face-header-query)))
+    (propertize formatted-string 'face 'yeetube-buffer-face-header-query)))
 
 (defun yeetube-buffer--format-title (title)
   "Format a video TITLE to be inserted in the *yeetube* buffer."
@@ -120,7 +122,7 @@ Emojis cause formatting issues, this should be off by default."
 		      " ")
 	    (concat (seq-subseq title 0 57)
 		    "... " ))))
-    (propertize formatted-string 'face 'yeetube-face-title)))
+    (propertize formatted-string 'face 'yeetube-buffer-face-title)))
 
 (defun yeetube-buffer--format-view-count (view-count)
   "Format a video VIEW-COUNT to be inserted in the *yeetube* buffer."
@@ -133,7 +135,7 @@ Emojis cause formatting issues, this should be off by default."
 		      " ")
 	    (concat (seq-subseq view-count 0 10)
 		    "..."))))
-    (propertize formatted-string 'face 'yeetube-face-view-count)))
+    (propertize formatted-string 'face 'yeetube-buffer-face-view-count)))
 
 (defun yeetube-buffer--format-video-duration (video-duration)
   "Format a video VIDEO-DURATION to be inserted in the *yeetube* buffer."
@@ -145,7 +147,7 @@ Emojis cause formatting issues, this should be off by default."
 				       " ")
 			     (concat (seq-subseq video-duration 0 10)
 				     "..."))))
-    (propertize formatted-string 'face 'yeetube-face-duration)))
+    (propertize formatted-string 'face 'yeetube-buffer-face-duration)))
 
 (defun yeetube-buffer--format-channel (channel)
   "Format a video CHANNEL to be inserted in the *yeetube* buffer."
@@ -158,7 +160,7 @@ Emojis cause formatting issues, this should be off by default."
 		      " ")
 	    (concat (seq-subseq channel 0 11)
 		    "... " ))))
-    (propertize formatted-string 'face 'yeetube-face-channel)))
+    (propertize formatted-string 'face 'yeetube-buffer-face-channel)))
 
 (defun yeetube-buffer--format-header (query)
   "Render header for *yeetube* buffer for QUERY."
