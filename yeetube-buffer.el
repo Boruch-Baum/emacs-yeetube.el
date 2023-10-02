@@ -29,6 +29,8 @@
 
 ;;; Code:
 
+(require 'cl-lib)
+
 (defcustom yeetube-buffer-display-emojis nil
   "Display video title's emojis.
 
@@ -170,7 +172,7 @@ Emojis cause formatting issues, this should be off by default."
 
 ;;;###autoload
 (defun yeetube-buffer-create (query content buffer-mode)
-  "Create *yeetube* buffer with BUFFER-MODE for QUERY, displaying CONTENT."
+  "Create *yeetube* buffer with BUFFER-MODE for search QUERY, displaying CONTENT."
   (with-current-buffer
       (switch-to-buffer (get-buffer-create "*yeetube*"))
     (funcall buffer-mode)
@@ -179,16 +181,14 @@ Emojis cause formatting issues, this should be off by default."
     (yeetube-buffer--format-header query)
     (dolist (info (reverse content))
       (let ((title (yeetube-buffer-fix-title (car info)))
-	    (view-count (caddr info))
-	    (video-duration (cadddr info))
+	    (view-count (nth 2 info))
+	    (video-duration (nth 3 info))
 	    (channel-name (nth 4 info)))
 	(insert
 	 (yeetube-buffer--format-title title)
 	 (yeetube-buffer--format-view-count
-	  (if (< (length view-count) 20)
-	      (yeetube-buffer-view-count-add-commas
-	       (yeetube-buffer-fix-view-count view-count))
-	    "nil"))
+	  (yeetube-buffer-view-count-add-commas
+	   (yeetube-buffer-fix-view-count view-count)))
 	 (yeetube-buffer--format-video-duration
 	  (if (string-match-p "^[0-9:]+$" video-duration)
 	      video-duration
@@ -196,8 +196,7 @@ Emojis cause formatting issues, this should be off by default."
 	 (yeetube-buffer--format-channel channel-name)
 	 "\n")))
     (backward-delete-char 1) ;; Delete extra line
-    (setf buffer-read-only nil)
-    (beginning-of-buffer)))
+    (goto-char (point-min))))
 
 (provide 'yeetube-buffer)
 ;;; yeetube-buffer.el ends here
