@@ -1,4 +1,4 @@
-# Yeetube.el
+# Yeetube
 
 ## About 
 - Emacs YouTube Front-End
@@ -14,11 +14,23 @@ displayed in a proced-like buffer.
 
 ## Installation 
 
-``` shell
-# Get yeetube using git
-git clone https://git.thanosapollo.com/yeetube
+### Straight.el
 
-# Load yeetube
+``` emacs-lisp
+(straight-use-package 
+ '(yeetube :type git
+	       :host nil
+	       :repo "https://git.thanosapollo.com/yeetube"))
+```
+
+
+### Manual
+``` shell
+$ git clone https://git.thanosapollo.com/yeetube
+```
+
+Add this to your emacs configuration
+``` emacs-lisp
 (add-to-list 'load-path "/path/to/yeetube")
 (load-file "~/path/to/yeetube.el")
 ```
