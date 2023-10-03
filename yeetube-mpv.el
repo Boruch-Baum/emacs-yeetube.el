@@ -32,7 +32,6 @@
 (defcustom yeetube-mpv-disable-video nil
   "Add no-video flag when using mpv."
   :type 'boolean
-  :safe #'booleanp
   :group 'yeetube)
 
 (defvar yeetube-mpv-path (executable-find "mpv")
