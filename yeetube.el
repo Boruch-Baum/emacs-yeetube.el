@@ -42,7 +42,11 @@
 (defcustom yeetube-results-limit 15
   "Define a limit for search results."
   :type 'number
-  :safe #'numberp
+  :group 'yeetube)
+
+(defcustom yeetube-player #'yeetube-mpv
+  "Select media player function."
+  :type 'function
   :group 'yeetube)
 
 (defcustom yeetube-download-audio-format nil
@@ -52,19 +56,11 @@ If nil download output will be the default format.
 Example Usage:
  (setf yeetube-download-audio-format \"m4a\")"
   :type 'string
-  :safe #'stringp
-  :group 'yeetube)
-
-(defcustom yeetube-player #'yeetube-mpv
-  "Select media player function."
-  :type 'function
-  :safe #'function
   :group 'yeetube)
 
 (defcustom yeetube-download-directory "~/Downloads"
   "Default directory to downlaod videos."
   :type 'string
-  :safe #'stringp
   :group 'yeetube)
 
 
