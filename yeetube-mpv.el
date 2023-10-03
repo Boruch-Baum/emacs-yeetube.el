@@ -35,6 +35,9 @@
   :safe #'booleanp
   :group 'yeetube)
 
+(defvar yeetube-mpv-path (executable-find "mpv")
+  "Path for mpv executable.")
+
 (defun yeetube-mpv-process (command)
   "Start yeetube process for shell COMMAND."
   (let ((yeetube-mpv-process "yeetube"))
@@ -50,8 +53,8 @@
   "Start yeetube process to play URL using mpv."
   (yeetube-mpv-process
    (if yeetube-mpv-disable-video
-       (format "%s --no-video '%s'" (executable-find "mpv") url)
-     (format "%s '%s'" (executable-find "mpv") url)))
+       (format "%s --no-video '%s'" yeetube-mpv-path url)
+     (format "%s '%s'" yeetube-mpv-path url)))
   (message "yeetube: starting mpv process"))
 
 (defun yeetube-mpv-toggle-no-video-flag ()
