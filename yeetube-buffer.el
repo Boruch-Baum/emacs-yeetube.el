@@ -39,26 +39,36 @@ Emojis cause formatting issues, this should be off by default."
   :safe #'booleanp
   :group 'yeetube)
 
+(defgroup yeetube-faces nil
+  "Faces used by yeetube."
+  :group 'yeetube
+  :tag "Yeetube Faces"
+  :prefix 'yeetube-face)
 
 (defface yeetube-buffer-face-header-query
   '((t :inherit font-lock-function-name-face))
-  "Face used for the video published date.")
+  "Face used for the video published date."
+  :group 'yeetube-faces)
 
 (defface yeetube-buffer-face-duration
   '((t :inherit font-lock-string-face))
-  "Face used for the video duration.")
+  "Face used for the video duration."
+  :group 'yeetube-faces)
 
 (defface yeetube-buffer-face-view-count
   '((t :inherit font-lock-keyword-face))
-  "Face used for the video view count.")
+  "Face used for the video view count."
+  :group 'yeetube-faces)
 
 (defface yeetube-buffer-face-title
   '((t :inherit font-lock-variable-use-face))
-  "Face used for video title.")
+  "Face used for video title."
+  :group 'yeetube-faces)
 
 (defface yeetube-buffer-face-channel
   '((t :inherit font-lock-function-call-face))
-  "Face used for video channel name.")
+  "Face used for video channel name."
+  :group 'yeetube-faces)
 
 (defun yeetube-buffer-strip-emojis (str)
   "Remove characters which are part of the `emoji' script from STR."
