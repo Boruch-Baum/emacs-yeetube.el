@@ -216,7 +216,7 @@ then for item."
   (when (equal yeetube-download-audio-format "no")
     (setf yeetube-download-audio-format nil)))
 
-(defun yeetube-download-ytdlp (url name &optional audio-format)
+(defun yeetube-download-ytdlp (url &optional name audio-format)
   "Use yt-dlp with URL as NAME, when AUDIO-FORMAT extract content as audio format.
 
 Name can be left as nil to keep the default name."
@@ -224,9 +224,11 @@ Name can be left as nil to keep the default name."
   (unless yeetube-ytdlp
     (error "Executable for yt-dlp not found.  Please install yt-dlp"))
   (call-process-shell-command
-   (concat yeetube-ytdlp " '" url "' -o '" name "'"
-	   (when yeetube-download-audio-format
-	     " --extract-audio --audio-format '" audio-format "'"))
+   (concat "yt-dlp " (shell-quote-argument url)
+	   (when name
+	     " -o "(shell-quote-argument name))
+	   (when audio-format
+	     " --extract-audio --audio-format " (shell-quote-argument audio-format)))
    nil 0))
 
 ;;;###autoload
