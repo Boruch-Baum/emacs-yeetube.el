@@ -5,8 +5,8 @@
 ;; Author: Thanos Apollo <public@thanosapollo.com>
 ;; Keywords: extensions youtube videos
 ;; URL: https://git.thanosapollo.com/yeetube
-;; Version: 2.0.4
-(defvar yeetube--version '2.0.4)
+;; Version: 2.0.5
+
 
 ;; Package-Requires: ((emacs "29.1"))
 
@@ -33,6 +33,8 @@
 (require 'cl-lib)
 (require 'yeetube-buffer)
 (require 'yeetube-mpv)
+
+(defvar yeetube--version '2.0.5)
 
 (defgroup yeetube nil
   "Youtube Front-end."
@@ -220,7 +222,7 @@ then for item."
   "Download URL using yt-dlp.
 
 Optional values:
- NAME to specify file.
+ NAME for custom file name.
  AUDIO-FORMAT to extract and keep contents as specified audio-format only."
   (unless yeetube-ytdlp
     (error "Executable for yt-dlp not found.  Please install yt-dlp"))
