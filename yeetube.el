@@ -63,14 +63,14 @@ Example Usage:
   :type 'string
   :group 'yeetube)
 
+(defvar yeetube-content nil
+  "Scraped content.")
 
-(defvar yeetube-yt-dlp (executable-find "yt-dlp"))
+(defvar yeetube-saved-videos nil
+  "Saved/bookmarked video urls.")
 
-(defvar yeetube-content nil)
-
-(defvar yeetube-saved-videos nil)
-
-(defvar yeetube-last-played nil)
+(defvar yeetube-last-played nil
+  "Last played url.")
 
 (defun yeetube-get-url ()
   "Get url for subject in *yeetube* buffer at point."
