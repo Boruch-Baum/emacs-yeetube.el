@@ -222,7 +222,6 @@ then for item."
 Optional values:
  NAME to specify file.
  AUDIO-FORMAT to extract and keep contents as specified audio-format only."
-  (interactive)
   (unless yeetube-ytdlp
     (error "Executable for yt-dlp not found.  Please install yt-dlp"))
   (call-process-shell-command
