@@ -197,7 +197,8 @@ Emojis cause formatting issues, this should be off by default."
 	    "nil"))
 	 (yeetube-buffer--format-channel channel-name)
 	 "\n")))
-    (backward-delete-char 1) ;; Delete extra line
+    (let ((delete-active-region nil))
+      (backward-delete-char 1 nil))
     (goto-char (point-min))))
 
 (provide 'yeetube-buffer)
