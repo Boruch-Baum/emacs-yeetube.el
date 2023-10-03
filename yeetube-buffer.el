@@ -7,7 +7,7 @@
 ;; URL: https://git.thanosapollo.com/yeetube
 ;; Version: 0.0.1
 
-;; Package-Requires: ((emacs "27.2"))
+;; Package-Requires: ((emacs "29.1"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -36,10 +36,9 @@
 
 Emojis cause formatting issues, this should be off by default."
   :type 'boolean
-  :safe #'booleanp
   :group 'yeetube)
 
-(defgroup yeetube-faces nil
+(defgroup yeetube-buffer-faces nil
   "Faces used by yeetube."
   :group 'yeetube
   :tag "Yeetube Faces"
@@ -48,27 +47,27 @@ Emojis cause formatting issues, this should be off by default."
 (defface yeetube-buffer-face-header-query
   '((t :inherit font-lock-function-name-face))
   "Face used for the video published date."
-  :group 'yeetube-faces)
+  :group 'yeetube-buffer-faces)
 
 (defface yeetube-buffer-face-duration
   '((t :inherit font-lock-string-face))
   "Face used for the video duration."
-  :group 'yeetube-faces)
+  :group 'yeetube-buffer-faces)
 
 (defface yeetube-buffer-face-view-count
   '((t :inherit font-lock-keyword-face))
   "Face used for the video view count."
-  :group 'yeetube-faces)
+  :group 'yeetube-buffer-faces)
 
 (defface yeetube-buffer-face-title
   '((t :inherit font-lock-variable-use-face))
   "Face used for video title."
-  :group 'yeetube-faces)
+  :group 'yeetube-buffer-faces)
 
 (defface yeetube-buffer-face-channel
   '((t :inherit font-lock-function-call-face))
   "Face used for video channel name."
-  :group 'yeetube-faces)
+  :group 'yeetube-buffer-faces)
 
 (defun yeetube-buffer-strip-emojis (str)
   "Remove characters which are part of the `emoji' script from STR."
@@ -175,12 +174,11 @@ Emojis cause formatting issues, this should be off by default."
 (defun yeetube-buffer--format-header (query)
   "Render header for *yeetube* buffer for QUERY."
   (setf header-line-format
-	(concat
 	 (concat
 	  "Search: " (yeetube-buffer--format-header-title query)
 	  (yeetube-buffer--format-view-count "Views")
 	  (yeetube-buffer--format-video-duration "Duration")
-	  (yeetube-buffer--format-channel "Channel")))))
+	  (yeetube-buffer--format-channel "Channel"))))
 
 ;;;###autoload
 (defun yeetube-buffer-create (query content buffer-mode)
