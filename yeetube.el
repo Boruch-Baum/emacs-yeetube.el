@@ -191,6 +191,44 @@ then for item."
 		   `(,title ,videoid ,view-count ,video-duration ,channel)
 		   yeetube-content))))))))))
 
+(defun yeetube-version ()
+  "Show Yeetube Version."
+  (interactive)
+  (message "Yeetube Version: %s" yeetube--version))
+
+(add-variable-watcher 'yeetube-saved-videos #'yeetube-update-saved-videos-list)
+
+;; Yeetube Downlaod:
+
+(defvar yeetube-ytdlp (executable-find "yt-dlp")
+  "Path for yt-dlp executable.")
+
+(defun yeetube-download-change-directory ()
+  "Change download directory."
+  (interactive)
+  (setf yeetube-download-directory
+        (read-directory-name "Select a directory: ")))
+
+(defun yeetube-download-change-audio-format (audio-format)
+  "Change download format to AUDIO-FORMAT."
+  (interactive "sSpecify Audio Format(no for nil): ")
+  (setf yeetube-download-audio-format audio-format)
+  (when (equal yeetube-download-audio-format "no")
+    (setf yeetube-download-audio-format nil)))
+
+(defun yeetube-download-ytdlp (url name &optional audio-format)
+  "Use yt-dlp with URL as NAME, when AUDIO-FORMAT extract content as audio format.
+
+Name can be left as nil to keep the default name."
+  (interactive)
+  (unless yeetube-ytdlp
+    (error "Executable for yt-dlp not found.  Please install yt-dlp"))
+  (call-process-shell-command
+   (concat yeetube-ytdlp " '" url "' -o '" name "'"
+	   (when yeetube-download-audio-format
+	     " --extract-audio --audio-format '" audio-format "'"))
+   nil 0))
+
 ;;;###autoload
 (defun yeetube-download-video ()
   "Download using link at point in *yeetube* buffer with yt-dlp."
@@ -198,12 +236,7 @@ then for item."
   (let ((url (yeetube-get-url)))
     (when (string-prefix-p "http" url)
       (let ((default-directory yeetube-download-directory))
-        (call-process-shell-command
-         (if yeetube-download-audio-format
-             (format "%s '%s' --extract-audio --audio-format %s"
-		     (executable-find "yt-dlp") url yeetube-download-audio-format)
-	   (format "%s '%s'" (executable-find "yt-dlp") url))
-	 nil 0)
+        (yeetube-download-ytdlp url nil yeetube-download-audio-format)
         (message "Downloading %s " url)))))
 
 ;;;###autoload
@@ -217,43 +250,14 @@ then run this command interactively.  You can leave the 'Custom name:'
 prompt blank to keep the default name."
   (interactive)
   (let ((url "")
-        (name "")
-        (download-counter 1)
-	(stored-contents nil))
-    ;; Read links and names until "q" is entered
+	(name "")
+	(download-counter 1))
     (while (not (string= url "q"))
       (setf url (read-string "Enter URL (q to quit): "))
       (unless (string= url "q")
-        (setf name (read-string (format "Custom name (download counter: %d) " download-counter)))
-	(push (cons url name) stored-contents)
-        (setf download-counter (1+ download-counter))))
-    ;; Process the collected links and names
-    (dolist (pair stored-contents)
-      (let ((url (car pair))
-            (name (cdr pair)))
-        (call-process-shell-command
-         (format "%s '%s' -o %s" (executable-find "yt-dlp") url name)
-	 nil 0)))))
-
-(defun yeetube-change-download-directory ()
-  "Change download directory."
-  (interactive)
-  (setf yeetube-download-directory
-        (read-directory-name "Select a directory: ")))
-
-(defun yeetube-change-download-audio-format (audio-format)
-  "Change download format to AUDIO-FORMAT."
-  (interactive "sSpecify Audio Format(no for nil): ")
-  (setf yeetube-download-audio-format audio-format)
-  (when (equal yeetube-download-audio-format "no")
-    (setf yeetube-download-audio-format nil)))
-
-(defun yeetube-version ()
-  "Show Yeetube Version."
-  (interactive)
-  (message "Yeetube Version: %s" yeetube--version))
-
-(add-variable-watcher 'yeetube-saved-videos #'yeetube-update-saved-videos-list)
+	(setf name (read-string (format "Custom name (download counter: %d) " download-counter)))
+	(setf download-counter (1+ download-counter))
+	(yeetube-download-ytdlp url name yeetube-download-audio-format)))))
 
 ;; Yeetube Mode
 (defvar-keymap yeetube-mode-map
