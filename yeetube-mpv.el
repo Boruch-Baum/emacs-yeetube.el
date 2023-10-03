@@ -40,6 +40,8 @@
 
 (defun yeetube-mpv-process (command)
   "Start yeetube process for shell COMMAND."
+  (unless yeetube-mpv-path
+    (error "Mpv not found.  Install mpv or change the value of yeetube-player"))
   (let ((yeetube-mpv-process "yeetube"))
     (dolist (process (process-list))
       (when (string-match yeetube-mpv-process (process-name process))
