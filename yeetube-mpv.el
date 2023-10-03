@@ -53,9 +53,9 @@
 (defun yeetube-mpv (url)
   "Start yeetube process to play URL using mpv."
   (yeetube-mpv-process
-   (if yeetube-mpv-disable-video
-       (format "%s --no-video '%s'" yeetube-mpv-path url)
-     (format "%s '%s'" yeetube-mpv-path url)))
+   (concat yeetube-mpv-path " "
+	   (shell-quote-argument url)
+	   (when yeetube-mpv-disable-video " --no-video")))
   (message "yeetube: starting mpv process"))
 
 (defun yeetube-mpv-toggle-no-video-flag ()
