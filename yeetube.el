@@ -217,9 +217,11 @@ then for item."
     (setf yeetube-download-audio-format nil)))
 
 (defun yeetube-download-ytdlp (url &optional name audio-format)
-  "Use yt-dlp with URL as NAME, when AUDIO-FORMAT extract content as audio format.
+  "Download URL using yt-dlp.
 
-Name can be left as nil to keep the default name."
+Optional values:
+ NAME to specify file.
+ AUDIO-FORMAT to extract and keep contents as specified audio-format only."
   (interactive)
   (unless yeetube-ytdlp
     (error "Executable for yt-dlp not found.  Please install yt-dlp"))
@@ -233,7 +235,7 @@ Name can be left as nil to keep the default name."
 
 ;;;###autoload
 (defun yeetube-download-video ()
-  "Download using link at point in *yeetube* buffer with yt-dlp."
+  "Download entry at point in *yeetube* buffer with yt-dlp."
   (interactive)
   (let ((url (yeetube-get-url)))
     (when (string-prefix-p "http" url)
