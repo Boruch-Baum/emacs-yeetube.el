@@ -8,7 +8,7 @@
 ;; Version: 2.0.5
 
 
-;; Package-Requires: ((emacs "29.1"))
+;; Package-Requires: ((emacs "27.2"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -267,18 +267,16 @@ prompt blank to keep the default name."
 	(yeetube-download-ytdlp url name yeetube-download-audio-format)))))
 
 ;; Yeetube Mode
-(defvar-keymap yeetube-mode-map
-  :doc "Keymap for yeetube commands"
-  "RET" #'yeetube-play
-  "d" #'yeetube-download-video
-  "D" #'yeetube-change-download-directory
-  "a" #'yeetube-change-download-audio-format
-  "p" #'yeetube-mpv-toggle-pause
-  "v" #'yeetube-mpv-toggle-video
-  "V" #'yeetube-mpv-toggle-no-video-flag
-  "s" #'yeetube-save-video
-  "P" #'yeetube-play-saved-video
-  "q" #'quit-window)
+(defvar yeetube-mode-map (make-sparse-keymap))
+(define-key yeetube-mode-map (kbd "RET") #'yeetube-play)
+(define-key yeetube-mode-map (kbd "d") #'yeetube-download-video)
+(define-key yeetube-mode-map (kbd "D") #'yeetube-download-change-directory)
+(define-key yeetube-mode-map (kbd "a") #'yeetube-download-change-audio-format)
+(define-key yeetube-mode-map (kbd "v") #'yeetube-mpv-toggle-video)
+(define-key yeetube-mode-map (kbd "V") #'yeetube-mpv-toggle-no-video-flag)
+(define-key yeetube-mode-map (kbd "s") #'yeetube-save-video)
+(define-key yeetube-mode-map (kbd "P") #'yeetube-play-saved-video)
+(define-key yeetube-mode-map (kbd "q") #'quit-window)
 
 (define-derived-mode yeetube-mode special-mode "Yeetube"
   "Yeetube mode."

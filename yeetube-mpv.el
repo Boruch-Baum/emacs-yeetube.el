@@ -3,7 +3,7 @@
 ;; Copyright (C) 2023  Thanos Apollo
 
 ;; Author: Thanos Apollo <public@thanosapollo.com>
-;; Keywords: extensions youtube videos invidious
+;; Keywords: extensions youtube videos
 ;; URL: https://git.thanosapollo.com/yeetube
 
 ;; Version: 0.1
