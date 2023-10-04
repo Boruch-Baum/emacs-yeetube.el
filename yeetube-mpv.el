@@ -50,7 +50,7 @@
       (start-process-shell-command
        "yeetube" nil command))))
 
-(defun yeetube-mpv (url)
+(defun yeetube-mpv-play-url (url)
   "Start yeetube process to play URL using mpv."
   (yeetube-mpv-process
    (concat yeetube-mpv-path " "

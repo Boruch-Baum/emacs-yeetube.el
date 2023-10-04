@@ -44,7 +44,7 @@
   :type 'number
   :group 'yeetube)
 
-(defcustom yeetube-player #'yeetube-mpv
+(defcustom yeetube-player #'yeetube-mpv-play-url
   "Select media player function."
   :type 'function
   :group 'yeetube)
