@@ -34,8 +34,6 @@
 (require 'yeetube-buffer)
 (require 'yeetube-mpv)
 
-(defvar yeetube--version '2.0.5)
-
 (defgroup yeetube nil
   "Youtube Front-end."
   :group 'external
@@ -192,11 +190,6 @@ then for item."
 		  (push
 		   `(,title ,videoid ,view-count ,video-duration ,channel)
 		   yeetube-content))))))))))
-
-(defun yeetube-version ()
-  "Show Yeetube Version."
-  (interactive)
-  (message "Yeetube Version: %s" yeetube--version))
 
 (add-variable-watcher 'yeetube-saved-videos #'yeetube-update-saved-videos-list)
 
