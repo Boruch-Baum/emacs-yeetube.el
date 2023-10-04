@@ -150,7 +150,7 @@ WHERE indicates where in the buffer the update should happen."
 	       (replace-regexp-in-string " " "+" query)
 	       ;; Filter parameter to remove live videos.
 	       "&sp=EgQQASAB")
-       t t 30)
+       'silent 'inhibit-cookies 30)
     (decode-coding-region (point-min) (point-max) 'utf-8)
     (goto-char (point-min))
     (toggle-enable-multibyte-characters)
