@@ -252,8 +252,8 @@ Optional values:
 This command is not meant to be used in the *Yeetube Search* buffer.
 
 Usage Example:
-Open a Dired buffer and navigate where you want to download your videos,
-then run this command interactively.  You can leave the 'Custom name:'
+Open a Dired buffer and navigate where you want to download your
+videos, then run this command interactively.  You can leave the name
 prompt blank to keep the default name."
   (interactive)
   (let ((url "")
