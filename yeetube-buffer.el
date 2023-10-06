@@ -180,6 +180,16 @@ Emojis cause formatting issues, this should be off by default."
 	  (yeetube-buffer--format-video-duration "Duration")
 	  (yeetube-buffer--format-channel "Channel"))))
 
+(defun yeetube-buffer-insert-content (content)
+  "Insert formatted CONTENT."
+  (insert
+   (concat (yeetube-buffer--format-title (yeetube-buffer-fix-title (car content)))
+	   (yeetube-buffer--format-view-count (yeetube-buffer-view-count-add-commas
+					       (yeetube-buffer-fix-view-count (nth 2 content))))
+	   (yeetube-buffer--format-video-duration (nth 3 content))
+	   (yeetube-buffer--format-channel (nth 4 content))
+	   "\n")))
+
 ;;;###autoload
 (defun yeetube-buffer-create (query content buffer-mode)
   "Create *yeetube* buffer with BUFFER-MODE for search QUERY, displaying CONTENT."
