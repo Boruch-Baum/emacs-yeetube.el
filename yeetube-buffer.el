@@ -199,22 +199,8 @@ Emojis cause formatting issues, this should be off by default."
     (setf buffer-read-only nil)
     (erase-buffer)
     (yeetube-buffer--format-header query)
-    (dolist (info (reverse content))
-      (let ((title (yeetube-buffer-fix-title (car info)))
-	    (view-count (nth 2 info))
-	    (video-duration (nth 3 info))
-	    (channel-name (nth 4 info)))
-	(insert
-	 (yeetube-buffer--format-title title)
-	 (yeetube-buffer--format-view-count
-	  (yeetube-buffer-view-count-add-commas
-	   (yeetube-buffer-fix-view-count view-count)))
-	 (yeetube-buffer--format-video-duration
-	  (if (string-match-p "^[0-9:]+$" video-duration)
-	      video-duration
-	    "nil"))
-	 (yeetube-buffer--format-channel channel-name)
-	 "\n")))
+    (cl-loop for result in (reverse content)
+	     do (yeetube-buffer-insert-content result))
     (delete-char -1)
     (goto-char (point-min))))
 
