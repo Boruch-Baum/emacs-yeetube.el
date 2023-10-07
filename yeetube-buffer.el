@@ -202,7 +202,8 @@ Emojis cause formatting issues, this should be off by default."
     (cl-loop for result in (reverse content)
 	     do (yeetube-buffer-insert-content result))
     (delete-char -1)
-    (goto-char (point-min))))
+    (goto-char (point-min))
+    (setf buffer-read-only t)))
 
 (provide 'yeetube-buffer)
 ;;; yeetube-buffer.el ends here
