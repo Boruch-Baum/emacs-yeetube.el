@@ -72,6 +72,15 @@ Example Usage:
   :type 'string
   :group 'yeetube)
 
+(defvar yeetube-invidious-instances
+  '("vid.puffyan.us"
+    "invidious.flokinet.to"
+    "yt.artemislena.eu"
+    "invidious.privacydev.net"
+    "onion.tube"
+    "yewtu.be")
+  "List of invidious instaces.")
+
 (defvar yeetube-content nil
   "Scraped content.")
 
