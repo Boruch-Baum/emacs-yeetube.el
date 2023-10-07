@@ -174,9 +174,13 @@ WHERE indicates where in the buffer the update should happen."
     (yeetube-buffer-create query yeetube-content 'yeetube-mode)))
 
 (defun yeetube-browse-url ()
-  "Open URL in browser."
+  "Open URL for video at point, using an invidious instance."
   (interactive)
-  (browse-url (yeetube-get-url)))
+  (let ((invidious-instance (+ 1 (random (length yeetube-invidious-instances)))))
+    (browse-url
+     (replace-regexp-in-string "youtube.com"
+			       (nth invidious-instance yeetube-invidious-instances)
+			       (yeetube-get-url)))))
 
 (defun yeetube-get-item (query)
   "Get item from youtube results for QUERY.
@@ -278,6 +282,7 @@ prompt blank to keep the default name."
 ;; Yeetube Mode
 (defvar yeetube-mode-map (make-sparse-keymap))
 (define-key yeetube-mode-map (kbd "RET") #'yeetube-play)
+(define-key yeetube-mode-map (kbd "b") #'yeetube-browse-url)
 (define-key yeetube-mode-map (kbd "d") #'yeetube-download-video)
 (define-key yeetube-mode-map (kbd "D") #'yeetube-download-change-directory)
 (define-key yeetube-mode-map (kbd "a") #'yeetube-download-change-audio-format)
