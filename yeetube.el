@@ -233,7 +233,7 @@ then for item."
   (when (equal yeetube-download-audio-format "no")
     (setf yeetube-download-audio-format nil)))
 
-(defun yeetube-download-ytdlp (url &optional name audio-format)
+(defun yeetube-download--ytdlp (url &optional name audio-format)
   "Download URL using yt-dlp.
 
 Optional values:
@@ -249,6 +249,18 @@ Optional values:
 	     " --extract-audio --audio-format " (shell-quote-argument audio-format)))
    nil 0))
 
+(defun yeetube-download--ffmpeg (url name)
+  "Download URL as NAME using ffmpeg."
+  (let ((ffmpeg (executable-find "ffmpeg")))
+    (unless ffmpeg
+      (error "Executable ffmpeg not found.  Please install ffmpeg"))
+    (call-process-shell-command
+     (concat ffmpeg
+	     " -protocol_whitelist file,crypto,data,https,tls,tcp -stats -i "
+	     (shell-quote-argument url)
+	     " -codec copy "
+	     name))))
+
 ;;;###autoload
 (defun yeetube-download-video ()
   "Download entry at point in *yeetube* buffer with yt-dlp."
@@ -256,7 +268,7 @@ Optional values:
   (let ((url (yeetube-get-url)))
     (when (string-prefix-p "http" url)
       (let ((default-directory yeetube-download-directory))
-        (yeetube-download-ytdlp url nil yeetube-download-audio-format)
+        (yeetube-download--ytdlp url nil yeetube-download-audio-format)
         (message "Downloading %s " url)))))
 
 ;;;###autoload
@@ -277,7 +289,7 @@ prompt blank to keep the default name."
       (unless (string= url "q")
 	(setf name (read-string (format "Custom name (download counter: %d) " download-counter)))
 	(setf download-counter (1+ download-counter))
-	(yeetube-download-ytdlp url name yeetube-download-audio-format)))))
+	(yeetube-download--ytdlp url name yeetube-download-audio-format)))))
 
 ;; Yeetube Mode
 (defvar yeetube-mode-map (make-sparse-keymap))
