@@ -96,6 +96,7 @@ Example Usage:
 			   (cadr (nth (- (line-number-at-pos) 1) (reverse yeetube-content))))))
     video-url))
 
+;;;###autoload
 (defun yeetube-play ()
   "Play video at point in *yeetube* buffer."
   (interactive)
@@ -103,7 +104,6 @@ Example Usage:
 
 (defun yeetube-load-saved-videos ()
   "Load saved videos."
-  (interactive)
   (let ((file-path (concat user-emacs-directory "yeetube")))
     (if (file-exists-p file-path)
 	(with-temp-buffer
@@ -113,6 +113,7 @@ Example Usage:
 	    (setf yeetube-saved-videos contents)))
       (write-region "nil" nil file-path))))
 
+;;;###autoload
 (defun yeetube-save-video ()
   "Save url at point."
   (interactive)
@@ -121,6 +122,7 @@ Example Usage:
 	(url (yeetube-get-url)))
     (push (cons name url) yeetube-saved-videos)))
 
+;;;###autoload
 (defun yeetube-play-saved-video ()
   "Select & Play a saved video."
   (interactive)
@@ -128,6 +130,7 @@ Example Usage:
   (let ((video (completing-read "Select video: " yeetube-saved-videos nil t)))
     (funcall yeetube-player (cdr (assoc video yeetube-saved-videos)))))
 
+;;;###autoload
 (defun yeetube-remove-saved-video ()
   "Select video to remove from saved videos."
   (interactive)
@@ -135,6 +138,7 @@ Example Usage:
   (let ((video (completing-read "Select video: " yeetube-saved-videos nil t)))
     (setf yeetube-saved-videos (remove (assoc video yeetube-saved-videos) yeetube-saved-videos))))
 
+;;;###autoload
 (defun yeetube-remove-all-saved-videos ()
   "Clear yeetube saved."
   (interactive)
@@ -173,6 +177,7 @@ WHERE indicates where in the buffer the update should happen."
     (yeetube-get-content)
     (yeetube-buffer-create query yeetube-content 'yeetube-mode)))
 
+;;;###autoload
 (defun yeetube-browse-url ()
   "Open URL for video at point, using an invidious instance."
   (interactive)
@@ -220,12 +225,14 @@ then for item."
 (defvar yeetube-ytdlp (executable-find "yt-dlp")
   "Path for yt-dlp executable.")
 
+;;;###autoload
 (defun yeetube-download-change-directory ()
   "Change download directory."
   (interactive)
   (setf yeetube-download-directory
         (read-directory-name "Select a directory: ")))
 
+;;;###autoload
 (defun yeetube-download-change-audio-format (audio-format)
   "Change download format to AUDIO-FORMAT."
   (interactive "sSpecify Audio Format(no for nil): ")
