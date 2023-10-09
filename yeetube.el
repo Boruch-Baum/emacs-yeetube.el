@@ -48,7 +48,7 @@
   :group 'external
   :prefix "yeetube-")
 
-(defcustom yeetube-results-limit 15
+(defcustom yeetube-results-limit 20
   "Define a limit for search results."
   :type 'natnump
   :group 'yeetube)
