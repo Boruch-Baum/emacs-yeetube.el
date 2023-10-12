@@ -5,7 +5,7 @@
 ## About 
 
 This package provides the ability to scrape YouTube, with the results
-displayed in a proced-like buffer. 
+displayed in a proced-like buffer.
 
 
 Package functionality includes:
@@ -14,11 +14,14 @@ Package functionality includes:
 - Play video url *by default using mpv*
 - Bookmark/Save video url
 - Download video *using yt-dlp*
-- A minimal yt-dlp front-end, *which is independent of the rest YouTube functionality*, to download multiple urls.
+- A minimal yt-dlp front-end, *which is independent of the rest
+  YouTube functionality*, to download multiple urls.
 
-*Inspired by [ytfzf](https://github.com/pystardust/ytfzf) & [ytel](https://github.com/grastello/ytel)*
+*Inspired by [ytfzf](https://github.com/pystardust/ytfzf) &
+[ytel](https://github.com/grastello/ytel)*
 
-*This package does not use Invidious or YouTube's API, just parses html & json.*
+*This package does not use Invidious or YouTube's API, just parses
+html & json.*
 
 
 ## Installation 
@@ -39,38 +42,41 @@ This package is available via [MELPA](https://melpa.org/#/yeetube)
 $ git clone https://git.thanosapollo.com/yeetube
 ```
 
-Add this to your emacs configuration
+*Add this to your emacs configuration:*
+
 ``` emacs-lisp
-(add-to-list 'load-path "/path/to/yeetube")
-(load-file "~/path/to/yeetube.el")
+   (add-to-list 'load-path "/path/to/yeetube")
+   (load-file "~/path/to/yeetube.el")
+   (require 'yeetube)
 ```
 
 ### Dependencies
-- [mpv](https://mpv.io/): default multimedia player 
-- [yt-dlp](https://github.com/yt-dlp/yt-dlp): download functionality 
+- [mpv](https://mpv.io/): default multimedia player
+- [yt-dlp](https://github.com/yt-dlp/yt-dlp): download functionality
 
 *Debian/Ubuntu*
 ``` shell
-sudo apt install mpv yt-dlp
+$ sudo apt install mpv yt-dlp
 ```
 
-### Configuration 
-#### Media Player 
-By default `yeetube-player` is set to `yeetube-mpv-play-url`, you can use
-[mpv.el](https://github.com/kljohann/mpv.el), [GNU/Emms](https://www.gnu.org/software/emms/) or other similar packages like so:
+## Configuration 
+### Media Player 
+By default `yeetube-player` is set to `yeetube-mpv-play-url`, you can
+use [mpv.el](https://github.com/kljohann/mpv.el),
+[GNU/Emms](https://www.gnu.org/software/emms/) or other similar
+packages like so:
 
 ``` emacs-lisp
 (setf yeetube-player #'emms-play-url)
 ```
 
-Make sure that the media player of your choice can directly play youtube urls.
+Make sure that the media player of your choice can directly play
+youtube urls.
 
 ### FAQ
 #### Feature request: display thumbnails
-Formatting images in a text buffer is not something that I found easy or fun to do. Feel free to submit a patch if you manage to make an appealing version of it
+Formatting images in a text buffer is not something that I found easy
+or fun to do. Feel free to submit a patch if you manage to make an
+appealing version of it
 
-#### Why did you make this
-- Because it's fun
-- To learn elisp
-- Find a way to get youtube content without relying on external services, such as invidious.
 
