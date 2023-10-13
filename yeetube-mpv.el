@@ -50,11 +50,14 @@
       (start-process-shell-command
        "yeetube" nil command))))
 
-(defun yeetube-mpv-play-url (url)
-  "Start yeetube process to play URL using mpv."
+(defun yeetube-mpv-play (input)
+  "Start yeetube process to play INPUT using mpv.
+
+This function is not specific to just playing urls.  Feel free to use
+to play local files."
   (yeetube-mpv-process
    (concat yeetube-mpv-path " "
-	   (shell-quote-argument url)
+	   (shell-quote-argument input)
 	   (when yeetube-mpv-disable-video " --no-video")))
   (message "yeetube: starting mpv process"))
 

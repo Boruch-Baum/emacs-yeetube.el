@@ -53,7 +53,7 @@
   :type 'natnump
   :group 'yeetube)
 
-(defcustom yeetube-player #'yeetube-mpv-play-url
+(defcustom yeetube-player #'yeetube-mpv-play
   "Select media player function."
   :type 'function
   :group 'yeetube)
