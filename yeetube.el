@@ -90,6 +90,7 @@ Example Usage:
 (defvar yeetube-last-played nil
   "Last played url.")
 
+;; TODO: Rewrite without hardcoding youtube.com
 (defun yeetube-get-url ()
   "Get url for subject in *yeetube* buffer at point."
   (let ((video-url (concat "https://youtube.com/watch?v="
@@ -278,9 +279,10 @@ Optional values:
         (yeetube-download--ytdlp url nil yeetube-download-audio-format)
         (message "Downloading %s " url)))))
 
+;; TODO: Add option to use ffmpeg
 ;;;###autoload
 (defun yeetube-download-videos ()
-  "Download one or multiple videos using yt-dlp.
+  "Bulk download videos using yt-dlp.
 This command is not meant to be used in the *Yeetube Search* buffer.
 
 Usage Example:
