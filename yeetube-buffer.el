@@ -183,12 +183,15 @@ Emojis cause formatting issues, this should be off by default."
 (defun yeetube-buffer-insert-content (content)
   "Insert formatted CONTENT."
   (insert
-   (concat (yeetube-buffer--format-title (yeetube-buffer-fix-title (car content)))
-	   (yeetube-buffer--format-view-count (yeetube-buffer-view-count-add-commas
-					       (yeetube-buffer-fix-view-count (nth 2 content))))
-	   (yeetube-buffer--format-video-duration (nth 3 content))
-	   (yeetube-buffer--format-channel (nth 4 content))
-	   "\n")))
+   (concat
+    (yeetube-buffer--format-title (yeetube-buffer-fix-title
+				   (cl-getf content :title)))
+    (yeetube-buffer--format-view-count (yeetube-buffer-view-count-add-commas
+					(yeetube-buffer-fix-view-count
+					 (cl-getf content :view-count))))
+    (yeetube-buffer--format-video-duration (cl-getf content :duration))
+    (yeetube-buffer--format-channel (cl-getf content :channel))
+    "\n")))
 
 ;;;###autoload
 (defun yeetube-buffer-create (query content buffer-mode)
