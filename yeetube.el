@@ -104,16 +104,17 @@ You can change the value to an invidious instance.")
     video-info))
 
 (defun yeetube-get-url ()
-  "Get url for subject in *yeetube* buffer at point."
-  (let ((video-url (concat "https://youtube.com/watch?v="
-			   (cadr (nth (- (line-number-at-pos) 1) (reverse yeetube-content))))))
+  "Get video url."
+  (let ((video-url (concat yeetube-url
+		    (yeetube-get :videoid))))
     video-url))
 
 ;;;###autoload
 (defun yeetube-play ()
   "Play video at point in *yeetube* buffer."
   (interactive)
-  (funcall yeetube-player (yeetube-get-url)))
+  (funcall yeetube-player (yeetube-get-url))
+  (message "Playing: %s" (yeetube-get :title)))
 
 (defun yeetube-load-saved-videos ()
   "Load saved videos."
