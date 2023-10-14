@@ -1,4 +1,4 @@
-[![self-host-badge](https://img.shields.io/badge/Repository-Self_hosted-black?logo=git&logoColor=red)](https://git.thanosapollo.com/about)
+[![self-host-badge](https://img.shields.io/badge/Repository-Self_hosted-black?logo=git&logoColor=red)](https://git.thanosapollo.com/yeetube/about)
 [![MELPA](https://melpa.org/packages/yeetube-badge.svg)](https://melpa.org/#/yeetube)
 
 # Yeetube | Emacs' Youtube Front End
