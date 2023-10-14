@@ -94,6 +94,15 @@ Example Usage:
   "URL used to play videos from.
 
 You can change the value to an invidious instance.")
+
+(defun yeetube-get (keyword)
+  "Retrieve KEYWORD value from `yeetube-content'."
+  (unless (keywordp keyword)
+    (error "Value %s is not a keyword" keyword))
+  (let ((video-info
+	 (cl-getf (nth (- (line-number-at-pos) 1) (reverse yeetube-content)) keyword)))
+    video-info))
+
 (defun yeetube-get-url ()
   "Get url for subject in *yeetube* buffer at point."
   (let ((video-url (concat "https://youtube.com/watch?v="
