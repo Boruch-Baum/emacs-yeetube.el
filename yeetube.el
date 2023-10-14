@@ -90,7 +90,10 @@ Example Usage:
 (defvar yeetube-last-played nil
   "Last played url.")
 
-;; TODO: Rewrite without hardcoding youtube.com
+(defvar yeetube-url "https://youtube.com/watch?v="
+  "URL used to play videos from.
+
+You can change the value to an invidious instance.")
 (defun yeetube-get-url ()
   "Get url for subject in *yeetube* buffer at point."
   (let ((video-url (concat "https://youtube.com/watch?v="
