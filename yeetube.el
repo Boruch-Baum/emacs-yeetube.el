@@ -136,13 +136,16 @@ You can change the value to an invidious instance.")
 	(url (yeetube-get-url)))
     (push (cons name url) yeetube-saved-videos)))
 
+;; We could use keywords here, but it would break users saved videos
+;; from previous versions.
 ;;;###autoload
 (defun yeetube-play-saved-video ()
   "Select & Play a saved video."
   (interactive)
   (yeetube-load-saved-videos)
   (let ((video (completing-read "Select video: " yeetube-saved-videos nil t)))
-    (funcall yeetube-player (cdr (assoc video yeetube-saved-videos)))))
+    (funcall yeetube-player (cdr (assoc video yeetube-saved-videos)))
+    (message "Playing: %s" (car (assoc video yeetube-saved-videos)))))
 
 ;;;###autoload
 (defun yeetube-remove-saved-video ()
