@@ -214,6 +214,13 @@ then for item."
   (search-forward query nil t)
   (search-forward "text" nil t))
 
+(defvar yeetube--title-replacements
+  '(("&amp;" . "&")
+    ("&quot;" . "\"")
+    ("&#39;" . "'")
+    ("u0026" . "&")
+    ("\\\\" . ""))
+  "Unicode character replacements.")
 (defun yeetube-get-content ()
   "Get content from youtube."
   (setf yeetube-content nil)
