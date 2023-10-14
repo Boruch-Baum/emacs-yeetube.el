@@ -317,7 +317,8 @@ Optional values:
     (when (string-prefix-p "http" url)
       (let ((default-directory yeetube-download-directory))
         (yeetube-download--ytdlp url nil yeetube-download-audio-format)
-        (message "Downloading %s " url)))))
+        (message "Downloading: '%s' at '%s'"
+		 (yeetube-get :title) yeetube-download-directory)))))
 
 ;; TODO: Add option to use ffmpeg
 ;;;###autoload
