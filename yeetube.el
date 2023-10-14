@@ -229,7 +229,11 @@ then for item."
 		(yeetube-get-item "longbylinetext") ;; Channel Name
 		(let ((channel (buffer-substring (+ (point) 3) (- (search-forward ",") 2))))
 		  (push
-		   `(,title ,videoid ,view-count ,video-duration ,channel)
+		   (list :title title
+			 :videoid videoid
+			 :view-count view-count
+			 :duration video-duration
+			 :channel channel)
 		   yeetube-content))))))))))
 
 (add-variable-watcher 'yeetube-saved-videos #'yeetube-update-saved-videos-list)
