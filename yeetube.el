@@ -98,7 +98,7 @@ You can change the value to an invidious instance.")
 (defun yeetube-get (keyword)
   "Retrieve KEYWORD value from `yeetube-content'."
   (unless (keywordp keyword)
-    (error "Value %s is not a keyword" keyword))
+    (error "Value `%s' is not a keyword" keyword))
   (let ((video-info
 	 (cl-getf (nth (- (line-number-at-pos) 1) (reverse yeetube-content)) keyword)))
     video-info))
