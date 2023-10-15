@@ -105,16 +105,18 @@ You can change the value to an invidious instance.")
 
 (defun yeetube-get-url ()
   "Get video url."
-  (let ((video-url (concat yeetube-url
-		    (yeetube-get :videoid))))
+  (let ((video-url (concat yeetube-url (yeetube-get :videoid))))
     video-url))
 
 ;;;###autoload
 (defun yeetube-play ()
   "Play video at point in *yeetube* buffer."
   (interactive)
-  (funcall yeetube-player (yeetube-get-url))
-  (message "Playing: %s" (yeetube-get :title)))
+  (let ((video-url (yeetube-get-url))
+	(video-title (yeetube-get :title)))
+    (funcall yeetube-player video-url)
+    (push (list :url video-url :title video-title) yeetube-history)
+    (message "Playing: %s" video-title)))
 
 (defun yeetube-load-saved-videos ()
   "Load saved videos."
@@ -226,12 +228,12 @@ then for item."
 ;; This should fix some of the common issues.
 (defun yeetube---fix-title (title)
   "Adjust TITLE."
-    (mapc (lambda (replacement)
-            (setf title (replace-regexp-in-string (car replacement) (cdr replacement) title)))
-          yeetube--title-replacements)
-    (if yeetube-buffer-display-emojis
-	title
-      (yeetube-buffer-strip-emojis title)))
+  (mapc (lambda (replacement)
+          (setf title (replace-regexp-in-string (car replacement) (cdr replacement) title)))
+        yeetube--title-replacements)
+  (if yeetube-buffer-display-emojis
+      title
+    (yeetube-buffer-strip-emojis title)))
 
 (defun yeetube-get-content ()
   "Get content from youtube."
