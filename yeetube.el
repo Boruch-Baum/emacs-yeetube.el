@@ -87,8 +87,8 @@ Example Usage:
 (defvar yeetube-saved-videos nil
   "Saved/bookmarked video urls.")
 
-(defvar yeetube-last-played nil
-  "Last played url.")
+(defvar yeetube-history nil
+  "Stored urls & titles of recently played content.")
 
 (defvar yeetube-url "https://youtube.com/watch?v="
   "URL used to play videos from.
