@@ -128,6 +128,19 @@ Keywords:
     (push (list :url video-url :title video-title) yeetube-history)
     (message "Playing: %s" video-title)))
 
+;;;###autoload
+(defun yeetube-replay ()
+  "Select entry from history to replay.
+
+Select entry title from yeetube-history and play corresponding URL."
+  (interactive)
+  (let* ((titles (mapcar (lambda (entry) (cl-getf entry :title)) yeetube-history))
+         (selected (completing-read "Replay: " titles))
+         (selected-entry (cl-find-if (lambda (entry) (string= selected (cl-getf entry :title))) yeetube-history))
+         (url (cl-getf selected-entry :url)))
+    (funcall yeetube-player url)
+    (message "Replaying: %s" selected)))
+
 (defun yeetube-load-saved-videos ()
   "Load saved videos."
   (let ((file-path (concat user-emacs-directory "yeetube")))
