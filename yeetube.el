@@ -96,7 +96,17 @@ Example Usage:
 You can change the value to an invidious instance.")
 
 (defun yeetube-get (keyword)
-  "Retrieve KEYWORD value from `yeetube-content'."
+  "Retrieve KEYWORD value for entry at point.
+
+Retrieve keyword value for entry at point, from `yeetube-content', in
+*yeetube* buffer.
+
+Keywords:
+- :title
+- :videoid
+- :view-count
+- :duration
+- :channel"
   (unless (keywordp keyword)
     (error "Value `%s' is not a keyword" keyword))
   (let ((video-info
