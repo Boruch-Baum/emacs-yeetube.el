@@ -11,7 +11,7 @@ displayed in a proced-like buffer.
 
 Package functionality includes:
 
-- Search Youtube for query
+- Query YouTube
 - Play video url *by default using mpv*
 - Bookmark/Save video url
 - Download video *using yt-dlp*

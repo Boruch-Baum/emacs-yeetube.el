@@ -30,7 +30,7 @@
 ;;
 ;; Basic functionality includes:
 ;;
-;; - Search Youtube for query
+;; - Query YouTube
 ;; - Play video url by default using mpv
 ;; - Bookmark/Save video url
 ;; - Download video using yt-dlp
@@ -369,6 +369,7 @@ prompt blank to keep the default name."
 ;; Yeetube Mode
 (defvar yeetube-mode-map (make-sparse-keymap))
 (define-key yeetube-mode-map (kbd "RET") #'yeetube-play)
+(define-key yeetube-mode-map (kbd "M-RET") #'yeetube-search)
 (define-key yeetube-mode-map (kbd "b") #'yeetube-browse-url)
 (define-key yeetube-mode-map (kbd "d") #'yeetube-download-video)
 (define-key yeetube-mode-map (kbd "D") #'yeetube-download-change-directory)
@@ -378,6 +379,7 @@ prompt blank to keep the default name."
 (define-key yeetube-mode-map (kbd "s") #'yeetube-save-video)
 (define-key yeetube-mode-map (kbd "P") #'yeetube-play-saved-video)
 (define-key yeetube-mode-map (kbd "q") #'quit-window)
+(define-key yeetube-mode-map (kbd "r") #'yeetube-replay)
 
 (define-derived-mode yeetube-mode special-mode "Yeetube"
   "Yeetube mode."
