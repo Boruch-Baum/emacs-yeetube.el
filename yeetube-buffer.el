@@ -75,22 +75,6 @@ Emojis cause formatting issues, this should be off by default."
                   (equal (aref char-script-table c) 'emoji))
                 str))
 
-;; Usually titles from youtube get messed up,
-;; This should fix some of the common issues.
-(defun yeetube-buffer-fix-title (title)
-  "Adjust TITLE."
-  (let ((replacements '(("&amp;" . "&")
-                        ("&quot;" . "\"")
-                        ("&#39;" . "'")
-			("u0026" . "&")
-			("\\\\" . ""))))
-    (mapc (lambda (replacement)
-            (setf title (replace-regexp-in-string (car replacement) (cdr replacement) title)))
-          replacements)
-    (if yeetube-buffer-display-emojis
-	title
-      (yeetube-buffer-strip-emojis title))))
-
 (defun yeetube-buffer-fix-view-count (view-count)
   "Fix VIEW-COUNT display issues."
   (replace-regexp-in-string "[^0-9]" "" view-count))
@@ -183,12 +167,14 @@ Emojis cause formatting issues, this should be off by default."
 (defun yeetube-buffer-insert-content (content)
   "Insert formatted CONTENT."
   (insert
-   (concat (yeetube-buffer--format-title (yeetube-buffer-fix-title (car content)))
-	   (yeetube-buffer--format-view-count (yeetube-buffer-view-count-add-commas
-					       (yeetube-buffer-fix-view-count (nth 2 content))))
-	   (yeetube-buffer--format-video-duration (nth 3 content))
-	   (yeetube-buffer--format-channel (nth 4 content))
-	   "\n")))
+   (concat
+    (yeetube-buffer--format-title  (cl-getf content :title))
+    (yeetube-buffer--format-view-count (yeetube-buffer-view-count-add-commas
+					(yeetube-buffer-fix-view-count
+					 (cl-getf content :view-count))))
+    (yeetube-buffer--format-video-duration (cl-getf content :duration))
+    (yeetube-buffer--format-channel (cl-getf content :channel))
+    "\n")))
 
 ;;;###autoload
 (defun yeetube-buffer-create (query content buffer-mode)

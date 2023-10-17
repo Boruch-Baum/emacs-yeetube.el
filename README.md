@@ -1,3 +1,4 @@
+[![self-host-badge](https://img.shields.io/badge/Repository-Self_hosted-black?logo=git&logoColor=red)](https://git.thanosapollo.com/yeetube/about)
 [![MELPA](https://melpa.org/packages/yeetube-badge.svg)](https://melpa.org/#/yeetube)
 
 # Yeetube | Emacs' Youtube Front End
@@ -10,7 +11,7 @@ displayed in a proced-like buffer.
 
 Package functionality includes:
 
-- Search Youtube for query
+- Query YouTube
 - Play video url *by default using mpv*
 - Bookmark/Save video url
 - Download video *using yt-dlp*
@@ -61,7 +62,7 @@ $ sudo apt install mpv yt-dlp
 
 ## Configuration 
 ### Media Player 
-By default `yeetube-player` is set to `yeetube-mpv-play-url`, you can
+By default `yeetube-player` is set to `yeetube-mpv-play`, you can
 use [mpv.el](https://github.com/kljohann/mpv.el),
 [GNU/Emms](https://www.gnu.org/software/emms/) or other similar
 packages like so:

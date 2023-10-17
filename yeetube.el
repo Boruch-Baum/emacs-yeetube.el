@@ -5,7 +5,7 @@
 ;; Author: Thanos Apollo <public@thanosapollo.com>
 ;; Keywords: extensions youtube videos
 ;; URL: https://git.thanosapollo.com/yeetube
-;; Version: 2.0.6
+;; Version: 2.0.7
 
 
 ;; Package-Requires: ((emacs "27.2"))
@@ -30,7 +30,7 @@
 ;;
 ;; Basic functionality includes:
 ;;
-;; - Search Youtube for query
+;; - Query YouTube
 ;; - Play video url by default using mpv
 ;; - Bookmark/Save video url
 ;; - Download video using yt-dlp
@@ -53,7 +53,7 @@
   :type 'natnump
   :group 'yeetube)
 
-(defcustom yeetube-player #'yeetube-mpv-play-url
+(defcustom yeetube-player #'yeetube-mpv-play
   "Select media player function."
   :type 'function
   :group 'yeetube)
@@ -87,21 +87,59 @@ Example Usage:
 (defvar yeetube-saved-videos nil
   "Saved/bookmarked video urls.")
 
-(defvar yeetube-last-played nil
-  "Last played url.")
+(defvar yeetube-history nil
+  "Stored urls & titles of recently played content.")
 
-;; TODO: Rewrite without hardcoding youtube.com
+(defvar yeetube-url "https://youtube.com/watch?v="
+  "URL used to play videos from.
+
+You can change the value to an invidious instance.")
+
+(defun yeetube-get (keyword)
+  "Retrieve KEYWORD value for entry at point.
+
+Retrieve keyword value for entry at point, from `yeetube-content', in
+*yeetube* buffer.
+
+Keywords:
+- :title
+- :videoid
+- :view-count
+- :duration
+- :channel"
+  (unless (keywordp keyword)
+    (error "Value `%s' is not a keyword" keyword))
+  (let ((video-info
+	 (cl-getf (nth (- (line-number-at-pos) 1) (reverse yeetube-content)) keyword)))
+    video-info))
+
 (defun yeetube-get-url ()
-  "Get url for subject in *yeetube* buffer at point."
-  (let ((video-url (concat "https://youtube.com/watch?v="
-			   (cadr (nth (- (line-number-at-pos) 1) (reverse yeetube-content))))))
+  "Get video url."
+  (let ((video-url (concat yeetube-url (yeetube-get :videoid))))
     video-url))
 
 ;;;###autoload
 (defun yeetube-play ()
   "Play video at point in *yeetube* buffer."
   (interactive)
-  (funcall yeetube-player (yeetube-get-url)))
+  (let ((video-url (yeetube-get-url))
+	(video-title (yeetube-get :title)))
+    (funcall yeetube-player video-url)
+    (push (list :url video-url :title video-title) yeetube-history)
+    (message "Playing: %s" video-title)))
+
+;;;###autoload
+(defun yeetube-replay ()
+  "Select entry from history to replay.
+
+Select entry title from yeetube-history and play corresponding URL."
+  (interactive)
+  (let* ((titles (mapcar (lambda (entry) (cl-getf entry :title)) yeetube-history))
+         (selected (completing-read "Replay: " titles))
+         (selected-entry (cl-find-if (lambda (entry) (string= selected (cl-getf entry :title))) yeetube-history))
+         (url (cl-getf selected-entry :url)))
+    (funcall yeetube-player url)
+    (message "Replaying: %s" selected)))
 
 (defun yeetube-load-saved-videos ()
   "Load saved videos."
@@ -123,13 +161,16 @@ Example Usage:
 	(url (yeetube-get-url)))
     (push (cons name url) yeetube-saved-videos)))
 
+;; We could use keywords here, but it would break users saved videos
+;; from previous versions.
 ;;;###autoload
 (defun yeetube-play-saved-video ()
   "Select & Play a saved video."
   (interactive)
   (yeetube-load-saved-videos)
   (let ((video (completing-read "Select video: " yeetube-saved-videos nil t)))
-    (funcall yeetube-player (cdr (assoc video yeetube-saved-videos)))))
+    (funcall yeetube-player (cdr (assoc video yeetube-saved-videos)))
+    (message "Playing: %s" (car (assoc video yeetube-saved-videos)))))
 
 ;;;###autoload
 (defun yeetube-remove-saved-video ()
@@ -198,6 +239,25 @@ then for item."
   (search-forward query nil t)
   (search-forward "text" nil t))
 
+(defvar yeetube--title-replacements
+  '(("&amp;" . "&")
+    ("&quot;" . "\"")
+    ("&#39;" . "'")
+    ("u0026" . "&")
+    ("\\\\" . ""))
+  "Unicode character replacements.")
+
+;; Usually titles from youtube get messed up,
+;; This should fix some of the common issues.
+(defun yeetube---fix-title (title)
+  "Adjust TITLE."
+  (mapc (lambda (replacement)
+          (setf title (replace-regexp-in-string (car replacement) (cdr replacement) title)))
+        yeetube--title-replacements)
+  (if yeetube-buffer-display-emojis
+      title
+    (yeetube-buffer-strip-emojis title)))
+
 (defun yeetube-get-content ()
   "Get content from youtube."
   (setf yeetube-content nil)
@@ -207,7 +267,8 @@ then for item."
     (let ((videoid (buffer-substring (+ (point) 3) (- (search-forward ",") 2))))
       (unless (member videoid (car yeetube-content))
 	(yeetube-get-item "title") ;; Video Title
-        (let ((title (buffer-substring (+ (point) 3) (- (search-forward ",\"") 5))))
+        (let ((title (yeetube---fix-title
+		      (buffer-substring (+ (point) 3) (- (search-forward ",\"") 5)))))
 	  (unless (member title (car yeetube-content))
 	    (yeetube-get-item "viewcounttext") ;; View Count
 	    (let ((view-count (buffer-substring (+ (point) 3) (- (search-forward " ") 0))))
@@ -216,7 +277,11 @@ then for item."
 		(yeetube-get-item "longbylinetext") ;; Channel Name
 		(let ((channel (buffer-substring (+ (point) 3) (- (search-forward ",") 2))))
 		  (push
-		   `(,title ,videoid ,view-count ,video-duration ,channel)
+		   (list :title title
+			 :videoid videoid
+			 :view-count view-count
+			 :duration video-duration
+			 :channel channel)
 		   yeetube-content))))))))))
 
 (add-variable-watcher 'yeetube-saved-videos #'yeetube-update-saved-videos-list)
@@ -277,7 +342,8 @@ Optional values:
     (when (string-prefix-p "http" url)
       (let ((default-directory yeetube-download-directory))
         (yeetube-download--ytdlp url nil yeetube-download-audio-format)
-        (message "Downloading %s " url)))))
+        (message "Downloading: '%s' at '%s'"
+		 (yeetube-get :title) yeetube-download-directory)))))
 
 ;; TODO: Add option to use ffmpeg
 ;;;###autoload
@@ -303,6 +369,7 @@ prompt blank to keep the default name."
 ;; Yeetube Mode
 (defvar yeetube-mode-map (make-sparse-keymap))
 (define-key yeetube-mode-map (kbd "RET") #'yeetube-play)
+(define-key yeetube-mode-map (kbd "M-RET") #'yeetube-search)
 (define-key yeetube-mode-map (kbd "b") #'yeetube-browse-url)
 (define-key yeetube-mode-map (kbd "d") #'yeetube-download-video)
 (define-key yeetube-mode-map (kbd "D") #'yeetube-download-change-directory)
@@ -312,6 +379,7 @@ prompt blank to keep the default name."
 (define-key yeetube-mode-map (kbd "s") #'yeetube-save-video)
 (define-key yeetube-mode-map (kbd "P") #'yeetube-play-saved-video)
 (define-key yeetube-mode-map (kbd "q") #'quit-window)
+(define-key yeetube-mode-map (kbd "r") #'yeetube-replay)
 
 (define-derived-mode yeetube-mode special-mode "Yeetube"
   "Yeetube mode."
