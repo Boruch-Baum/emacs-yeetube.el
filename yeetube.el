@@ -2,9 +2,9 @@
 
 ;; Copyright (C) 2023  Thanos Apollo
 
-;; Author: Thanos Apollo <public@thanosapollo.com>
+;; Author: Thanos Apollo <public@thanosapollo.org>
 ;; Keywords: extensions youtube videos
-;; URL: https://git.thanosapollo.com/yeetube
+;; URL: https://git.thanosapollo.org/yeetube
 ;; Version: 2.0.7
 
 

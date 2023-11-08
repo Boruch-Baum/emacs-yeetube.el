@@ -1,4 +1,4 @@
-[![self-host-badge](https://img.shields.io/badge/Repository-Self_hosted-black?logo=git&logoColor=red)](https://git.thanosapollo.com/yeetube/about)
+[![self-host-badge](https://img.shields.io/badge/Repository-Self_hosted-black?logo=git&logoColor=red)](https://git.thanosapollo.org/yeetube/about)
 [![MELPA](https://melpa.org/packages/yeetube-badge.svg)](https://melpa.org/#/yeetube)
 
 # Yeetube | Emacs' Youtube Front End
@@ -34,13 +34,13 @@ This package is available via [MELPA](https://melpa.org/#/yeetube)
 (straight-use-package 
  '(yeetube :type git
 	       :host nil
-	       :repo "https://git.thanosapollo.com/yeetube"))
+	       :repo "https://git.thanosapollo.org/yeetube"))
 ```
 
 
 ### Manual
 ``` shell
-$ git clone https://git.thanosapollo.com/yeetube
+$ git clone https://git.thanosapollo.org/yeetube
 ```
 
 *Add this to your emacs configuration:*
