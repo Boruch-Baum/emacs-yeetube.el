@@ -8,7 +8,7 @@
 ;; Version: 2.0.7
 
 
-;; Package-Requires: ((emacs "27.2"))
+;; Package-Requires: ((emacs "27.2") (compat "29.1.4.2"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@
 
 ;;; Code:
 
+(require 'compat)
 (require 'url)
 (require 'cl-lib)
 (require 'yeetube-buffer)
