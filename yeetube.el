@@ -272,18 +272,20 @@ then for item."
 		      (buffer-substring (+ (point) 3) (- (search-forward ",\"") 5)))))
 	  (unless (member title (car yeetube-content))
 	    (yeetube-get-item "viewcounttext") ;; View Count
-	    (let ((view-count (buffer-substring (+ (point) 3) (- (search-forward " ") 0))))
+	    (let ((view-count (buffer-substring (+ (point) 3)
+						(- (search-forward " ") 0))))
 	      (yeetube-get-item "lengthtext") ;; Video Duration
-	      (let ((video-duration (buffer-substring (+ (point) 3) (- (search-forward "},") 3))))
+	      (let ((video-duration (buffer-substring (+ (point) 3)
+						      (- (search-forward "},") 3))))
 		(yeetube-get-item "longbylinetext") ;; Channel Name
-		(let ((channel (buffer-substring (+ (point) 3) (- (search-forward ",") 2))))
-		  (push
-		   (list :title title
-			 :videoid videoid
-			 :view-count view-count
-			 :duration video-duration
-			 :channel channel)
-		   yeetube-content))))))))))
+		(let ((channel (buffer-substring (+ (point) 3)
+						 (- (search-forward ",") 2))))
+		  (push (list :title title
+			      :videoid videoid
+			      :view-count view-count
+			      :duration video-duration
+			      :channel channel)
+			yeetube-content))))))))))
 
 (add-variable-watcher 'yeetube-saved-videos #'yeetube-update-saved-videos-list)
 
