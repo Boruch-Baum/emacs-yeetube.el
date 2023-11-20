@@ -370,19 +370,22 @@ prompt blank to keep the default name."
 	(yeetube-download--ytdlp url name yeetube-download-audio-format)))))
 
 ;; Yeetube Mode
-(defvar yeetube-mode-map (make-sparse-keymap))
-(define-key yeetube-mode-map (kbd "RET") #'yeetube-play)
-(define-key yeetube-mode-map (kbd "M-RET") #'yeetube-search)
-(define-key yeetube-mode-map (kbd "b") #'yeetube-browse-url)
-(define-key yeetube-mode-map (kbd "d") #'yeetube-download-video)
-(define-key yeetube-mode-map (kbd "D") #'yeetube-download-change-directory)
-(define-key yeetube-mode-map (kbd "a") #'yeetube-download-change-audio-format)
-(define-key yeetube-mode-map (kbd "v") #'yeetube-mpv-toggle-video)
-(define-key yeetube-mode-map (kbd "V") #'yeetube-mpv-toggle-no-video-flag)
-(define-key yeetube-mode-map (kbd "s") #'yeetube-save-video)
-(define-key yeetube-mode-map (kbd "P") #'yeetube-play-saved-video)
-(define-key yeetube-mode-map (kbd "q") #'quit-window)
-(define-key yeetube-mode-map (kbd "r") #'yeetube-replay)
+
+(defvar-keymap yeetube-mode-map
+  :doc "Keymap for yeetube commands"
+  "RET" #'yeetube-play
+  "M-RET" #'yeetube-search
+  "b" #'yeetube-browse-url
+  "d" #'yeetube-download-video
+  "D" #'yeetube-change-download-directory
+  "a" #'yeetube-change-download-audio-format
+  "p" #'yeetube-mpv-toggle-pause
+  "v" #'yeetube-mpv-toggle-video
+  "V" #'yeetube-mpv-toggle-no-video-flag
+  "s" #'yeetube-save-video
+  "P" #'yeetube-play-saved-video
+  "r" #'yeetube-replay
+  "q" #'quit-window)
 
 (define-derived-mode yeetube-mode special-mode "Yeetube"
   "Yeetube mode."
