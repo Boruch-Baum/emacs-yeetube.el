@@ -34,10 +34,15 @@
 (defvar yeetube-mpv-path (executable-find "mpv")
   "Path for mpv executable.")
 
+(defun yeetube-mpv-check ()
+  "Check if mpv and yt-dlp is installed."
+  (pcase (and (executable-find "mpv")
+	      (executable-find "yt-dlp"))
+    (`nil (error "Unable to play video.  Please install `yt-dlp' and `mpv'"))))
+
 (defun yeetube-mpv-process (command)
   "Start yeetube process for shell COMMAND."
-  (unless yeetube-mpv-path
-    (error "Mpv not found.  Install mpv or change the value of yeetube-player"))
+  (yeetube-mpv-check)
   (let ((yeetube-mpv-process "yeetube"))
     (dolist (process (process-list))
       (when (string-match yeetube-mpv-process (process-name process))
