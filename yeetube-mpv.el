@@ -36,9 +36,9 @@
 
 (defun yeetube-mpv-check ()
   "Check if mpv and yt-dlp is installed."
-  (pcase (and (executable-find "mpv")
-	      (executable-find "yt-dlp"))
-    (`nil (error "Unable to play video.  Please install `yt-dlp' and `mpv'"))))
+  (unless (and (executable-find "mpv")
+	       (executable-find "yt-dlp"))
+    (error "Unable to play video.  Please install `yt-dlp' and `mpv'")))
 
 (defun yeetube-mpv-process (command)
   "Start yeetube process for shell COMMAND."

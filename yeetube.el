@@ -265,11 +265,13 @@ then for item."
   (while (and (< (length yeetube-content) yeetube-results-limit)
 	      (search-forward "videorenderer" nil t))
     (search-forward "videoid")
-    (let ((videoid (buffer-substring (+ (point) 3) (- (search-forward ",") 2))))
+    (let ((videoid (buffer-substring (+ (point) 3)
+				     (- (search-forward ",") 2))))
       (unless (member videoid (car yeetube-content))
 	(yeetube-get-item "title") ;; Video Title
         (let ((title (yeetube---fix-title
-		      (buffer-substring (+ (point) 3) (- (search-forward ",\"") 5)))))
+		      (buffer-substring (+ (point) 3)
+					(- (search-forward ",\"") 5)))))
 	  (unless (member title (car yeetube-content))
 	    (yeetube-get-item "viewcounttext") ;; View Count
 	    (let ((view-count (buffer-substring (+ (point) 3)
