@@ -371,8 +371,16 @@ prompt blank to keep the default name."
 	(setf download-counter (1+ download-counter))
 	(yeetube-download--ytdlp url name yeetube-download-audio-format)))))
 
-;; Yeetube Mode
+(defun yeetube-propertize-vector (content &rest fields-face-pairs)
+  "Create a vector with each item propertized with its corresponding face.
 
+CONTENT is a list of strings.
+FIELDS-FACE-PAIRS is a list of fields and faces."
+  (apply #'vector
+         (cl-loop for (field face) on fields-face-pairs by #'cddr
+                  collect (propertize (cl-getf content field) 'face face))))
+
+;; Yeetube Mode
 (defvar-keymap yeetube-mode-map
   :doc "Keymap for yeetube commands"
   "RET" #'yeetube-play
