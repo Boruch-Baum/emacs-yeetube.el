@@ -51,7 +51,7 @@
 
 (defcustom yeetube-results-limit 20
   "Define a limit for search results."
-  :type 'natnump
+  :type 'number
   :group 'yeetube)
 
 (defcustom yeetube-player #'yeetube-mpv-play
