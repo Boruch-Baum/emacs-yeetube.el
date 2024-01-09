@@ -397,13 +397,25 @@ FIELDS-FACE-PAIRS is a list of fields and faces."
   "r" #'yeetube-replay
   "q" #'quit-window)
 
-(define-derived-mode yeetube-mode special-mode "Yeetube"
+(define-derived-mode yeetube-mode tabulated-list-mode "Yeetube"
   "Yeetube mode."
-  :interactive t
-  (abbrev-mode 0)
+  :keymap yeetube-mode-map
+  (setf tabulated-list-format [("Title" 60 t) ("Views" 12 t) ("Duration" 12 t) ("Channel" 12 t)]
+	tabulated-list-entries
+	(cl-map 'list
+		(lambda (content)
+                  (list content
+			(yeetube-propertize-vector content
+                                                   :title 'yeetube-buffer-face-title
+                                                   :view-count 'yeetube-buffer-face-view-count
+                                                   :duration 'yeetube-buffer-face-duration
+                                                   :channel 'yeetube-buffer-face-channel)))
+		yeetube-content)
+	tabulated-list-sort-key (cons "Title" nil))
   (display-line-numbers-mode 0)
-  :lighter " yeetube-mode"
-  :keymap yeetube-mode-map)
+  (tabulated-list-init-header)
+  (tabulated-list-print)
+  (hl-line-mode))
 
 (provide 'yeetube)
 ;;; yeetube.el ends here
