@@ -284,7 +284,7 @@ then for item."
 						 (- (search-forward ",") 2))))
 		  (push (list :title title
 			      :videoid videoid
-			      :view-count view-count
+			      :view-count (format "% 10s" (replace-regexp-in-string "[^0-9]" "" view-count))
 			      :duration video-duration
 			      :channel channel)
 			yeetube-content))))))))))
