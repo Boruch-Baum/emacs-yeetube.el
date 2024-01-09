@@ -73,6 +73,37 @@ Example Usage:
   :type 'string
   :group 'yeetube)
 
+(defgroup yeetube-faces nil
+  "Faces used by yeetube."
+  :group 'yeetube
+  :tag "Yeetube Faces"
+  :prefix 'yeetube-face)
+
+(defface yeetube-face-header-query
+  '((t :inherit font-lock-function-name-face))
+  "Face used for the video published date."
+  :group 'yeetube-faces)
+
+(defface yeetube-face-duration
+  '((t :inherit font-lock-string-face))
+  "Face used for the video duration."
+  :group 'yeetube-faces)
+
+(defface yeetube-face-view-count
+  '((t :inherit font-lock-keyword-face))
+  "Face used for the video view count."
+  :group 'yeetube-faces)
+
+(defface yeetube-face-title
+  '((t :inherit font-lock-variable-use-face))
+  "Face used for video title."
+  :group 'yeetube-faces)
+
+(defface yeetube-face-channel
+  '((t :inherit font-lock-function-call-face))
+  "Face used for video channel name."
+  :group 'yeetube-faces)
+
 (defvar yeetube-invidious-instances
   '("vid.puffyan.us"
     "invidious.flokinet.to"
@@ -406,10 +437,10 @@ FIELDS-FACE-PAIRS is a list of fields and faces."
 		(lambda (content)
                   (list content
 			(yeetube-propertize-vector content
-                                                   :title 'yeetube-buffer-face-title
-                                                   :view-count 'yeetube-buffer-face-view-count
-                                                   :duration 'yeetube-buffer-face-duration
-                                                   :channel 'yeetube-buffer-face-channel)))
+                                                   :title 'yeetube-face-title
+                                                   :view-count 'yeetube-face-view-count
+                                                   :duration 'yeetube-face-duration
+                                                   :channel 'yeetube-face-channel)))
 		yeetube-content)
 	tabulated-list-sort-key (cons "Title" nil))
   (display-line-numbers-mode 0)
