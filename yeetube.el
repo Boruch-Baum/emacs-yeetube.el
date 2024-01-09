@@ -215,8 +215,10 @@ WHERE indicates where in the buffer the update should happen."
     (decode-coding-region (point-min) (point-max) 'utf-8)
     (goto-char (point-min))
     (toggle-enable-multibyte-characters)
-    (yeetube-get-content)
-    (yeetube-buffer-create query yeetube-content 'yeetube-mode)))
+    (yeetube-get-content))
+  (with-current-buffer
+      (switch-to-buffer (get-buffer-create (concat "*yeetube*")))
+    (yeetube-mode)))
 
 ;;;###autoload
 (defun yeetube-browse-url ()
