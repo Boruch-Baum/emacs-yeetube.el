@@ -418,8 +418,8 @@ FIELDS-FACE-PAIRS is a list of fields and faces."
   "M-RET" #'yeetube-search
   "b" #'yeetube-browse-url
   "d" #'yeetube-download-video
-  "D" #'yeetube-change-download-directory
-  "a" #'yeetube-change-download-audio-format
+  "D" #'yeetube-download-change-directory
+  "a" #'yeetube-download-change-audio-format
   "p" #'yeetube-mpv-toggle-pause
   "v" #'yeetube-mpv-toggle-video
   "V" #'yeetube-mpv-toggle-no-video-flag
