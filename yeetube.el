@@ -248,6 +248,17 @@ then for item."
     ("\\\\" . ""))
   "Unicode character replacements.")
 
+(defun yeetube-view-count-format (string)
+  "Add commas for STRING."
+  (let* ((string (replace-regexp-in-string "[^0-9]" "" string))
+         (len (length string))
+         (result ""))
+    (cl-loop for i from 0 to (1- len)
+             do (setf result (concat (substring string (- len i 1) (- len i)) result))
+             if (and (> (- len (1+ i)) 0)
+                     (= (% (1+ i) 3) 0))
+             do (setf result (concat "," result)))
+    result))
 
 (defun yeetube-get-content ()
   "Get content from youtube."
@@ -273,7 +284,7 @@ then for item."
 						 (- (search-forward ",") 2))))
 		  (push (list :title title
 			      :videoid videoid
-			      :view-count (format "% 10s" (replace-regexp-in-string "[^0-9]" "" view-count))
+			      :view-count (yeetube-view-count-format view-count)
 			      :duration video-duration
 			      :channel channel)
 			yeetube-content))))))))))
