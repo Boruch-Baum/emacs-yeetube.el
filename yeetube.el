@@ -40,8 +40,8 @@
 
 (require 'compat)
 (require 'url)
+(require 'tabulated-list)
 (require 'cl-lib)
-(require 'yeetube-buffer)
 (require 'yeetube-mpv)
 
 (defgroup yeetube nil
