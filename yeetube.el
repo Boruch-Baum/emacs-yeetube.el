@@ -110,9 +110,7 @@ Keywords:
 - :channel"
   (unless (keywordp keyword)
     (error "Value `%s' is not a keyword" keyword))
-  (let ((video-info
-	 (cl-getf (nth (- (line-number-at-pos) 1) (reverse yeetube-content)) keyword)))
-    video-info))
+  (cl-getf (tabulated-list-get-id) keyword))
 
 (defun yeetube-get-url ()
   "Get video url."
