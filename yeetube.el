@@ -248,16 +248,6 @@ then for item."
     ("\\\\" . ""))
   "Unicode character replacements.")
 
-;; Usually titles from youtube get messed up,
-;; This should fix some of the common issues.
-(defun yeetube---fix-title (title)
-  "Adjust TITLE."
-  (mapc (lambda (replacement)
-          (setf title (replace-regexp-in-string (car replacement) (cdr replacement) title)))
-        yeetube--title-replacements)
-  (if yeetube-buffer-display-emojis
-      title
-    (yeetube-buffer-strip-emojis title)))
 
 (defun yeetube-get-content ()
   "Get content from youtube."
@@ -269,9 +259,8 @@ then for item."
 				     (- (search-forward ",") 2))))
       (unless (member videoid (car yeetube-content))
 	(yeetube-get-item "title") ;; Video Title
-        (let ((title (yeetube---fix-title
-		      (buffer-substring (+ (point) 3)
-					(- (search-forward ",\"") 5)))))
+        (let ((title (buffer-substring (+ (point) 3)
+				       (- (search-forward ",\"") 5))))
 	  (unless (member title (car yeetube-content))
 	    (yeetube-get-item "viewcounttext") ;; View Count
 	    (let ((view-count (buffer-substring (+ (point) 3)
