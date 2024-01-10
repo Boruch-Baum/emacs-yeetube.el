@@ -40,8 +40,8 @@
 
 (require 'compat)
 (require 'url)
+(require 'tabulated-list)
 (require 'cl-lib)
-(require 'yeetube-buffer)
 (require 'yeetube-mpv)
 
 (defgroup yeetube nil
@@ -51,7 +51,7 @@
 
 (defcustom yeetube-results-limit 20
   "Define a limit for search results."
-  :type 'natnump
+  :type 'number
   :group 'yeetube)
 
 (defcustom yeetube-player #'yeetube-mpv-play
@@ -72,6 +72,37 @@ Example Usage:
   "Default directory to downlaod videos."
   :type 'string
   :group 'yeetube)
+
+(defgroup yeetube-faces nil
+  "Faces used by yeetube."
+  :group 'yeetube
+  :tag "Yeetube Faces"
+  :prefix 'yeetube-face)
+
+(defface yeetube-face-header-query
+  '((t :inherit font-lock-function-name-face))
+  "Face used for the video published date."
+  :group 'yeetube-faces)
+
+(defface yeetube-face-duration
+  '((t :inherit font-lock-string-face))
+  "Face used for the video duration."
+  :group 'yeetube-faces)
+
+(defface yeetube-face-view-count
+  '((t :inherit font-lock-keyword-face))
+  "Face used for the video view count."
+  :group 'yeetube-faces)
+
+(defface yeetube-face-title
+  '((t :inherit font-lock-variable-use-face))
+  "Face used for video title."
+  :group 'yeetube-faces)
+
+(defface yeetube-face-channel
+  '((t :inherit font-lock-function-call-face))
+  "Face used for video channel name."
+  :group 'yeetube-faces)
 
 (defvar yeetube-invidious-instances
   '("vid.puffyan.us"
@@ -110,9 +141,7 @@ Keywords:
 - :channel"
   (unless (keywordp keyword)
     (error "Value `%s' is not a keyword" keyword))
-  (let ((video-info
-	 (cl-getf (nth (- (line-number-at-pos) 1) (reverse yeetube-content)) keyword)))
-    video-info))
+  (cl-getf (tabulated-list-get-id) keyword))
 
 (defun yeetube-get-url ()
   "Get video url."
@@ -217,8 +246,10 @@ WHERE indicates where in the buffer the update should happen."
     (decode-coding-region (point-min) (point-max) 'utf-8)
     (goto-char (point-min))
     (toggle-enable-multibyte-characters)
-    (yeetube-get-content)
-    (yeetube-buffer-create query yeetube-content 'yeetube-mode)))
+    (yeetube-get-content))
+  (with-current-buffer
+      (switch-to-buffer (get-buffer-create (concat "*yeetube*")))
+    (yeetube-mode)))
 
 ;;;###autoload
 (defun yeetube-browse-url ()
@@ -248,16 +279,17 @@ then for item."
     ("\\\\" . ""))
   "Unicode character replacements.")
 
-;; Usually titles from youtube get messed up,
-;; This should fix some of the common issues.
-(defun yeetube---fix-title (title)
-  "Adjust TITLE."
-  (mapc (lambda (replacement)
-          (setf title (replace-regexp-in-string (car replacement) (cdr replacement) title)))
-        yeetube--title-replacements)
-  (if yeetube-buffer-display-emojis
-      title
-    (yeetube-buffer-strip-emojis title)))
+(defun yeetube-view-count-format (string)
+  "Add commas for STRING."
+  (let* ((string (replace-regexp-in-string "[^0-9]" "" string))
+         (len (length string))
+         (result ""))
+    (cl-loop for i from 0 to (1- len)
+             do (setf result (concat (substring string (- len i 1) (- len i)) result))
+             if (and (> (- len (1+ i)) 0)
+                     (= (% (1+ i) 3) 0))
+             do (setf result (concat "," result)))
+    result))
 
 (defun yeetube-get-content ()
   "Get content from youtube."
@@ -269,9 +301,8 @@ then for item."
 				     (- (search-forward ",") 2))))
       (unless (member videoid (car yeetube-content))
 	(yeetube-get-item "title") ;; Video Title
-        (let ((title (yeetube---fix-title
-		      (buffer-substring (+ (point) 3)
-					(- (search-forward ",\"") 5)))))
+        (let ((title (buffer-substring (+ (point) 3)
+				       (- (search-forward ",\"") 5))))
 	  (unless (member title (car yeetube-content))
 	    (yeetube-get-item "viewcounttext") ;; View Count
 	    (let ((view-count (buffer-substring (+ (point) 3)
@@ -284,7 +315,7 @@ then for item."
 						 (- (search-forward ",") 2))))
 		  (push (list :title title
 			      :videoid videoid
-			      :view-count view-count
+			      :view-count (yeetube-view-count-format view-count)
 			      :duration video-duration
 			      :channel channel)
 			yeetube-content))))))))))
@@ -371,16 +402,24 @@ prompt blank to keep the default name."
 	(setf download-counter (1+ download-counter))
 	(yeetube-download--ytdlp url name yeetube-download-audio-format)))))
 
-;; Yeetube Mode
+(defun yeetube-propertize-vector (content &rest fields-face-pairs)
+  "Create a vector with each item propertized with its corresponding face.
 
+CONTENT is a list of strings.
+FIELDS-FACE-PAIRS is a list of fields and faces."
+  (apply #'vector
+         (cl-loop for (field face) on fields-face-pairs by #'cddr
+                  collect (propertize (cl-getf content field) 'face face))))
+
+;; Yeetube Mode
 (defvar-keymap yeetube-mode-map
   :doc "Keymap for yeetube commands"
   "RET" #'yeetube-play
   "M-RET" #'yeetube-search
   "b" #'yeetube-browse-url
   "d" #'yeetube-download-video
-  "D" #'yeetube-change-download-directory
-  "a" #'yeetube-change-download-audio-format
+  "D" #'yeetube-download-change-directory
+  "a" #'yeetube-download-change-audio-format
   "p" #'yeetube-mpv-toggle-pause
   "v" #'yeetube-mpv-toggle-video
   "V" #'yeetube-mpv-toggle-no-video-flag
@@ -389,13 +428,25 @@ prompt blank to keep the default name."
   "r" #'yeetube-replay
   "q" #'quit-window)
 
-(define-derived-mode yeetube-mode special-mode "Yeetube"
+(define-derived-mode yeetube-mode tabulated-list-mode "Yeetube"
   "Yeetube mode."
-  :interactive t
-  (abbrev-mode 0)
+  :keymap yeetube-mode-map
+  (setf tabulated-list-format [("Title" 60 t) ("Views" 12 t) ("Duration" 12 t) ("Channel" 12 t)]
+	tabulated-list-entries
+	(cl-map 'list
+		(lambda (content)
+                  (list content
+			(yeetube-propertize-vector content
+                                                   :title 'yeetube-face-title
+                                                   :view-count 'yeetube-face-view-count
+                                                   :duration 'yeetube-face-duration
+                                                   :channel 'yeetube-face-channel)))
+		yeetube-content)
+	tabulated-list-sort-key (cons "Title" nil))
   (display-line-numbers-mode 0)
-  :lighter " yeetube-mode"
-  :keymap yeetube-mode-map)
+  (tabulated-list-init-header)
+  (tabulated-list-print)
+  (hl-line-mode))
 
 (provide 'yeetube)
 ;;; yeetube.el ends here
