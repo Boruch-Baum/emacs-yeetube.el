@@ -276,15 +276,18 @@ WHERE indicates where in the buffer the update should happen."
 			       (nth invidious-instance yeetube-invidious-instances)
 			       (yeetube-get-url)))))
 
-(defun yeetube-get-item (query)
+(cl-defun yeetube-get-item (&key item (item-start "text") item-end (substring-start 3) substring-end)
   "Get item from youtube results for QUERY.
 
 Video result starts with videorenderer.
 Search back to videorenderer (start of video results),
 then for item."
   (search-backward "videorenderer" nil t)
-  (search-forward query nil t)
-  (search-forward "text" nil t))
+  (search-forward item nil t)
+  (search-forward item-start nil t)
+  (let ((item (buffer-substring (+ (point) substring-start)
+				(- (search-forward item-end) substring-end))))
+    item))
 
 (defvar yeetube--title-replacements
   '(("&amp;" . "&")
