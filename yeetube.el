@@ -318,27 +318,27 @@ then for item."
     (let ((videoid (buffer-substring (+ (point) 3)
 				     (- (search-forward ",") 2))))
       (unless (member videoid (car yeetube-content))
-	(yeetube-get-item "title") ;; Video Title
-        (let ((title (buffer-substring (+ (point) 3)
-				       (- (search-forward ",\"") 5))))
-	  (unless (member title (car yeetube-content))
-	    (yeetube-get-item "viewcounttext") ;; View Count
-	    (let ((view-count (buffer-substring (+ (point) 3)
-						(- (search-forward " ") 0))))
-	      (yeetube-get-item "lengthtext") ;; Video Duration
-	      (let ((video-duration (buffer-substring (+ (point) 3)
-						      (- (search-forward "},") 3))))
-		(yeetube-get-item "longbylinetext") ;; Channel Name
-		(let ((channel (buffer-substring (+ (point) 3)
-						 (- (search-forward ",") 2))))
-		  (push (list :title title
-			      :videoid videoid
-			      :view-count (yeetube-view-count-format view-count)
-			      :duration video-duration
-			      :channel channel)
-			yeetube-content))))))))))
+	(let ((title (yeetube-get-item :item "title" :item-end ",\"" :substring-end 5))
+	      (view-count (yeetube-get-item :item "viewcounttext" :item-end " " :substring-end 0))
+	      (video-duration (yeetube-get-item :item "lengthtext" :item-end "}," :substring-end 3))
+	      (channel (yeetube-get-item :item "longbylinetext" :item-end "," :substring-end 2))
+	      (thumbnail (yeetube-get-item :item "thumbnail" :item-start "url" :item-end ",\"" :substring-end 5)))
+	  (push (list :title title
+		      :videoid videoid
+		      :view-count (yeetube-view-count-format view-count)
+		      :duration video-duration
+		      :channel channel
+		      :thumbnail thumbnail)
+		yeetube-content))))))
 
 (add-variable-watcher 'yeetube-saved-videos #'yeetube-update-saved-videos-list)
+
+;; View thumbnail using eww
+(defun yeetube-view-thumbnail ()
+  "Open URL using eww in a new buffer."
+  (interactive)
+  (eww-browse-url (yeetube-get :thumbnail)))
+
 
 ;; Yeetube Downlaod:
 
