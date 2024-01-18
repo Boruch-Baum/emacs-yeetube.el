@@ -444,6 +444,7 @@ FIELDS-FACE-PAIRS is a list of fields and faces."
   "s" #'yeetube-save-video
   "P" #'yeetube-play-saved-video
   "r" #'yeetube-replay
+  "t" #'yeetube-view-thumbnail
   "q" #'quit-window)
 
 (define-derived-mode yeetube-mode tabulated-list-mode "Yeetube"
@@ -463,8 +464,7 @@ FIELDS-FACE-PAIRS is a list of fields and faces."
 	tabulated-list-sort-key (cons "Title" nil))
   (display-line-numbers-mode 0)
   (tabulated-list-init-header)
-  (tabulated-list-print)
-  (hl-line-mode))
+  (tabulated-list-print))
 
 (provide 'yeetube)
 ;;; yeetube.el ends here
