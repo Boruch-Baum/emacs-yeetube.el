@@ -232,6 +232,20 @@ WHERE indicates where in the buffer the update should happen."
 		    (save-buffer)
 		    (kill-buffer)))
 
+(cl-defun yeetube-get-thumbnails (content)
+  "Download thumbnails for CONTENT using `wget'."
+  (interactive)
+  (let ((wget-exec (executable-find "wget"))
+	(default-directory temporary-file-directory))
+    (unless wget-exec
+      (error "Please install `wget', to download thumbnails"))
+    (cl-loop for item in content
+	     do (let ((title (plist-get item :title))
+		      (thumbnail (plist-get item :thumbnail)))
+		  (call-process-shell-command
+		   (concat "wget " (shell-quote-argument thumbnail) " -O" (shell-quote-argument title))
+		   nil 0)))))
+
 ;;;###autoload
 (defun yeetube-search (query)
   "Search for QUERY."
@@ -246,7 +260,8 @@ WHERE indicates where in the buffer the update should happen."
     (decode-coding-region (point-min) (point-max) 'utf-8)
     (goto-char (point-min))
     (toggle-enable-multibyte-characters)
-    (yeetube-get-content))
+    (yeetube-get-content)
+    (yeetube-get-thumbnails yeetube-content))
   (with-current-buffer
       (switch-to-buffer (get-buffer-create (concat "*yeetube*")))
     (yeetube-mode)))
