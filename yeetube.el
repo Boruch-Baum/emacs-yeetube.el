@@ -232,8 +232,12 @@ WHERE indicates where in the buffer the update should happen."
 		    (save-buffer)
 		    (kill-buffer)))
 
+;; TODO: Find a way to display thumbnails in tabulated list
 (cl-defun yeetube-get-thumbnails (content)
-  "Download thumbnails for CONTENT using `wget'."
+  "Download thumbnails for CONTENT using `wget'.
+
+This is used to download thumbnails from `yeetube-content', within
+`yeetube-search'. We can't as of now use images with tabulated-list."
   (interactive)
   (let ((wget-exec (executable-find "wget"))
 	(default-directory temporary-file-directory))
@@ -261,7 +265,9 @@ WHERE indicates where in the buffer the update should happen."
     (goto-char (point-min))
     (toggle-enable-multibyte-characters)
     (yeetube-get-content)
-    (yeetube-get-thumbnails yeetube-content))
+    ;; (yeetube-get-thumbnails yeetube-content) ;; download thumbnails
+    ;; unfortunately can't use images them with tabulated list
+    )
   (with-current-buffer
       (switch-to-buffer (get-buffer-create (concat "*yeetube*")))
     (yeetube-mode)))
