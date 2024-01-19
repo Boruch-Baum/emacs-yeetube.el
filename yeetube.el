@@ -282,12 +282,17 @@ This is used to download thumbnails from `yeetube-content', within
 			       (nth invidious-instance yeetube-invidious-instances)
 			       (yeetube-get-url)))))
 
-(cl-defun yeetube-get-item (&key item (item-start "text") item-end (substring-start 3) substring-end)
-  "Get item from youtube results for QUERY.
+(cl-defun yeetube-scrape-item (&key item (item-start "text") item-end (substring-start 3) substring-end)
+  "Scrape ITEM from YouTube.com.
 
 Video result starts with videorenderer.
 Search back to videorenderer (start of video results),
-then for item."
+then for item.
+
+ITEM-START is the start of the information for item.
+ITEM-END is the end of the item information.
+SUBSTRING-START is the start of the string to return, integer.
+SUBSTRING-END is the end of the string to return, interger."
   (search-backward "videorenderer" nil t)
   (search-forward item nil t)
   (search-forward item-start nil t)
@@ -324,11 +329,11 @@ then for item."
     (let ((videoid (buffer-substring (+ (point) 3)
 				     (- (search-forward ",") 2))))
       (unless (member videoid (car yeetube-content))
-	(let ((title (yeetube-get-item :item "title" :item-end ",\"" :substring-end 5))
-	      (view-count (yeetube-get-item :item "viewcounttext" :item-end " " :substring-end 0))
-	      (video-duration (yeetube-get-item :item "lengthtext" :item-end "}," :substring-end 3))
-	      (channel (yeetube-get-item :item "longbylinetext" :item-end "," :substring-end 2))
-	      (thumbnail (yeetube-get-item :item "thumbnail" :item-start "url" :item-end ",\"" :substring-end 5)))
+	(let ((title (yeetube-scrape-item :item "title" :item-end ",\"" :substring-end 5))
+	      (view-count (yeetube-scrape-item :item "viewcounttext" :item-end " " :substring-end 0))
+	      (video-duration (yeetube-scrape-item :item "lengthtext" :item-end "}," :substring-end 3))
+	      (channel (yeetube-scrape-item :item "longbylinetext" :item-end "," :substring-end 2))
+	      (thumbnail (yeetube-scrape-item :item "thumbnail" :item-start "url" :item-end ",\"" :substring-end 5)))
 	  (push (list :title title
 		      :videoid videoid
 		      :view-count (yeetube-view-count-format view-count)
