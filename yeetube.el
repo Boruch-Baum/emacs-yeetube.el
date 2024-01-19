@@ -232,6 +232,24 @@ WHERE indicates where in the buffer the update should happen."
 		    (save-buffer)
 		    (kill-buffer)))
 
+;; TODO: Find a way to display thumbnails in tabulated list
+(cl-defun yeetube-get-thumbnails (content)
+  "Download thumbnails for CONTENT using `wget'.
+
+This is used to download thumbnails from `yeetube-content', within
+`yeetube-search'. We can't as of now use images with tabulated-list."
+  (interactive)
+  (let ((wget-exec (executable-find "wget"))
+	(default-directory temporary-file-directory))
+    (unless wget-exec
+      (error "Please install `wget', to download thumbnails"))
+    (cl-loop for item in content
+	     do (let ((title (plist-get item :title))
+		      (thumbnail (plist-get item :thumbnail)))
+		  (call-process-shell-command
+		   (concat "wget " (shell-quote-argument thumbnail) " -O" (shell-quote-argument title))
+		   nil 0)))))
+
 ;;;###autoload
 (defun yeetube-search (query)
   "Search for QUERY."
@@ -246,7 +264,10 @@ WHERE indicates where in the buffer the update should happen."
     (decode-coding-region (point-min) (point-max) 'utf-8)
     (goto-char (point-min))
     (toggle-enable-multibyte-characters)
-    (yeetube-get-content))
+    (yeetube-get-content)
+    ;; (yeetube-get-thumbnails yeetube-content) ;; download thumbnails
+    ;; unfortunately can't use images them with tabulated list
+    )
   (with-current-buffer
       (switch-to-buffer (get-buffer-create (concat "*yeetube*")))
     (yeetube-mode)))
@@ -261,15 +282,23 @@ WHERE indicates where in the buffer the update should happen."
 			       (nth invidious-instance yeetube-invidious-instances)
 			       (yeetube-get-url)))))
 
-(defun yeetube-get-item (query)
-  "Get item from youtube results for QUERY.
+(cl-defun yeetube-scrape-item (&key item (item-start "text") item-end (substring-start 3) substring-end)
+  "Scrape ITEM from YouTube.com.
 
 Video result starts with videorenderer.
 Search back to videorenderer (start of video results),
-then for item."
+then for item.
+
+ITEM-START is the start of the information for item.
+ITEM-END is the end of the item information.
+SUBSTRING-START is the start of the string to return, integer.
+SUBSTRING-END is the end of the string to return, interger."
   (search-backward "videorenderer" nil t)
-  (search-forward query nil t)
-  (search-forward "text" nil t))
+  (search-forward item nil t)
+  (search-forward item-start nil t)
+  (let ((item (buffer-substring (+ (point) substring-start)
+				(- (search-forward item-end) substring-end))))
+    item))
 
 (defvar yeetube--title-replacements
   '(("&amp;" . "&")
@@ -300,27 +329,27 @@ then for item."
     (let ((videoid (buffer-substring (+ (point) 3)
 				     (- (search-forward ",") 2))))
       (unless (member videoid (car yeetube-content))
-	(yeetube-get-item "title") ;; Video Title
-        (let ((title (buffer-substring (+ (point) 3)
-				       (- (search-forward ",\"") 5))))
-	  (unless (member title (car yeetube-content))
-	    (yeetube-get-item "viewcounttext") ;; View Count
-	    (let ((view-count (buffer-substring (+ (point) 3)
-						(- (search-forward " ") 0))))
-	      (yeetube-get-item "lengthtext") ;; Video Duration
-	      (let ((video-duration (buffer-substring (+ (point) 3)
-						      (- (search-forward "},") 3))))
-		(yeetube-get-item "longbylinetext") ;; Channel Name
-		(let ((channel (buffer-substring (+ (point) 3)
-						 (- (search-forward ",") 2))))
-		  (push (list :title title
-			      :videoid videoid
-			      :view-count (yeetube-view-count-format view-count)
-			      :duration video-duration
-			      :channel channel)
-			yeetube-content))))))))))
+	(let ((title (yeetube-scrape-item :item "title" :item-end ",\"" :substring-end 5))
+	      (view-count (yeetube-scrape-item :item "viewcounttext" :item-end " " :substring-end 0))
+	      (video-duration (yeetube-scrape-item :item "lengthtext" :item-end "}," :substring-end 3))
+	      (channel (yeetube-scrape-item :item "longbylinetext" :item-end "," :substring-end 2))
+	      (thumbnail (yeetube-scrape-item :item "thumbnail" :item-start "url" :item-end ",\"" :substring-end 5)))
+	  (push (list :title title
+		      :videoid videoid
+		      :view-count (yeetube-view-count-format view-count)
+		      :duration video-duration
+		      :channel channel
+		      :thumbnail thumbnail)
+		yeetube-content))))))
 
 (add-variable-watcher 'yeetube-saved-videos #'yeetube-update-saved-videos-list)
+
+;; View thumbnail using eww
+(defun yeetube-view-thumbnail ()
+  "Open URL using eww in a new buffer."
+  (interactive)
+  (eww-browse-url (yeetube-get :thumbnail)))
+
 
 ;; Yeetube Downlaod:
 
@@ -426,6 +455,7 @@ FIELDS-FACE-PAIRS is a list of fields and faces."
   "s" #'yeetube-save-video
   "P" #'yeetube-play-saved-video
   "r" #'yeetube-replay
+  "t" #'yeetube-view-thumbnail
   "q" #'quit-window)
 
 (define-derived-mode yeetube-mode tabulated-list-mode "Yeetube"
@@ -445,8 +475,7 @@ FIELDS-FACE-PAIRS is a list of fields and faces."
 	tabulated-list-sort-key (cons "Title" nil))
   (display-line-numbers-mode 0)
   (tabulated-list-init-header)
-  (tabulated-list-print)
-  (hl-line-mode))
+  (tabulated-list-print))
 
 (provide 'yeetube)
 ;;; yeetube.el ends here
