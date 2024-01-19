@@ -300,14 +300,6 @@ SUBSTRING-END is the end of the string to return, interger."
 				(- (search-forward item-end) substring-end))))
     item))
 
-(defvar yeetube--title-replacements
-  '(("&amp;" . "&")
-    ("&quot;" . "\"")
-    ("&#39;" . "'")
-    ("u0026" . "&")
-    ("\\\\" . ""))
-  "Unicode character replacements.")
-
 (defun yeetube-view-count-format (string)
   "Add commas for STRING."
   (let* ((string (replace-regexp-in-string "[^0-9]" "" string))
