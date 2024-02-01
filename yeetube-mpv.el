@@ -68,9 +68,9 @@ to play local files."
   (interactive)
   (if yeetube-mpv-disable-video
       (progn (setf yeetube-mpv-disable-video nil)
-	     (message "yeetube: mpv removed no-video flag"))
+	     (message "yeetube: mpv enabled video"))
     (setf yeetube-mpv-disable-video t)
-    (message "yeetube: mpv added no-video flag")))
+    (message "yeetube: mpv disabled video")))
 
 (defun yeetube-mpv-send-keypress (key)
   "Send KEY to yeetube-mpv-process."
