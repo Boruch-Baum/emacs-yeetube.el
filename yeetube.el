@@ -343,6 +343,7 @@ SUBSTRING-END is the end of the string to return, interger."
 		      :videoid videoid
 		      :view-count (yeetube-view-count-format view-count)
 		      :duration video-duration
+                      :published-time published-time
 		      :channel channel
 		      :thumbnail thumbnail)
 		yeetube-content))))))
@@ -463,10 +464,28 @@ FIELDS-FACE-PAIRS is a list of fields and faces."
   "t" #'yeetube-view-thumbnail
   "q" #'quit-window)
 
+(defun yeetube--sort-views (a b)
+  "PREDICATE for function 'sort'.
+Used by variable 'tabulated-list-format' to sort the \"Views\"
+column."
+  (< (string-to-number (replace-regexp-in-string "," "" (aref (cadr a) 1)))
+     (string-to-number (replace-regexp-in-string "," "" (aref (cadr b) 1)))))
+
+(defun yeetube--sort-duration (a b)
+  "PREDICATE for function 'sort'.
+Used by variable 'tabulated-list-format' to sort the \"Duration\"
+column."
+  (< (string-to-number (replace-regexp-in-string ":" "" (aref (cadr a) 2)))
+     (string-to-number (replace-regexp-in-string ":" "" (aref (cadr b) 2)))))
+
 (define-derived-mode yeetube-mode tabulated-list-mode "Yeetube"
   "Yeetube mode."
   :keymap yeetube-mode-map
-  (setf tabulated-list-format [("Title" 60 t) ("Views" 12 t) ("Duration" 9 t) ("Channel" 12 t)]
+  (setf tabulated-list-format
+        [("Title" 60 t)
+         ("Views" 12 yeetube--sort-views)
+         ("Duration" 9 yeetube--sort-duration)
+         ("Channel" 12 t)]
 	tabulated-list-entries
 	(cl-map 'list
 		(lambda (content)
