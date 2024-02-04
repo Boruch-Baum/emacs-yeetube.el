@@ -73,6 +73,19 @@ Example Usage:
   :type 'string
   :group 'yeetube)
 
+(defcustom yeetube-default-sort-column "Title"
+  "Which column to sort the search results table."
+  :type '(radio (const "Title")
+                (const "Views")
+                (const "Duration")
+                (const "Channel"))
+  :group 'yeetube)
+
+(defcustom yeetube-default-sort-ascending nil
+  "Whether to sort the search results in ascending order."
+  :type 'boolean
+  :group 'yeetube)
+
 (defgroup yeetube-faces nil
   "Faces used by yeetube."
   :group 'yeetube
@@ -464,7 +477,8 @@ FIELDS-FACE-PAIRS is a list of fields and faces."
                                                    :duration 'yeetube-face-duration
                                                    :channel 'yeetube-face-channel)))
 		yeetube-content)
-	tabulated-list-sort-key (cons "Title" nil))
+	tabulated-list-sort-key (cons yeetube-default-sort-column
+                                      yeetube-default-sort-ascending))
   (display-line-numbers-mode 0)
   (tabulated-list-init-header)
   (tabulated-list-print))
