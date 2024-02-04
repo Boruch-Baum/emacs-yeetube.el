@@ -1,3 +1,9 @@
+This is a fork of Thanos Apollo's self-hosted repository [yeetube.el](https://git.thanosapollo.org/yeetube).
+
+The content of his README.md follows:
+
+---
+
 [![self-host-badge](https://img.shields.io/badge/Repository-Self_hosted-black?logo=git&logoColor=red)](https://git.thanosapollo.org/yeetube/about)
 [![MELPA](https://melpa.org/packages/yeetube-badge.svg)](https://melpa.org/#/yeetube)
 
