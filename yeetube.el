@@ -453,7 +453,7 @@ FIELDS-FACE-PAIRS is a list of fields and faces."
 (define-derived-mode yeetube-mode tabulated-list-mode "Yeetube"
   "Yeetube mode."
   :keymap yeetube-mode-map
-  (setf tabulated-list-format [("Title" 60 t) ("Views" 12 t) ("Duration" 12 t) ("Channel" 12 t)]
+  (setf tabulated-list-format [("Title" 60 t) ("Views" 12 t) ("Duration" 9 t) ("Channel" 12 t)]
 	tabulated-list-entries
 	(cl-map 'list
 		(lambda (content)
