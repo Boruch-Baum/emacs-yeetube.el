@@ -78,6 +78,7 @@ Example Usage:
   :type '(radio (const "Title")
                 (const "Views")
                 (const "Duration")
+                (const "When")
                 (const "Channel"))
   :group 'yeetube)
 
@@ -110,6 +111,11 @@ Example Usage:
 (defface yeetube-face-title
   '((t :inherit font-lock-variable-use-face))
   "Face used for video title."
+  :group 'yeetube-faces)
+
+(defface yeetube-face-when
+  '((t :inherit font-lock-variable-use-face))
+  "Face used for video age."
   :group 'yeetube-faces)
 
 (defface yeetube-face-channel
@@ -150,6 +156,7 @@ Keywords:
 - :title
 - :videoid
 - :view-count
+- :published-time
 - :duration
 - :channel"
   (unless (keywordp keyword)
@@ -337,6 +344,7 @@ SUBSTRING-END is the end of the string to return, interger."
 	(let ((title (yeetube-scrape-item :item "title" :item-end ",\"" :substring-end 5))
 	      (view-count (yeetube-scrape-item :item "viewcounttext" :item-end " " :substring-end 0))
 	      (video-duration (yeetube-scrape-item :item "lengthtext" :item-end "}," :substring-end 3))
+              (published-time (replace-regexp-in-string "Streamed " "" (yeetube-scrape-item :item "publishedtimetext" :item-end ",\"" :substring-end 4)))
 	      (channel (yeetube-scrape-item :item "longbylinetext" :item-end "," :substring-end 2))
 	      (thumbnail (yeetube-scrape-item :item "thumbnail" :item-start "url" :item-end ",\"" :substring-end 5)))
 	  (push (list :title title
@@ -478,6 +486,19 @@ column."
   (< (string-to-number (replace-regexp-in-string ":" "" (aref (cadr a) 2)))
      (string-to-number (replace-regexp-in-string ":" "" (aref (cadr b) 2)))))
 
+(defun yeetube--sort-when (a b)
+  "PREDICATE for function 'sort'.
+Used by variable 'tabulated-list-format' to sort the \"When\"
+column."
+  (let* ((intervals '("econd" "minute" "hour" "day" "week" "month" "year"))
+         (split-a (split-string (replace-regexp-in-string "s" "" (aref (cadr a) 3))))
+         (split-b (split-string (replace-regexp-in-string "s" "" (aref (cadr b) 3))))
+         (units-a (length (member (nth 1 split-a) intervals)))
+         (units-b (length (member (nth 1 split-b) intervals))))
+    (if (= units-a units-b)
+      (< (string-to-number (nth 0 split-a)) (string-to-number (nth 0 split-b)))
+     (> units-a units-b))))
+
 (define-derived-mode yeetube-mode tabulated-list-mode "Yeetube"
   "Yeetube mode."
   :keymap yeetube-mode-map
@@ -485,6 +506,7 @@ column."
         [("Title" 60 t)
          ("Views" 12 yeetube--sort-views)
          ("Duration" 9 yeetube--sort-duration)
+         ("When" 13 yeetube--sort-when)
          ("Channel" 12 t)]
 	tabulated-list-entries
 	(cl-map 'list
@@ -494,6 +516,7 @@ column."
                                                    :title 'yeetube-face-title
                                                    :view-count 'yeetube-face-view-count
                                                    :duration 'yeetube-face-duration
+                                                   :published-time 'yeetube-face-when
                                                    :channel 'yeetube-face-channel)))
 		yeetube-content)
 	tabulated-list-sort-key (cons yeetube-default-sort-column
