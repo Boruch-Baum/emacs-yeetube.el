@@ -1,5 +1,11 @@
 This is a fork of Thanos Apollo's self-hosted repository [yeetube.el](https://git.thanosapollo.org/yeetube).
 
+What I've added:
+
+- Ability to sort on all columns
+- New column "When" for a video's "Published date"
+- Defcustoms for default sort column and direction
+
 The content of his README.md follows:
 
 ---
@@ -9,7 +15,7 @@ The content of his README.md follows:
 
 # Yeetube | Emacs' Youtube Front End
 
-## About 
+## About
 
 This package provides the ability to scrape YouTube, with the results
 displayed in a proced-like buffer.
@@ -31,13 +37,13 @@ Package functionality includes:
 html & json.*
 
 
-## Installation 
+## Installation
 This package is available via [MELPA](https://melpa.org/#/yeetube)
 
 ### Straight.el
 
 ``` emacs-lisp
-(straight-use-package 
+(straight-use-package
  '(yeetube :type git
 	       :host nil
 	       :repo "https://git.thanosapollo.org/yeetube"))
@@ -66,8 +72,8 @@ $ git clone https://git.thanosapollo.org/yeetube
 $ sudo apt install mpv yt-dlp
 ```
 
-## Configuration 
-### Media Player 
+## Configuration
+### Media Player
 By default `yeetube-player` is set to `yeetube-mpv-play`, you can
 use [mpv.el](https://github.com/kljohann/mpv.el),
 [GNU/Emms](https://www.gnu.org/software/emms/) or other similar
@@ -85,5 +91,3 @@ youtube urls.
 Formatting images in a text buffer is not something that I found easy
 or fun to do. Feel free to submit a patch if you manage to make an
 appealing version of it
-
-
